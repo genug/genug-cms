@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace genug\Category;
+namespace genug\Page;
 
 /**
  *
@@ -11,5 +11,5 @@ final class Id
 {
     use \genug\Lib\trait_Id;
 
-    const VALID_STRING_PATTERN = '#^[a-z0-9][a-z0-9_\-]*$#';
+    const VALID_STRING_PATTERN = '#^(?:\/|(?:\/[a-z0-9][a-z0-9_\-]*){1,2})$#';
 }

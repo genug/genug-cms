@@ -19,14 +19,14 @@ final class ImmutableData
     public static function fromJSON(string $json, int $depth = 512, int $options = 0): ImmutableData
     {
         $stdClass = \json_decode($json, FALSE, $depth, $options);
-        
+
         if (is_null($stdClass) && \json_last_error() !== JSON_ERROR_NONE) {
             throw new \Exception('JSON decode error', \json_last_error());
         }
-        
+
         $instance = new self();
         $instance->_stdClass = $stdClass;
-        
+
         return $instance;
     }
 

@@ -30,6 +30,8 @@ namespace genug\Setting
 {
 
     const MAIN_CATEGORY_ID = 'site';
+
+    const HOMEPAGE_ID = '/';
 }
 namespace genug\Persistence\FileSystem\Category
 {
@@ -39,6 +41,15 @@ namespace genug\Persistence\FileSystem\Category
     const FILENAME_EXTENSION = 'genug';
 
     const FILENAME = '_category.' . FILENAME_EXTENSION;
+}
+namespace genug\Persistence\FileSystem\Page
+{
+
+    const DIR = \genug\CWD . '/content';
+
+    const FILENAME_EXTENSION = 'page';
+
+    const HOMEPAGE_FILENAME = '_home.' . FILENAME_EXTENSION;
 }
 
 /*
