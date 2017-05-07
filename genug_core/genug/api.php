@@ -24,7 +24,7 @@ use const genug\Setting\ {
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class API
+final class Api
 {
 
     private static $_categories;
