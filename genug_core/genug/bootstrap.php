@@ -10,14 +10,12 @@ declare(strict_types = 1);
 /*
  * constants
  */
-namespace genug
+namespace genug\Api
 {
 
-    \define('genug\CORE_DIR', \dirname(__DIR__));
-    
-    \define('genug\CWD', \getcwd());
-    
-    \define('genug\URL_PATH_BASE', (function () {
+    \define('genug\Api\CWD', \getcwd());
+
+    \define('genug\Api\URL_PATH_BASE', (function () {
         $path_base = \dirname($_SERVER['SCRIPT_NAME']);
         if (\strlen($path_base) === 1) {
             // $path_base is '\' (windows) OR '/' (linux) OR '.'
@@ -33,10 +31,15 @@ namespace genug\Setting
 
     const HOMEPAGE_ID = '/';
 }
+namespace genug
+{
+
+    \define('genug\CORE_DIR', \dirname(__DIR__));
+}
 namespace genug\Persistence\FileSystem\Category
 {
 
-    const DIR = \genug\CWD . '/content';
+    const DIR = \genug\Api\CWD . '/content';
 
     const FILENAME_EXTENSION = 'genug';
 
@@ -45,7 +48,7 @@ namespace genug\Persistence\FileSystem\Category
 namespace genug\Persistence\FileSystem\Page
 {
 
-    const DIR = \genug\CWD . '/content';
+    const DIR = \genug\Api\CWD . '/content';
 
     const FILENAME_EXTENSION = 'page';
 
@@ -55,10 +58,10 @@ namespace genug\Persistence\FileSystem\Page
 /*
  * autoload
  */
-namespace 
+namespace
 {
 
     set_include_path(get_include_path() . PATH_SEPARATOR . genug\CORE_DIR);
-    
+
     spl_autoload_register();
 }

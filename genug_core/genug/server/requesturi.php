@@ -2,7 +2,7 @@
 declare(strict_types = 1);
 namespace genug\Server;
 
-use const genug\URL_PATH_BASE;
+use const genug\Api\URL_PATH_BASE;
 
 /**
  *
