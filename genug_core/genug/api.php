@@ -8,8 +8,10 @@ use genug\Category\ {
 };
 use genug\Page\ {
                 Repository as PageRepository, 
-                Entity as PageEntity
+                Entity as PageEntity, 
+                Id as PageId
 };
+use genug\Server\RequestUri;
 use const genug\Persistence\FileSystem\Category\DIR as CATEGORY_DIR;
 use const genug\Persistence\FileSystem\Page\DIR as PAGE_DIR;
 use const genug\Setting\ {
@@ -28,6 +30,10 @@ final class API
     private static $_categories;
 
     private static $_pages;
+
+    private static $_isRequestedPageIdValid;
+
+    private static $_requestedPageId;
 
     public static function categories(): CategoryRepository
     {
@@ -53,5 +59,22 @@ final class API
     public static function homepage(): PageEntity
     {
         return self::pages()->fetch(HOMEPAGE_ID);
+    }
+
+    public static function requestedPage(): PageEntity
+    {
+        if (FALSE === self::$_isRequestedPageIdValid) {
+            throw new \Exception();
+        }
+        if (\is_null(self::$_requestedPageId)) {
+            $id = RequestUri::path();
+            if (! \preg_match(PageId::VALID_STRING_PATTERN, $id)) {
+                self::$_isRequestedPageIdValid = FALSE;
+                throw new \Exception();
+            }
+            self::$_requestedPageId = $id;
+        }
+        
+        return self::pages()->fetch(self::$_requestedPageId);
     }
 }
