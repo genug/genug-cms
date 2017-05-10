@@ -50,14 +50,10 @@ final class Repository implements \Iterator, \Countable
     private function __construct()
     {}
 
-    /**
-     *
-     * @todo better Exception
-     */
     public function fetch(string $id): Entity
     {
         if (! \array_key_exists($id, $this->_entities_fetch_cache)) {
-            throw new \Exception();
+            throw new throwable_EntityNotFound();
         }
         return $this->_entities_fetch_cache[$id];
     }

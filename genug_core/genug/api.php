@@ -63,18 +63,22 @@ final class Api
 
     public static function requestedPage(): PageEntity
     {
-        if (FALSE === self::$_isRequestedPageIdValid) {
-            throw new \Exception();
-        }
-        if (\is_null(self::$_requestedPageId)) {
-            $id = RequestUri::path();
-            if (! \preg_match(PageId::VALID_STRING_PATTERN, $id)) {
-                self::$_isRequestedPageIdValid = FALSE;
-                throw new \Exception();
+        try {
+            if (FALSE === self::$_isRequestedPageIdValid) {
+                throw new throwable_Exception();
             }
-            self::$_requestedPageId = $id;
+            if (\is_null(self::$_requestedPageId)) {
+                $id = RequestUri::path();
+                if (! \preg_match(PageId::VALID_STRING_PATTERN, $id)) {
+                    self::$_isRequestedPageIdValid = FALSE;
+                    throw new throwable_Exception();
+                }
+                self::$_requestedPageId = $id;
+            }
+            
+            return self::pages()->fetch(self::$_requestedPageId);
+        } catch (throwable_Exception $t) {
+            throw new throwable_RequestedPageNotFound('', 0, $t);
         }
-        
-        return self::pages()->fetch(self::$_requestedPageId);
     }
 }
