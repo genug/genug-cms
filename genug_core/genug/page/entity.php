@@ -4,8 +4,8 @@ namespace genug\Page;
 
 use genug\Category\Entity as Category;
 use genug\Lib\ {
-                ImmutableData, 
-                DateTime as genugLibDateTime
+                DateTime as genugLibDateTime, 
+                abstract_FrontMatterFile
 };
 
 /**
@@ -22,7 +22,7 @@ final class Entity
 
     private $_date;
 
-    private $_file;
+    private $_filePath;
 
     private $_data;
 
@@ -40,7 +40,7 @@ final class Entity
         $instance = new self();
         $instance->_id = $id;
         $instance->_category = $category;
-        $instance->_file = $file;
+        $instance->_filePath = $file->getRealPath();
         
         return $instance;
     }
@@ -63,7 +63,7 @@ final class Entity
         if (! \is_object($this->_data)) {
             $this->_readFile();
         }
-        return $this->_data->title();
+        return $this->_data->frontMatter()['title'];
     }
 
     public function date(): genugLibDateTime
@@ -72,7 +72,7 @@ final class Entity
             $this->_readFile();
         }
         if (! \is_object($this->_date)) {
-            $this->_date = new genugLibDateTime($this->_data->date());
+            $this->_date = new genugLibDateTime($this->_data->frontMatter()['date']);
         }
         return $this->_date;
     }
@@ -87,8 +87,12 @@ final class Entity
 
     private function _readFile()
     {
-        $fileContent = $this->_file->openFile()->fread($this->_file->getSize());
-        
-        $this->_data = ImmutableData::fromJSON($fileContent);
+        $this->_data = new class($this->_filePath) extends abstract_FrontMatterFile {
+
+            protected function _parseFrontMatterString(string $str): array
+            {
+                return \parse_ini_string($str);
+            }
+        };
     }
 }
