@@ -2,8 +2,6 @@
 declare(strict_types = 1);
 namespace genug\Category;
 
-use genug\Lib\ImmutableData;
-
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -14,7 +12,7 @@ final class Entity
 
     private $_id;
 
-    private $_file;
+    private $_filePath;
 
     private $_data;
 
@@ -32,7 +30,7 @@ final class Entity
         $instance = new self();
         $instance->_id = $id;
         
-        $instance->_file = $file;
+        $instance->_filePath = $file->getRealPath();
         
         return $instance;
     }
@@ -47,16 +45,16 @@ final class Entity
 
     public function title(): string
     {
-        if (! \is_object($this->_data)) {
-            $this->_readFile();
+        if (! \is_array($this->_data)) {
+            $this->_fetchData();
         }
-        return $this->_data->title();
+        return $this->_data['title'];
     }
 
-    private function _readFile()
+    private function _fetchData()
     {
-        $fileContent = $this->_file->openFile()->fread($this->_file->getSize());
-        
-        $this->_data = ImmutableData::fromJSON($fileContent);
+        if (FALSE === $this->_data = \parse_ini_file($this->_filePath)) {
+            throw new \LogicException();
+        }
     }
 }
