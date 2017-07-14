@@ -13,7 +13,7 @@ declare(strict_types = 1);
 namespace genug\Api
 {
 
-    \define('genug\Api\URL_PATH_BASE', (function () {
+    \define(__NAMESPACE__ . '\URL_PATH_BASE', (function () {
         $path_base = \dirname($_SERVER['SCRIPT_NAME']);
         if (\strlen($path_base) === 1) {
             // $path_base is '\' (windows) OR '/' (linux) OR '.'
@@ -25,19 +25,37 @@ namespace genug\Api
 namespace genug\Setting
 {
 
-    const MAIN_CATEGORY_ID = 'site';
-
-    const HOMEPAGE_ID = '/';
+    if (! \defined(__NAMESPACE__ . '\MAIN_CATEGORY_ID')) {
+        
+        \define(__NAMESPACE__ . '\MAIN_CATEGORY_ID', 'site');
+    }
+    
+    if (! \defined(__NAMESPACE__ . '\HOMEPAGE_ID')) {
+        
+        \define(__NAMESPACE__ . '\HOMEPAGE_ID', '/');
+    }
+    
+    // ---
+    
+    if (! \defined(__NAMESPACE__ . '\USER_DIR')) {
+        
+        \define(__NAMESPACE__ . '\USER_DIR', \getcwd() . '/genug_user');
+    }
+    
+    if (! \defined(__NAMESPACE__ . '\CONTENT_DIR')) {
+        
+        \define(__NAMESPACE__ . '\CONTENT_DIR', USER_DIR . '/content');
+    }
 }
 namespace genug
 {
 
-    \define('genug\CORE_DIR', \dirname(__DIR__));
+    \define(__NAMESPACE__ . '\CORE_DIR', \dirname(__DIR__));
 }
 namespace genug\Persistence\FileSystem\Category
 {
 
-    \define('genug\Persistence\FileSystem\Category\DIR', \getcwd() . '/content');
+    const DIR = \genug\Setting\CONTENT_DIR;
 
     const FILENAME_EXTENSION = 'genug';
 
@@ -46,7 +64,7 @@ namespace genug\Persistence\FileSystem\Category
 namespace genug\Persistence\FileSystem\Page
 {
 
-    \define('genug\Persistence\FileSystem\Page\DIR', \getcwd() . '/content');
+    const DIR = \genug\Setting\CONTENT_DIR;
 
     const FILENAME_EXTENSION = 'page';
 
