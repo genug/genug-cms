@@ -1,0 +1,10 @@
+<IfModule rewrite_module>
+
+RewriteEngine on
+
+RewriteBase /
+
+RewriteRule ^asset/ -        [L]
+RewriteRule ^       html.php [L]
+
+</IfModule>
