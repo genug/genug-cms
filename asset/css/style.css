@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+.is_requested::before {
+  content: '\2192\A0';
+}
+
+time,
+[data-category] {
+  font-style: italic;
+}
+
+[data-category=site] {
+  color: green;
+}
+
+[data-category=news] {
+  color: red;
+}
