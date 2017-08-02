@@ -12,31 +12,33 @@ final class Entity
 
     private $_id;
 
-    private $_filePath;
-
-    private $_data;
+    private $_title;
 
     /**
      *
      * @todo better Exception
      */
-    public static function fromFile(Id $id, string $path): Entity
+    public static function fromIniFile(Id $id, string $path): Entity
     {
         $file = new \SplFileInfo($path);
         if (! $file->isFile() || ! $file->isReadable()) {
-            throw new \InvalidArgumentException();
+            throw new \Exception();
         }
         
-        $instance = new self();
-        $instance->_id = $id;
+        $data = \parse_ini_file($file->getRealPath());
         
-        $instance->_filePath = $file->getRealPath();
+        if (! \is_array($data) || ! isset($data['title']) || ! \is_string($data['title'])) {
+            throw new \Exception();
+        }
         
-        return $instance;
+        return new self($id, $data['title']);
     }
 
-    private function __construct()
-    {}
+    private function __construct(Id $id, string $title)
+    {
+        $this->_id = $id;
+        $this->_title = $title;
+    }
 
     public function id(): Id
     {
@@ -45,16 +47,6 @@ final class Entity
 
     public function title(): string
     {
-        if (! \is_array($this->_data)) {
-            $this->_fetchData();
-        }
-        return $this->_data['title'];
-    }
-
-    private function _fetchData()
-    {
-        if (FALSE === $this->_data = \parse_ini_file($this->_filePath)) {
-            throw new \LogicException();
-        }
+        return $this->_title;
     }
 }

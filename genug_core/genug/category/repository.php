@@ -21,6 +21,7 @@ final class Repository implements \Iterator, \Countable
     /**
      *
      * @todo [a] better Exception
+     * @todo [b] error_log and continue
      */
     public static function fromFileSystem(string $path): Repository
     {
@@ -35,13 +36,16 @@ final class Repository implements \Iterator, \Countable
         $instance = new self();
         
         foreach ($directories as $dir) {
-            
-            $file = new \SplFileInfo($dir->getRealPath() . '/' . CATEGORY_FILENAME);
-            
-            if (! $file->isFile()) {
-                throw new \Exception(); // [a]
+            try {
+                $file = new \SplFileInfo($dir->getRealPath() . '/' . CATEGORY_FILENAME);
+                
+                if (! $file->isFile() || ! $file->isReadable()) {
+                    throw new \Exception(); // [a]
+                }
+                $instance->_attach(Entity::fromIniFile(new Id($dir->getBasename()), $file->getRealPath()));
+            } catch (\Throwable $t) {
+                throw $t; // [b]
             }
-            $instance->_attach(Entity::fromFile(new Id($dir->getBasename()), $file->getRealPath()));
         }
         
         return $instance;
