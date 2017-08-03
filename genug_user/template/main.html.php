@@ -27,8 +27,7 @@ const SITE_TITLE = 'my site';
     <?= g::requestedPage()->content()?>
     <aside>
       <ul>
-        <li>date: <time
-            datetime="<?= g::requestedPage()->date()->format('c') ?>"><?= g::requestedPage()->date()->format(DATE_RFC1123) ?></time></li>
+        <li>date: <time datetime="<?= g::requestedPage()->date() ?>"><?= g::requestedPage()->date()->format(DATE_RFC1123) ?></time></li>
         <li>category: <span
           data-category="<?= g::requestedPage()->category()->id() ?>"><?= g::requestedPage()->category()->title() ?></span></li>
       </ul>
