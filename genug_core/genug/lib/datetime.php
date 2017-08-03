@@ -40,4 +40,9 @@ final class DateTime
     {
         return $this->_obj->format($format);
     }
+
+    public function __toString(): string
+    {
+        return $this->_obj->format('c');
+    }
 }
