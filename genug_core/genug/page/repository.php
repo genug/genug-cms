@@ -25,29 +25,48 @@ final class Repository implements \Iterator, \Countable
 
     private $_entities_fetch_cache = [];
 
+    /**
+     *
+     * @todo [a] error_log (notice)
+     * @todo [b] error_log and continue
+     */
     public static function fromFileSystem(string $path, CategoryRepository $categories, CategoryEntity $mainCategory): Repository
     {
         $instance = new self();
         
         foreach ($categories as $category) {
-            
-            $pageFiles = new class(new \FilesystemIterator($path . '/' . $category->id()->__toString())) extends \FilterIterator {
+            try {
+                $dir = new \SplFileInfo($path . '/' . $category->id()->__toString());
+                
+                if (! $dir->isDir()) {
+                    // [a]
+                    continue;
+                }
+                
+                $pageFiles = new class(new \FilesystemIterator($dir->getRealPath())) extends \FilterIterator {
 
-                public function accept()
-                {
-                    return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
+                    public function accept()
+                    {
+                        return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
+                    }
+                };
+                
+                foreach ($pageFiles as $pageFile) {
+                    try {
+                        if ($category === $mainCategory && $pageFile->getBasename() === HOMEPAGE_FILENAME) {
+                            $id = '/';
+                        } elseif ($category === $mainCategory) {
+                            $id = '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
+                        } else {
+                            $id = '/' . $category->id()->__toString() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
+                        }
+                        $instance->_attach(Entity::fromFileWithIniFrontMatter(new Id($id), $category, $pageFile->getRealPath()));
+                    } catch (\Throwable $t) {
+                        throw $t; // [b]
+                    }
                 }
-            };
-            
-            foreach ($pageFiles as $pageFile) {
-                if ($category === $mainCategory && $pageFile->getBasename() === HOMEPAGE_FILENAME) {
-                    $id = '/';
-                } elseif ($category === $mainCategory) {
-                    $id = '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
-                } else {
-                    $id = '/' . $category->id()->__toString() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
-                }
-                $instance->_attach(Entity::fromFile(new Id($id), $category, $pageFile->getRealPath()));
+            } catch (\Throwable $t) {
+                throw $t; // [b]
             }
         }
         
@@ -56,6 +75,14 @@ final class Repository implements \Iterator, \Countable
 
     private function __construct()
     {}
+
+    private function _attach(Entity $entity)
+    {
+        if (\array_key_exists($entity->id()->__toString(), $this->_entities_fetch_cache)) {
+            throw new \LogicException('ID already exists.');
+        }
+        $this->_entities[] = $this->_entities_fetch_cache[$entity->id()->__toString()] = $entity;
+    }
 
     public function fetch(string $id): Entity
     {
@@ -93,13 +120,5 @@ final class Repository implements \Iterator, \Countable
     public function valid(): bool
     {
         return isset($this->_entities[$this->_position]);
-    }
-
-    private function _attach(Entity $entity)
-    {
-        if (\array_key_exists($entity->id()->__toString(), $this->_entities_fetch_cache)) {
-            throw new \LogicException('ID already exists.');
-        }
-        $this->_entities[] = $this->_entities_fetch_cache[$entity->id()->__toString()] = $entity;
     }
 }

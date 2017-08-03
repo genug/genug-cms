@@ -20,33 +20,48 @@ final class Entity
 
     private $_category;
 
+    private $_title;
+
     private $_date;
 
-    private $_filePath;
-
-    private $_data;
+    private $_content;
 
     /**
      *
      * @todo better Exception
      */
-    public static function fromFile(Id $id, Category $category, string $path): Entity
+    public static function fromFileWithIniFrontMatter(Id $id, Category $category, string $path): Entity
     {
         $file = new \SplFileInfo($path);
         if (! $file->isFile() || ! $file->isReadable()) {
-            throw new \InvalidArgumentException();
+            throw new \Exception();
         }
         
-        $instance = new self();
-        $instance->_id = $id;
-        $instance->_category = $category;
-        $instance->_filePath = $file->getRealPath();
+        $data = new class($file->getRealPath()) extends abstract_FrontMatterFile {
+
+            protected function _parseFrontMatterString(string $str): array
+            {
+                return \parse_ini_string($str);
+            }
+        };
         
-        return $instance;
+        $fm = $data->frontMatter();
+        
+        if (! isset($fm['title'], $fm['date'])) {
+            throw new \Exception();
+        }
+        
+        return new self($id, $category, $fm['title'], new genugLibDateTime($fm['date']), $data->content());
     }
 
-    private function __construct()
-    {}
+    private function __construct(Id $id, Category $category, string $title, genugLibDateTime $date, string $content)
+    {
+        $this->_id = $id;
+        $this->_category = $category;
+        $this->_title = $title;
+        $this->_date = $date;
+        $this->_content = $content;
+    }
 
     public function id(): Id
     {
@@ -60,39 +75,16 @@ final class Entity
 
     public function title(): string
     {
-        if (! \is_object($this->_data)) {
-            $this->_readFile();
-        }
-        return $this->_data->frontMatter()['title'];
+        return $this->_title;
     }
 
     public function date(): genugLibDateTime
     {
-        if (! \is_object($this->_data)) {
-            $this->_readFile();
-        }
-        if (! \is_object($this->_date)) {
-            $this->_date = new genugLibDateTime($this->_data->frontMatter()['date']);
-        }
         return $this->_date;
     }
 
     public function content(): string
     {
-        if (! \is_object($this->_data)) {
-            $this->_readFile();
-        }
-        return $this->_data->content();
-    }
-
-    private function _readFile()
-    {
-        $this->_data = new class($this->_filePath) extends abstract_FrontMatterFile {
-
-            protected function _parseFrontMatterString(string $str): array
-            {
-                return \parse_ini_string($str);
-            }
-        };
+        return $this->_content;
     }
 }
