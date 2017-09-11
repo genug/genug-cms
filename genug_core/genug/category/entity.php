@@ -25,9 +25,9 @@ final class Entity
             throw new \Exception();
         }
         
-        $data = \parse_ini_file($file->getRealPath());
+        $data = \parse_ini_file($file->getRealPath(), FALSE, INI_SCANNER_TYPED);
         
-        if (! \is_array($data) || ! isset($data['title']) || ! \is_string($data['title'])) {
+        if (! isset($data['title'])) {
             throw new \Exception();
         }
         
