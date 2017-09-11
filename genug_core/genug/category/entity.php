@@ -31,10 +31,10 @@ final class Entity
             throw new \Exception();
         }
         
-        return new self($id, $data['title']);
+        return new self($id, new Title($data['title']));
     }
 
-    private function __construct(Id $id, string $title)
+    private function __construct(Id $id, Title $title)
     {
         $this->_id = $id;
         $this->_title = $title;
@@ -45,7 +45,7 @@ final class Entity
         return $this->_id;
     }
 
-    public function title(): string
+    public function title(): Title
     {
         return $this->_title;
     }
