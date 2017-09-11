@@ -51,10 +51,10 @@ final class Entity
             throw new \Exception();
         }
         
-        return new self($id, $category, $fm['title'], new genugLibDateTime($fm['date']), $data->content());
+        return new self($id, $category, new Title($fm['title']), new genugLibDateTime($fm['date']), $data->content());
     }
 
-    private function __construct(Id $id, Category $category, string $title, genugLibDateTime $date, string $content)
+    private function __construct(Id $id, Category $category, Title $title, genugLibDateTime $date, string $content)
     {
         $this->_id = $id;
         $this->_category = $category;
@@ -73,7 +73,7 @@ final class Entity
         return $this->_category;
     }
 
-    public function title(): string
+    public function title(): Title
     {
         return $this->_title;
     }
