@@ -38,7 +38,7 @@ final class Entity
 
             protected function _parseFrontMatterString(string $str): array
             {
-                return \parse_ini_string($str);
+                return \parse_ini_string($str, FALSE, INI_SCANNER_TYPED);
             }
         };
         
