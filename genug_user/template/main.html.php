@@ -25,13 +25,13 @@ const SITE_TITLE = 'my site';
       <h1><?= g::requestedPage()->title() ?></h1>
     </header>
     <?= g::requestedPage()->content()?>
-    <aside>
+    <footer>
       <ul>
         <li>date: <time datetime="<?= g::requestedPage()->date() ?>"><?= g::requestedPage()->date()->format(DATE_RFC1123) ?></time></li>
         <li>category: <span
           data-category="<?= g::requestedPage()->category()->id() ?>"><?= g::requestedPage()->category()->title() ?></span></li>
       </ul>
-    </aside>
+    </footer>
   </article>
   </main>
   <nav>
