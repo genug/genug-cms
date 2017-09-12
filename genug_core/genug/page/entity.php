@@ -3,10 +3,7 @@ declare(strict_types = 1);
 namespace genug\Page;
 
 use genug\Category\Entity as Category;
-use genug\Lib\ {
-                DateTime as genugLibDateTime, 
-                abstract_FrontMatterFile
-};
+use genug\Lib\abstract_FrontMatterFile;
 
 /**
  *
@@ -51,10 +48,10 @@ final class Entity
             throw new \Exception();
         }
         
-        return new self($id, $category, new Title($fm['title']), new genugLibDateTime($fm['date']), new Content($data->content()));
+        return new self($id, $category, new Title($fm['title']), new Date($fm['date']), new Content($data->content()));
     }
 
-    private function __construct(Id $id, Category $category, Title $title, genugLibDateTime $date, Content $content)
+    private function __construct(Id $id, Category $category, Title $title, Date $date, Content $content)
     {
         $this->_id = $id;
         $this->_category = $category;
@@ -78,7 +75,7 @@ final class Entity
         return $this->_title;
     }
 
-    public function date(): genugLibDateTime
+    public function date(): Date
     {
         return $this->_date;
     }

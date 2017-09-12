@@ -1,13 +1,13 @@
 <?php
 declare(strict_types = 1);
-namespace genug\Lib;
+namespace genug\Lib\ValueObject;
 
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class DateTime
+trait trait_DateTime
 {
 
     private $_isMutable = TRUE;
