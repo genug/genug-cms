@@ -10,12 +10,12 @@ use genug\Page\ {
                 Repository as PageRepository, 
                 Entity as PageEntity
 };
-use genug\Server\RequestUri;
 use const genug\Persistence\FileSystem\Category\DIR as CATEGORY_DIR;
 use const genug\Persistence\FileSystem\Page\DIR as PAGE_DIR;
 use const genug\Setting\ {
                 MAIN_CATEGORY_ID, 
-                HOMEPAGE_ID
+                HOMEPAGE_ID, 
+                REQUESTED_PAGE_ID
 };
 
 /**
@@ -59,7 +59,7 @@ final class Api
     public static function requestedPage(): PageEntity
     {
         try {
-            return self::pages()->fetch(RequestUri::path());
+            return self::pages()->fetch(REQUESTED_PAGE_ID);
         } catch (throwable_Exception $t) {
             throw new throwable_RequestedPageNotFound('', 0, $t);
         }
