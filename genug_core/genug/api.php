@@ -30,10 +30,6 @@ final class Api
 
     private static $_pages;
 
-    private static $_isPageRequestValid;
-
-    private static $_requestedPage;
-
     public static function categories(): CategoryRepository
     {
         if (! \is_object(self::$_categories)) {
@@ -63,27 +59,8 @@ final class Api
     public static function requestedPage(): PageEntity
     {
         try {
-            if (FALSE === self::$_isPageRequestValid) {
-                throw new throwable_Exception();
-            }
-            if (! \is_object(self::$_requestedPage)) {
-                //
-                // avoid self::pages()->fetch($untrustedString)
-                //
-                $untrustedString = RequestUri::path();
-                $allPages = [];
-                foreach (self::pages() as $page) {
-                    $allPages[$page->id()->__toString()] = $page;
-                }
-                
-                if (! \array_key_exists($untrustedString, $allPages)) {
-                    throw new throwable_Exception();
-                }
-                self::$_requestedPage = $allPages[$untrustedString];
-            }
-            return self::$_requestedPage;
+            return self::pages()->fetch(RequestUri::path());
         } catch (throwable_Exception $t) {
-            self::$_isPageRequestValid = FALSE;
             throw new throwable_RequestedPageNotFound('', 0, $t);
         }
     }
