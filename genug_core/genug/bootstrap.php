@@ -56,12 +56,12 @@ namespace genug\Setting
     
     if (! \defined(__NAMESPACE__ . '\CONTENT_DIR')) {
         
-        \define(__NAMESPACE__ . '\CONTENT_DIR', USER_DIR . '/content');
+        \define(__NAMESPACE__ . '\CONTENT_DIR', namespace\USER_DIR . '/content');
     }
     
     if (! \defined(__NAMESPACE__ . '\TEMPLATE_DIR')) {
         
-        \define(__NAMESPACE__ . '\TEMPLATE_DIR', USER_DIR . '/template');
+        \define(__NAMESPACE__ . '\TEMPLATE_DIR', namespace\USER_DIR . '/template');
     }
 }
 namespace genug
@@ -76,7 +76,7 @@ namespace genug\Persistence\FileSystem\Category
 
     const FILENAME_EXTENSION = 'genug';
 
-    const FILENAME = '_category.' . FILENAME_EXTENSION;
+    const FILENAME = '_category.' . namespace\FILENAME_EXTENSION;
 }
 namespace genug\Persistence\FileSystem\Page
 {
@@ -85,7 +85,7 @@ namespace genug\Persistence\FileSystem\Page
 
     const FILENAME_EXTENSION = 'page';
 
-    const HOMEPAGE_FILENAME = '_home.' . FILENAME_EXTENSION;
+    const HOMEPAGE_FILENAME = '_home.' . namespace\FILENAME_EXTENSION;
 }
 
 /*
