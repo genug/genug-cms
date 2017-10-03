@@ -7,6 +7,7 @@ use genug\Category\ {
                 Entity as CategoryEntity
 };
 use genug\Page\ {
+                throwable_EntityNotFound as throwable_PageEntityNotFound, 
                 Repository as PageRepository, 
                 Entity as PageEntity
 };
@@ -60,7 +61,7 @@ final class Api
     {
         try {
             return self::pages()->fetch(REQUESTED_PAGE_ID);
-        } catch (throwable_Exception $t) {
+        } catch (throwable_PageEntityNotFound $t) {
             throw new throwable_RequestedPageNotFound('', 0, $t);
         }
     }
