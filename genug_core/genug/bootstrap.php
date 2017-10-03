@@ -35,6 +35,18 @@ namespace genug\Setting
         \define(__NAMESPACE__ . '\HOMEPAGE_ID', '/');
     }
     
+    if (! \defined(__NAMESPACE__ . '\REQUESTED_PAGE_ID')) {
+        
+        \define(__NAMESPACE__ . '\REQUESTED_PAGE_ID', (function () {
+            $path = \parse_url($_SERVER['REQUEST_URI'], \PHP_URL_PATH);
+            if (\genug\Api\URL_PATH_BASE !== '') {
+                $pattern = '#^' . \preg_quote(\genug\Api\URL_PATH_BASE, '#') . '#';
+                $path = \preg_replace($pattern, '', $path, 1);
+            }
+            return $path;
+        })());
+    }
+    
     // ---
     
     if (! \defined(__NAMESPACE__ . '\USER_DIR')) {
