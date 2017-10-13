@@ -81,12 +81,27 @@ namespace genug\Persistence\FileSystem\Page
 }
 
 /*
- * autoload
+ * functions
  */
-namespace 
+namespace genug
 {
 
-    set_include_path(get_include_path() . PATH_SEPARATOR . genug\CORE_DIR);
-    
-    spl_autoload_register();
+    function autoloader($class)
+    {
+        if (\strpos($class, __NAMESPACE__) !== 0) {
+            return;
+        }
+        
+        $fileName = namespace\CORE_DIR . \DIRECTORY_SEPARATOR . \strtolower($class) . '.php';
+        $isProperFileName = (function () use ($fileName) {
+            $fileInfo = new \SplFileInfo($fileName);
+            return ($fileInfo->isFile() && $fileInfo->isReadable());
+        })();
+        
+        if (! $isProperFileName) {
+            return;
+        }
+        
+        include $fileName;
+    }
 }

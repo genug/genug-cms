@@ -6,6 +6,8 @@
  */
 require __DIR__ . '/genug_core/genug/bootstrap.php';
 
+spl_autoload_register('genug\autoloader');
+
 (function () {
     try {
         \ob_start();
