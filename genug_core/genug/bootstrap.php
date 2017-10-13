@@ -55,11 +55,6 @@ namespace genug\Setting
         
         \define(__NAMESPACE__ . '\CONTENT_DIR', namespace\USER_DIR . '/content');
     }
-    
-    if (! \defined(__NAMESPACE__ . '\TEMPLATE_DIR')) {
-        
-        \define(__NAMESPACE__ . '\TEMPLATE_DIR', namespace\USER_DIR . '/template');
-    }
 }
 namespace genug
 {

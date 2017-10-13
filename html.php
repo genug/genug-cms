@@ -12,11 +12,11 @@ require __DIR__ . '/genug_core/genug/bootstrap.php';
         \http_response_code(200);
         try {
             genug\Api::requestedPage();
-            require_once genug\Setting\TEMPLATE_DIR . '/main.html.php';
+            require_once __DIR__ . '/genug_user/template/main.html.php';
         } catch (\genug\throwable_RequestedPageNotFound $t) {
             \ob_clean();
             \http_response_code(404);
-            require_once genug\Setting\TEMPLATE_DIR . '/error404.html.php';
+            require_once __DIR__ . '/genug_user/template/error404.html.php';
         }
     } catch (\Throwable $t) {
         \ob_clean();
