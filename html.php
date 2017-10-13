@@ -11,6 +11,7 @@ spl_autoload_register('genug\autoloader');
 (function () {
     try {
         \ob_start();
+        \header('Content-Type: text/html; charset=UTF-8');
         \http_response_code(200);
         try {
             genug\Api::requestedPage();
