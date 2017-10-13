@@ -7,8 +7,7 @@
 <body>
   <h1>Not Found (404)</h1>
   <nav>
-    <a
-      href="<?= genug\Api\URL_PATH_BASE . genug\Api::homepage()->id() ?>">homepage</a>
+    <a href="<?= genug\Api::homepage()->id() ?>">homepage</a>
   </nav>
 </body>
 </html>

@@ -10,18 +10,6 @@ declare(strict_types = 1);
 /*
  * constants
  */
-namespace genug\Api
-{
-
-    \define(__NAMESPACE__ . '\URL_PATH_BASE', (function () {
-        $path_base = \dirname($_SERVER['SCRIPT_NAME']);
-        if (\strlen($path_base) === 1) {
-            // $path_base is '\' (windows) OR '/' (linux) OR '.'
-            $path_base = '';
-        }
-        return $path_base;
-    })());
-}
 namespace genug\Setting
 {
 
@@ -39,7 +27,16 @@ namespace genug\Setting
         
         \define(__NAMESPACE__ . '\REQUESTED_PAGE_ID', (function () {
             $path = \parse_url($_SERVER['REQUEST_URI'], \PHP_URL_PATH);
-            if (\genug\Api\URL_PATH_BASE !== '') {
+            $pathBase = (function () {
+                $path_base = \dirname($_SERVER['SCRIPT_NAME']);
+                if (\strlen($path_base) === 1) {
+                    // $path_base is '\' (windows) OR '/' (linux) OR '.'
+                    $path_base = '';
+                }
+                return $path_base;
+            })();
+            
+            if ($pathBase !== '') {
                 $pattern = '#^' . \preg_quote(\genug\Api\URL_PATH_BASE, '#') . '#';
                 $path = \preg_replace($pattern, '', $path, 1);
             }

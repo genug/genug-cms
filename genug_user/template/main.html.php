@@ -1,6 +1,5 @@
 <?php
 use genug\Api as g;
-use const genug\Api\URL_PATH_BASE;
 
 const SITE_TITLE = 'my site';
 ?>
@@ -11,12 +10,12 @@ const SITE_TITLE = 'my site';
 <title><?= g::requestedPage()->title()?><?php if (g::requestedPage()->category() !== g::mainCategory()) echo ' - ' . g::requestedPage()->category()->title() ?> | <?= SITE_TITLE ?></title>
 <link
   rel="stylesheet"
-  href="<?= URL_PATH_BASE ?>/asset/css/style.css" />
+  href="/asset/css/style.css" />
 </head>
 <body>
   <header>
     <h1>
-      <a href="<?= URL_PATH_BASE . g::homepage()->id() ?>"><?= SITE_TITLE ?></a>
+      <a href="<?= g::homepage()->id() ?>"><?= SITE_TITLE ?></a>
     </h1>
   </header>
   <main>
@@ -39,7 +38,7 @@ const SITE_TITLE = 'my site';
     <ul>
   <?php foreach (g::pages() as $page): ?>
   <li><a
-        href="<?= URL_PATH_BASE . $page->id() ?>"
+        href="<?= $page->id() ?>"
         class="<?php if ($page === g::requestedPage()) echo 'is_requested' ?>"><?= $page->title() ?></a></li>
   <?php endforeach; ?>
   </ul>
