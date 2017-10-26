@@ -16,26 +16,6 @@ final class Entity
 
     private $_title;
 
-    /**
-     *
-     * @todo better Exception
-     */
-    public static function fromIniFile(Id $id, string $path): Entity
-    {
-        $file = new \SplFileInfo($path);
-        if (! $file->isFile() || ! $file->isReadable()) {
-            throw new \Exception();
-        }
-        
-        $data = \parse_ini_file($file->getRealPath(), FALSE, INI_SCANNER_TYPED);
-        
-        if (! isset($data['title'])) {
-            throw new \Exception();
-        }
-        
-        return new self($id, new Title($data['title']));
-    }
-
     public function __construct(Id $id, Title $title)
     {
         if (! $this->_isMutable) {
