@@ -2,8 +2,6 @@
 declare(strict_types = 1);
 namespace genug\Category;
 
-use const genug\Persistence\FileSystem\Category\FILENAME as CATEGORY_FILENAME;
-
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -19,39 +17,6 @@ final class Repository implements \Iterator, \Countable
     private $_entities = [];
 
     private $_entities_fetch_cache = [];
-
-    /**
-     *
-     * @todo [a] better Exception
-     * @todo [b] error_log and continue
-     */
-    public static function fromFileSystem(string $path): Repository
-    {
-        $directories = new class(new \FilesystemIterator($path)) extends \FilterIterator {
-
-            public function accept()
-            {
-                return parent::current()->isDir();
-            }
-        };
-        
-        $instance = new self();
-        
-        foreach ($directories as $dir) {
-            try {
-                $file = new \SplFileInfo($dir->getRealPath() . '/' . CATEGORY_FILENAME);
-                
-                if (! $file->isFile() || ! $file->isReadable()) {
-                    throw new \Exception(); // [a]
-                }
-                $instance->_attach(Entity::fromIniFile(new Id($dir->getBasename()), $file->getRealPath()));
-            } catch (\Throwable $t) {
-                throw $t; // [b]
-            }
-        }
-        
-        return $instance;
-    }
 
     /**
      *
