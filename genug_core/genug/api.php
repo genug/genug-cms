@@ -4,6 +4,7 @@ namespace genug;
 
 use genug\Category\ {
                 Repository as CategoryRepository, 
+                Generator as CategoryGenerator, 
                 Entity as CategoryEntity
 };
 use genug\Page\ {
@@ -11,7 +12,6 @@ use genug\Page\ {
                 Repository as PageRepository, 
                 Entity as PageEntity
 };
-use const genug\Persistence\FileSystem\Category\DIR as CATEGORY_DIR;
 use const genug\Persistence\FileSystem\Page\DIR as PAGE_DIR;
 use const genug\Setting\ {
                 MAIN_CATEGORY_ID, 
@@ -34,7 +34,7 @@ final class Api
     public static function categories(): CategoryRepository
     {
         if (! \is_object(self::$_categories)) {
-            self::$_categories = CategoryRepository::fromFileSystem(CATEGORY_DIR);
+            self::$_categories = new CategoryRepository(...CategoryGenerator::generateEntities());
         }
         return self::$_categories;
     }
