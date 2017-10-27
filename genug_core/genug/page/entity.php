@@ -3,7 +3,6 @@ declare(strict_types = 1);
 namespace genug\Page;
 
 use genug\Category\Entity as Category;
-use genug\Lib\abstract_FrontMatterFile;
 
 /**
  *
@@ -24,34 +23,6 @@ final class Entity
     private $_date;
 
     private $_content;
-
-    /**
-     *
-     * @todo better Exception
-     */
-    public static function fromFileWithIniFrontMatter(Id $id, Category $category, string $path): Entity
-    {
-        $file = new \SplFileInfo($path);
-        if (! $file->isFile() || ! $file->isReadable()) {
-            throw new \Exception();
-        }
-        
-        $data = new class($file->getRealPath()) extends abstract_FrontMatterFile {
-
-            protected function _parseFrontMatterString(string $str): array
-            {
-                return \parse_ini_string($str, FALSE, INI_SCANNER_TYPED);
-            }
-        };
-        
-        $fm = $data->frontMatter();
-        
-        if (! isset($fm['title'], $fm['date'])) {
-            throw new \Exception();
-        }
-        
-        return new self($id, $category, new Title($fm['title']), new Date($fm['date']), new Content($data->content()));
-    }
 
     public function __construct(Id $id, Category $category, Title $title, Date $date, Content $content)
     {
