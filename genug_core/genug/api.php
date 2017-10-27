@@ -10,9 +10,9 @@ use genug\Category\ {
 use genug\Page\ {
                 throwable_EntityNotFound as throwable_PageEntityNotFound, 
                 Repository as PageRepository, 
+                Generator as PageGenerator, 
                 Entity as PageEntity
 };
-use const genug\Persistence\FileSystem\Page\DIR as PAGE_DIR;
 use const genug\Setting\ {
                 MAIN_CATEGORY_ID, 
                 HOMEPAGE_ID, 
@@ -47,7 +47,7 @@ final class Api
     public static function pages(): PageRepository
     {
         if (! \is_object(self::$_pages)) {
-            self::$_pages = PageRepository::fromFileSystem(PAGE_DIR, self::categories(), self::mainCategory());
+            self::$_pages = new PageRepository(...PageGenerator::generateEntities(self::categories(), self::mainCategory()));
         }
         return self::$_pages;
     }
