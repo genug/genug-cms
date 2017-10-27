@@ -2,15 +2,6 @@
 declare(strict_types = 1);
 namespace genug\Page;
 
-use genug\Category\ {
-                Repository as CategoryRepository, 
-                Entity as CategoryEntity
-};
-use const genug\Persistence\FileSystem\Page\ {
-                FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION, 
-                HOMEPAGE_FILENAME
-};
-
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -26,54 +17,6 @@ final class Repository implements \Iterator, \Countable
     private $_entities = [];
 
     private $_entities_fetch_cache = [];
-
-    /**
-     *
-     * @todo [a] error_log (notice)
-     * @todo [b] error_log and continue
-     */
-    public static function fromFileSystem(string $path, CategoryRepository $categories, CategoryEntity $mainCategory): Repository
-    {
-        $instance = new self();
-        
-        foreach ($categories as $category) {
-            try {
-                $dir = new \SplFileInfo($path . '/' . $category->id()->__toString());
-                
-                if (! $dir->isDir()) {
-                    // [a]
-                    continue;
-                }
-                
-                $pageFiles = new class(new \FilesystemIterator($dir->getRealPath())) extends \FilterIterator {
-
-                    public function accept()
-                    {
-                        return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
-                    }
-                };
-                
-                foreach ($pageFiles as $pageFile) {
-                    try {
-                        if ($category === $mainCategory && $pageFile->getBasename() === HOMEPAGE_FILENAME) {
-                            $id = '/';
-                        } elseif ($category === $mainCategory) {
-                            $id = '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
-                        } else {
-                            $id = '/' . $category->id()->__toString() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
-                        }
-                        $instance->_attach(Entity::fromFileWithIniFrontMatter(new Id($id), $category, $pageFile->getRealPath()));
-                    } catch (\Throwable $t) {
-                        throw $t; // [b]
-                    }
-                }
-            } catch (\Throwable $t) {
-                throw $t; // [b]
-            }
-        }
-        
-        return $instance;
-    }
 
     /**
      *
