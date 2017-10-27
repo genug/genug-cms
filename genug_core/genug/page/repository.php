@@ -19,6 +19,8 @@ use const genug\Persistence\FileSystem\Page\ {
 final class Repository implements \Iterator, \Countable
 {
 
+    private $_isMutable = TRUE;
+
     private $_position = 0;
 
     private $_entities = [];
@@ -73,8 +75,25 @@ final class Repository implements \Iterator, \Countable
         return $instance;
     }
 
-    private function __construct()
-    {}
+    /**
+     *
+     * @todo [b] error_log and continue
+     */
+    public function __construct(Entity ...$entities)
+    {
+        if (! $this->_isMutable) {
+            throw new \BadMethodCallException();
+        }
+        $this->_isMutable = FALSE;
+        
+        foreach ($entities as $entity) {
+            try {
+                $this->_attach($entity);
+            } catch (\Throwable $t) {
+                throw $t; // [b]
+            }
+        }
+    }
 
     private function _attach(Entity $entity)
     {
