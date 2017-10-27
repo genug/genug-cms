@@ -38,14 +38,6 @@ final class Repository implements \Iterator, \Countable
         }
     }
 
-    private function _attach(Entity $entity)
-    {
-        if (\array_key_exists($entity->id()->__toString(), $this->_entities_fetch_cache)) {
-            throw new \LogicException('ID already exists.');
-        }
-        $this->_entities[] = $this->_entities_fetch_cache[$entity->id()->__toString()] = $entity;
-    }
-
     public function fetch(string $id): Entity
     {
         if (! \array_key_exists($id, $this->_entities_fetch_cache)) {
@@ -82,5 +74,13 @@ final class Repository implements \Iterator, \Countable
     public function valid(): bool
     {
         return isset($this->_entities[$this->_position]);
+    }
+
+    private function _attach(Entity $entity)
+    {
+        if (\array_key_exists($entity->id()->__toString(), $this->_entities_fetch_cache)) {
+            throw new \LogicException('ID already exists.');
+        }
+        $this->_entities[] = $this->_entities_fetch_cache[$entity->id()->__toString()] = $entity;
     }
 }
