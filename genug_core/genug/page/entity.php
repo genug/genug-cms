@@ -13,6 +13,8 @@ use genug\Lib\abstract_FrontMatterFile;
 final class Entity
 {
 
+    private $_isMutable = TRUE;
+
     private $_id;
 
     private $_category;
@@ -51,8 +53,13 @@ final class Entity
         return new self($id, $category, new Title($fm['title']), new Date($fm['date']), new Content($data->content()));
     }
 
-    private function __construct(Id $id, Category $category, Title $title, Date $date, Content $content)
+    public function __construct(Id $id, Category $category, Title $title, Date $date, Content $content)
     {
+        if (! $this->_isMutable) {
+            throw new \BadMethodCallException();
+        }
+        $this->_isMutable = FALSE;
+        
         $this->_id = $id;
         $this->_category = $category;
         $this->_title = $title;
