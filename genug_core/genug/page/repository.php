@@ -56,9 +56,9 @@ final class Repository implements \Iterator, \Countable
         return $this->_entities[$this->_position];
     }
 
-    public function key(): string
+    public function key(): int
     {
-        return (string) $this->_entities[$this->_position]->id();
+        return $this->_position;
     }
 
     public function next()
