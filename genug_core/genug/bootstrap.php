@@ -37,7 +37,7 @@ namespace genug\Setting
             })();
             
             if ($pathBase !== '') {
-                $pattern = '#^' . \preg_quote(\genug\Api\URL_PATH_BASE, '#') . '#';
+                $pattern = '#^' . \preg_quote($pathBase, '#') . '#';
                 $path = \preg_replace($pattern, '', $path, 1);
             }
             return $path;
