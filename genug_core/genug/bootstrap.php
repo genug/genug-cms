@@ -88,11 +88,15 @@ namespace genug
 
     function autoloader($class)
     {
-        if (\strpos($class, __NAMESPACE__) !== 0) {
+        if (\strpos($class, __NAMESPACE__ . '\\') !== 0) {
             return;
         }
-        
-        $fileName = namespace\CORE_DIR . \DIRECTORY_SEPARATOR . \strtolower($class) . '.php';
+
+        $fileName = (function () use ($class) {
+            $relativePath = \str_replace('\\', \DIRECTORY_SEPARATOR, \strtolower($class));
+            return namespace\CORE_DIR . \DIRECTORY_SEPARATOR . $relativePath . '.php';
+        })();
+
         $isProperFileName = (function () use ($fileName) {
             $fileInfo = new \SplFileInfo($fileName);
             return ($fileInfo->isFile() && $fileInfo->isReadable());
