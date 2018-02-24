@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace genug\Lib;
+namespace genug\Lib\ValueObject;
 
 /**
  *

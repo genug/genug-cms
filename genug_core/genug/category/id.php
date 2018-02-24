@@ -9,7 +9,7 @@ namespace genug\Category;
  */
 final class Id
 {
-    use \genug\Lib\trait_Id;
+    use \genug\Lib\ValueObject\trait_Id;
 
     const VALID_STRING_PATTERN = '#^[a-z0-9][a-z0-9_\-]*$#';
 }
