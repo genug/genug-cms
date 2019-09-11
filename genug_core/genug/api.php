@@ -47,7 +47,7 @@ final class Api
     public static function pages(): PageRepository
     {
         if (! \is_object(self::$_pages)) {
-            self::$_pages = new PageRepository(...PageGenerator::generateEntities(self::categories(), self::mainCategory()));
+            self::$_pages = new PageRepository(...PageGenerator::generateEntities());
         }
         return self::$_pages;
     }

@@ -12,6 +12,7 @@ use const genug\Persistence\FileSystem\Page\ {
                 FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION, 
                 HOMEPAGE_FILENAME
 };
+use const genug\Setting\MAIN_CATEGORY_ID;
 
 /**
  *
@@ -23,18 +24,20 @@ final class Generator
 
     /**
      *
-     * @todo [a] error_log [notice]
      * @todo [b] error_log (and continue)
      */
-    public static function generateEntities(CategoryRepository $categories, CategoryEntity $mainCategory): \Generator
+    public static function generateEntities(): \Generator
     {
-        foreach ($categories as $category) {
+        $directories = new class(new \FilesystemIterator(PAGE_DIR)) extends \FilterIterator {
+
+            public function accept()
+            {
+                return parent::current()->isDir();
+            }
+        };
+
+        foreach ($directories as $dir) {
             try {
-                $dir = new \SplFileInfo(PAGE_DIR . '/' . $category->id()->__toString());
-                if (! $dir->isDir()) {
-                    // [a]
-                    continue;
-                }
                 
                 $pageFiles = new class(new \FilesystemIterator($dir->getRealPath())) extends \FilterIterator {
 
@@ -57,19 +60,19 @@ final class Generator
                                 return \parse_ini_string($str, FALSE, \INI_SCANNER_TYPED);
                             }
                         };
-                        
-                        $id = (function () use ($category, $mainCategory, $pageFile) {
+
+                        $id = (function () use ($dir, $pageFile) {
                             $rtn = '';
-                            if ($category === $mainCategory && $pageFile->getBasename() === HOMEPAGE_FILENAME) {
+                            if ($dir->getBasename() === MAIN_CATEGORY_ID && $pageFile->getBasename() === HOMEPAGE_FILENAME) {
                                 $rtn = '/';
-                            } elseif ($category === $mainCategory) {
+                            } elseif ($dir->getBasename() === MAIN_CATEGORY_ID) {
                                 $rtn = '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
                             } else {
-                                $rtn = '/' . $category->id()->__toString() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
+                                $rtn = '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
                             }
                             return $rtn;
                         })();
-                        
+
                         $title = (function () use ($_data) {
                             $fm = $_data->frontMatter();
                             if (! isset($fm['title'])) {
@@ -85,8 +88,8 @@ final class Generator
                             }
                             return $fm['date'];
                         })();
-                        
-                        yield new Entity(new Id($id), $category, new Title($title), new Date($date), new Content($_data->content()));
+
+                        yield new Entity(new Id($id), new Category($dir->getBasename()), new Title($title), new Date($date), new Content($_data->content()));
                     } catch (\Throwable $t) {
                         throw $t; // [b]
                     }

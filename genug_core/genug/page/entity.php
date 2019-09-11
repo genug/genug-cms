@@ -2,8 +2,6 @@
 declare(strict_types = 1);
 namespace genug\Page;
 
-use genug\Category\Entity as Category;
-
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de

@@ -2,12 +2,24 @@
 use genug\Api as g;
 
 const SITE_TITLE = 'my site';
+
+/**
+ * @deprecated
+ */
+function genug_helper_categoryTitle(\genug\Page\Category $pageCat) {
+    try {
+      return g::categories()->fetch($pageCat)->title();
+    } catch (\Throwable $e) {
+      return $pageCat;
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-<title><?= g::requestedPage()->title()?><?php if (g::requestedPage()->category() !== g::mainCategory()) echo ' - ' . g::requestedPage()->category()->title() ?> | <?= SITE_TITLE ?></title>
+<title><?= g::requestedPage()->title()?><?php if (g::requestedPage()->category() !== g::mainCategory()) echo ' - ' . genug_helper_categoryTitle(g::requestedPage()->category()) ?> | <?= SITE_TITLE ?></title>
 <link
   rel="stylesheet"
   href="/asset/css/style.css" />
@@ -28,7 +40,7 @@ const SITE_TITLE = 'my site';
       <ul>
         <li>date: <time datetime="<?= g::requestedPage()->date() ?>"><?= g::requestedPage()->date()->format(DATE_RFC1123) ?></time></li>
         <li>category: <span
-          data-category="<?= g::requestedPage()->category()->id() ?>"><?= g::requestedPage()->category()->title() ?></span></li>
+          data-category="<?= g::requestedPage()->category() ?>"><?= genug_helper_categoryTitle(g::requestedPage()->category()) ?></span></li>
       </ul>
     </footer>
   </article>
