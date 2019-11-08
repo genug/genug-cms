@@ -19,7 +19,7 @@ function genug_helper_categoryTitle(\genug\Page\Category $pageCat) {
 <html>
 <head>
 <meta charset="utf-8">
-<title><?= g::requestedPage()->title()?><?php if (g::requestedPage()->category() !== g::mainCategory()) echo ' - ' . genug_helper_categoryTitle(g::requestedPage()->category()) ?> | <?= SITE_TITLE ?></title>
+<title><?= g::requestedPage()->title()?><?php if ((string) g::requestedPage()->category() !== (string) g::mainCategory()->id()) echo ' - ' . genug_helper_categoryTitle(g::requestedPage()->category()) ?> | <?= SITE_TITLE ?></title>
 <link
   rel="stylesheet"
   href="/asset/css/style.css" />
