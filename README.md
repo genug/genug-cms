@@ -5,7 +5,7 @@ a file-based CMS
 under development
 
 ## requirements
-- PHP 7.0
+- PHP 7.4
 - Apache, .htaccess, rewrite_module (mod_rewrite)
 
 ## installation

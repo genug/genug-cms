@@ -4,7 +4,8 @@ RewriteEngine on
 
 RewriteBase /
 
-RewriteRule ^asset/ -        [L]
-RewriteRule ^       html.php [L]
+RewriteRule ^favicon.ico$ -         [L]
+RewriteRule ^asset/       -         [L]
+RewriteRule ^             genug.php [L]
 
 </IfModule>

@@ -13,6 +13,11 @@ declare(strict_types = 1);
 namespace genug\Setting
 {
 
+    if (! \defined(__NAMESPACE__ . '\CONTENT_TYPE')) {
+        
+        \define(__NAMESPACE__ . '\CONTENT_TYPE', 'text/html; charset=UTF-8');
+    }
+
     if (! \defined(__NAMESPACE__ . '\MAIN_CATEGORY_ID')) {
         
         \define(__NAMESPACE__ . '\MAIN_CATEGORY_ID', 'site');
@@ -54,6 +59,21 @@ namespace genug\Setting
     if (! \defined(__NAMESPACE__ . '\CONTENT_DIR')) {
         
         \define(__NAMESPACE__ . '\CONTENT_DIR', namespace\USER_DIR . '/content');
+    }
+
+    if (! \defined(__NAMESPACE__ . '\VIEW_DIR')) {
+        
+        \define(__NAMESPACE__ . '\VIEW_DIR', namespace\USER_DIR . '/view');
+    }
+
+    if (! \defined(__NAMESPACE__ . '\VIEW_INDEX_FILE')) {
+        
+        \define(__NAMESPACE__ . '\VIEW_INDEX_FILE', namespace\VIEW_DIR . '/index.php');
+    }
+
+    if (! \defined(__NAMESPACE__ . '\VIEW_404_FILE')) {
+        
+        \define(__NAMESPACE__ . '\VIEW_404_FILE', namespace\VIEW_DIR . '/404.php');
     }
 }
 namespace genug
