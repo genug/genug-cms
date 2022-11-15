@@ -46,7 +46,7 @@ final class Repository implements \Iterator, \Countable
         return $this->_entities_fetch_cache[$id];
     }
 
-    public function count()
+    public function count(): int
     {
         return \count($this->_entities);
     }
@@ -61,12 +61,12 @@ final class Repository implements \Iterator, \Countable
         return $this->_position;
     }
 
-    public function next()
+    public function next(): void
     {
         ++ $this->_position;
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->_position = 0;
     }

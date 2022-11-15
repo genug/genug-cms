@@ -30,7 +30,7 @@ final class Generator
     {
         $directories = new class(new \FilesystemIterator(PAGE_DIR)) extends \FilterIterator {
 
-            public function accept()
+            public function accept(): bool
             {
                 return parent::current()->isDir();
             }
@@ -41,7 +41,7 @@ final class Generator
                 
                 $pageFiles = new class(new \FilesystemIterator($dir->getRealPath())) extends \FilterIterator {
 
-                    public function accept()
+                    public function accept(): bool
                     {
                         return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
                     }

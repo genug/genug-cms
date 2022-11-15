@@ -25,7 +25,7 @@ final class Generator
     {
         $directories = new class(new \FilesystemIterator(CATEGORY_DIR)) extends \FilterIterator {
 
-            public function accept()
+            public function accept(): bool
             {
                 return parent::current()->isDir();
             }
