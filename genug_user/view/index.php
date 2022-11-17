@@ -15,9 +15,11 @@
         <h1>all pages</h1>
         <ul>
 <?php foreach (g::pages() as $page): ?>
+    <?php if ((string) $page->id() !== \genug\Setting\HTTP_404_PAGE_ID): ?>
             <li>
                 <a href="<?= $page->id() ?>"<?php if ($page === g::requestedPage()) echo ' aria-current="page"' ?>><?= $page->title() ?></a>
             </li>
+    <?php endif; ?>
 <?php endforeach; ?>
         </ul>
     </nav>

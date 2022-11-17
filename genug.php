@@ -13,22 +13,22 @@
 
         spl_autoload_register('\genug\autoloader');
 
-        \header('Content-Type: ' . \genug\Setting\CONTENT_TYPE);
-        \http_response_code(200);
-
         try {
+            \header('Content-Type: ' . \genug\Setting\CONTENT_TYPE);
+            \http_response_code(200);
+
             \genug\Api::requestedPage();
+
+            if (\genug\Api::requestedPage()->id()->__toString() === \genug\Setting\HTTP_404_PAGE_ID) {
+                \http_response_code(404);
+            }
 
             require_once \genug\Setting\VIEW_INDEX_FILE;
         } catch (\genug\throwable_RequestedPageNotFound $t) {
             \ob_clean();
             \http_response_code(404);
 
-            if (\is_readable(\genug\Setting\VIEW_404_FILE)) {
-                require_once \genug\Setting\VIEW_404_FILE;
-            } else {
-                echo '404 Not Found';
-            }
+            echo '404 Not Found';
         }
     } catch (\Throwable $t) {
         \ob_clean();

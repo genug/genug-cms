@@ -16,7 +16,8 @@ use genug\Page\ {
 use const genug\Setting\ {
                 MAIN_CATEGORY_ID, 
                 HOMEPAGE_ID, 
-                REQUESTED_PAGE_ID
+                REQUESTED_PAGE_ID,
+                HTTP_404_PAGE_ID
 };
 
 /**
@@ -62,7 +63,11 @@ final class Api
         try {
             return self::pages()->fetch(REQUESTED_PAGE_ID);
         } catch (throwable_PageEntityNotFound $t) {
-            throw new throwable_RequestedPageNotFound('', 0, $t);
+            try {
+                return self::pages()->fetch(HTTP_404_PAGE_ID);
+            } catch (throwable_PageEntityNotFound $t) {
+                throw new throwable_RequestedPageNotFound(previous: $t);
+            }
         }
     }
 }

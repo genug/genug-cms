@@ -27,7 +27,12 @@ namespace genug\Setting
         
         \define(__NAMESPACE__ . '\HOMEPAGE_ID', '/');
     }
-    
+
+    if (! \defined(__NAMESPACE__ . '\HTTP_404_PAGE_ID')) {
+
+        \define(__NAMESPACE__ . '\HTTP_404_PAGE_ID', '/http-404');
+    }
+
     if (! \defined(__NAMESPACE__ . '\REQUESTED_PAGE_ID')) {
         
         \define(__NAMESPACE__ . '\REQUESTED_PAGE_ID', (function () {
@@ -69,11 +74,6 @@ namespace genug\Setting
     if (! \defined(__NAMESPACE__ . '\VIEW_INDEX_FILE')) {
         
         \define(__NAMESPACE__ . '\VIEW_INDEX_FILE', namespace\VIEW_DIR . '/index.php');
-    }
-
-    if (! \defined(__NAMESPACE__ . '\VIEW_404_FILE')) {
-        
-        \define(__NAMESPACE__ . '\VIEW_404_FILE', namespace\VIEW_DIR . '/404.php');
     }
 }
 namespace genug
