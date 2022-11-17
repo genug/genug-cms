@@ -9,13 +9,7 @@
     try {
         \ob_start();
 
-        (function (){
-            $bootstrapFile = __DIR__ . '/genug_core/genug/bootstrap.php';
-            if (! \is_readable($bootstrapFile)) {
-                throw new \Error("Failed opening required '" . $bootstrapFile . "'");
-            }
-            require_once $bootstrapFile;
-        })();
+        require_once __DIR__ . '/genug_core/genug/bootstrap.php';
 
         spl_autoload_register('\genug\autoloader');
 
@@ -25,9 +19,6 @@
         try {
             \genug\Api::requestedPage();
 
-            if (! \is_readable(\genug\Setting\VIEW_INDEX_FILE)) {
-                throw new \Error("Failed opening required '" . \genug\Setting\VIEW_INDEX_FILE . "'");
-            }
             require_once \genug\Setting\VIEW_INDEX_FILE;
         } catch (\genug\throwable_RequestedPageNotFound $t) {
             \ob_clean();
