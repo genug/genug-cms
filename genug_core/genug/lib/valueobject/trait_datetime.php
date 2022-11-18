@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace genug\Lib\ValueObject;
 
 /**
@@ -9,8 +11,7 @@ namespace genug\Lib\ValueObject;
  */
 trait trait_DateTime
 {
-
-    private $_isMutable = TRUE;
+    private $_isMutable = true;
 
     private $_obj;
 
@@ -29,7 +30,7 @@ trait trait_DateTime
             throw new \InvalidArgumentException();
         }
         try {
-            $this->_isMutable = FALSE;
+            $this->_isMutable = false;
             $this->_obj = new \DateTime($time);
         } catch (\Throwable $e) {
             throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);

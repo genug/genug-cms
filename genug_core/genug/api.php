@@ -1,23 +1,26 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace genug;
 
 use genug\Category\ {
-                Repository as CategoryRepository, 
-                Generator as CategoryGenerator, 
-                Entity as CategoryEntity
+    Repository as CategoryRepository,
+    Generator as CategoryGenerator,
+    Entity as CategoryEntity
 };
 use genug\Page\ {
-                throwable_EntityNotFound as throwable_PageEntityNotFound, 
-                Repository as PageRepository, 
-                Generator as PageGenerator, 
-                Entity as PageEntity
+    throwable_EntityNotFound as throwable_PageEntityNotFound,
+    Repository as PageRepository,
+    Generator as PageGenerator,
+    Entity as PageEntity
 };
+
 use const genug\Setting\ {
-                MAIN_CATEGORY_ID, 
-                HOMEPAGE_ID, 
-                REQUESTED_PAGE_ID,
-                HTTP_404_PAGE_ID
+    MAIN_CATEGORY_ID,
+    HOMEPAGE_ID,
+    REQUESTED_PAGE_ID,
+    HTTP_404_PAGE_ID
 };
 
 /**
@@ -27,7 +30,6 @@ use const genug\Setting\ {
  */
 final class Api
 {
-
     private static $_categories;
 
     private static $_pages;

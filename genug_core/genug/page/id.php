@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace genug\Page;
 
 /**
@@ -11,5 +13,5 @@ final class Id
 {
     use \genug\Lib\ValueObject\trait_Id;
 
-    const VALID_STRING_PATTERN = '#^(?:\/|(?:\/[a-z0-9][a-z0-9_\-]*){1,2})$#';
+    public const VALID_STRING_PATTERN = '#^(?:\/|(?:\/[a-z0-9][a-z0-9_\-]*){1,2})$#';
 }

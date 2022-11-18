@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace genug\Category;
 
 /**
@@ -9,8 +11,7 @@ namespace genug\Category;
  */
 final class Repository implements \Iterator, \Countable
 {
-
-    private $_isMutable = TRUE;
+    private $_isMutable = true;
 
     private $_position = 0;
 
@@ -27,8 +28,8 @@ final class Repository implements \Iterator, \Countable
         if (! $this->_isMutable) {
             throw new \BadMethodCallException();
         }
-        $this->_isMutable = FALSE;
-        
+        $this->_isMutable = false;
+
         foreach ($entities as $entity) {
             try {
                 $this->_attach($entity);

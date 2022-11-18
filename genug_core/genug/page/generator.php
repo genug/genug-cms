@@ -1,16 +1,19 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace genug\Page;
 
 use genug\Category\ {
-                Repository as CategoryRepository, 
-                Entity as CategoryEntity
+    Repository as CategoryRepository,
+    Entity as CategoryEntity
 };
 use genug\Lib\abstract_FrontMatterFile;
+
 use const genug\Persistence\FileSystem\Page\ {
-                DIR as PAGE_DIR, 
-                FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION, 
-                HOMEPAGE_FILENAME
+    DIR as PAGE_DIR,
+    FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION,
+    HOMEPAGE_FILENAME
 };
 use const genug\Setting\MAIN_CATEGORY_ID;
 
@@ -21,15 +24,13 @@ use const genug\Setting\MAIN_CATEGORY_ID;
  */
 final class Generator
 {
-
     /**
      *
      * @todo [b] error_log (and continue)
      */
     public static function generateEntities(): \Generator
     {
-        $directories = new class(new \FilesystemIterator(PAGE_DIR)) extends \FilterIterator {
-
+        $directories = new class (new \FilesystemIterator(PAGE_DIR)) extends \FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();
@@ -38,26 +39,23 @@ final class Generator
 
         foreach ($directories as $dir) {
             try {
-                
-                $pageFiles = new class(new \FilesystemIterator($dir->getRealPath())) extends \FilterIterator {
-
+                $pageFiles = new class (new \FilesystemIterator($dir->getRealPath())) extends \FilterIterator {
                     public function accept(): bool
                     {
                         return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
                     }
                 };
-                
+
                 foreach ($pageFiles as $pageFile) {
                     try {
                         if (! $pageFile->isReadable()) {
                             throw new \Exception(); // [b]
                         }
-                        
-                        $_data = new class($pageFile->getRealPath()) extends abstract_FrontMatterFile {
 
+                        $_data = new class ($pageFile->getRealPath()) extends abstract_FrontMatterFile {
                             protected function _parseFrontMatterString(string $str): array
                             {
-                                return \parse_ini_string($str, FALSE, \INI_SCANNER_TYPED);
+                                return \parse_ini_string($str, false, \INI_SCANNER_TYPED);
                             }
                         };
 
@@ -80,7 +78,7 @@ final class Generator
                             }
                             return $fm['title'];
                         })();
-                        
+
                         $date = (function () use ($_data) {
                             $fm = $_data->frontMatter();
                             if (! isset($fm['date'])) {

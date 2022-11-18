@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace genug\Lib\ValueObject;
 
 /**
@@ -9,8 +11,7 @@ namespace genug\Lib\ValueObject;
  */
 trait trait_Id
 {
-
-    private $_isMutable = TRUE;
+    private $_isMutable = true;
 
     private $_id;
 
@@ -22,7 +23,7 @@ trait trait_Id
         if (! \preg_match(self::VALID_STRING_PATTERN, $id)) {
             throw new \InvalidArgumentException();
         }
-        $this->_isMutable = FALSE;
+        $this->_isMutable = false;
         $this->_id = $id;
     }
 

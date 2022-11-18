@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace genug\Lib\ValueObject;
 
 /**
@@ -9,8 +11,7 @@ namespace genug\Lib\ValueObject;
  */
 trait trait_TrimmedString
 {
-
-    private $_isMutable = TRUE;
+    private $_isMutable = true;
 
     private $_trimmedString;
 
@@ -19,7 +20,7 @@ trait trait_TrimmedString
         if (! $this->_isMutable) {
             throw new \BadMethodCallException();
         }
-        $this->_isMutable = FALSE;
+        $this->_isMutable = false;
         $this->_trimmedString = \trim($untrimmedString);
     }
 

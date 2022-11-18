@@ -1,4 +1,6 @@
-<?php use genug\Api as g; ?>
+<?php use genug\Api as g;
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,7 +19,9 @@
 <?php foreach (g::pages() as $page): ?>
     <?php if ((string) $page->id() !== \genug\Setting\HTTP_404_PAGE_ID): ?>
             <li>
-                <a href="<?= $page->id() ?>"<?php if ($page === g::requestedPage()) echo ' aria-current="page"' ?>><?= $page->title() ?></a>
+                <a href="<?= $page->id() ?>"<?php if ($page === g::requestedPage()) {
+                    echo ' aria-current="page"';
+                } ?>><?= $page->title() ?></a>
             </li>
     <?php endif; ?>
 <?php endforeach; ?>

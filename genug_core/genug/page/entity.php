@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace genug\Page;
 
 /**
@@ -9,8 +11,7 @@ namespace genug\Page;
  */
 final class Entity
 {
-
-    private $_isMutable = TRUE;
+    private $_isMutable = true;
 
     private $_id;
 
@@ -27,8 +28,8 @@ final class Entity
         if (! $this->_isMutable) {
             throw new \BadMethodCallException();
         }
-        $this->_isMutable = FALSE;
-        
+        $this->_isMutable = false;
+
         $this->_id = $id;
         $this->_category = $category;
         $this->_title = $title;

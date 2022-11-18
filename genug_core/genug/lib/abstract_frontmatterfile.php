@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace genug\Lib;
 
 /**
@@ -9,15 +11,14 @@ namespace genug\Lib;
  */
 abstract class abstract_FrontMatterFile
 {
+    public const VALID_EOL = "\n";
 
-    const VALID_EOL = "\n";
-
-    const INVALID_EOLS = [
+    public const INVALID_EOLS = [
         "\r\n",
         "\r"
     ];
 
-    private $_isMutable = TRUE;
+    private $_isMutable = true;
 
     private $_frontMatter;
 
@@ -30,7 +31,7 @@ abstract class abstract_FrontMatterFile
         if (! $this->_isMutable) {
             throw new \BadMethodCallException();
         }
-        $this->_isMutable = FALSE;
+        $this->_isMutable = false;
 
         $file = new \SplFileInfo($path);
         if (! $file->isFile() || ! $file->isReadable()) {
