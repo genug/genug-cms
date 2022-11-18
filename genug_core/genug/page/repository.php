@@ -79,9 +79,9 @@ final class Repository implements \Iterator, \Countable
 
     private function _attach(Entity $entity)
     {
-        if (\array_key_exists($entity->id()->__toString(), $this->_entities_fetch_cache)) {
+        if (\array_key_exists($entity->id->__toString(), $this->_entities_fetch_cache)) {
             throw new \LogicException('ID already exists.');
         }
-        $this->_entities[] = $this->_entities_fetch_cache[$entity->id()->__toString()] = $entity;
+        $this->_entities[] = $this->_entities_fetch_cache[$entity->id->__toString()] = $entity;
     }
 }

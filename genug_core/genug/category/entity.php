@@ -11,30 +11,9 @@ namespace genug\Category;
  */
 final class Entity
 {
-    private $_isMutable = true;
-
-    private $_id;
-
-    private $_title;
-
-    public function __construct(Id $id, Title $title)
-    {
-        if (! $this->_isMutable) {
-            throw new \BadMethodCallException();
-        }
-        $this->_isMutable = false;
-
-        $this->_id = $id;
-        $this->_title = $title;
-    }
-
-    public function id(): Id
-    {
-        return $this->_id;
-    }
-
-    public function title(): Title
-    {
-        return $this->_title;
+    public function __construct(
+        public readonly Id $id,
+        public readonly Title $title
+    ) {
     }
 }

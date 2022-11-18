@@ -19,7 +19,7 @@
 
             \genug\Api::requestedPage();
 
-            if (\genug\Api::requestedPage()->id()->__toString() === \genug\Setting\HTTP_404_PAGE_ID) {
+            if (\genug\Api::requestedPage()->id->__toString() === \genug\Setting\HTTP_404_PAGE_ID) {
                 \http_response_code(404);
             }
 
