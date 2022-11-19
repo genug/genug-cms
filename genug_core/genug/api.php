@@ -12,7 +12,6 @@ use genug\Category\ {
 use genug\Page\ {
     throwable_EntityNotFound as throwable_PageEntityNotFound,
     Repository as PageRepository,
-    Generator as PageGenerator,
     Entity as PageEntity
 };
 
@@ -34,6 +33,8 @@ final class Api
 
     private static $_pages;
 
+    private static $_requestedPage;
+
     public static function categories(): CategoryRepository
     {
         if (! \is_object(self::$_categories)) {
@@ -50,7 +51,7 @@ final class Api
     public static function pages(): PageRepository
     {
         if (! \is_object(self::$_pages)) {
-            self::$_pages = new PageRepository(...PageGenerator::generateEntities());
+            self::$_pages = new PageRepository();
         }
         return self::$_pages;
     }
@@ -62,14 +63,17 @@ final class Api
 
     public static function requestedPage(): PageEntity
     {
-        try {
-            return self::pages()->fetch(REQUESTED_PAGE_ID);
-        } catch (throwable_PageEntityNotFound $t) {
+        if (! is_object(self::$_requestedPage)) {
             try {
-                return self::pages()->fetch(HTTP_404_PAGE_ID);
+                self::$_requestedPage = self::pages()->fetch(REQUESTED_PAGE_ID);
             } catch (throwable_PageEntityNotFound $t) {
-                throw new throwable_RequestedPageNotFound(previous: $t);
+                try {
+                    self::$_requestedPage =  self::pages()->fetch(HTTP_404_PAGE_ID);
+                } catch (throwable_PageEntityNotFound $t) {
+                    throw new throwable_RequestedPageNotFound(previous: $t);
+                }
             }
         }
+        return self::$_requestedPage;
     }
 }

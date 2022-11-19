@@ -4,6 +4,22 @@ declare(strict_types=1);
 
 namespace genug\Page;
 
+use ArrayIterator;
+use ArrayObject;
+use genug\Lib\ {
+    abstract_FrontMatterFile,
+    EntityCache
+};
+use Throwable;
+use RuntimeException;
+
+use const genug\Persistence\FileSystem\Page\ {
+    DIR as PAGE_DIR,
+    FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION,
+    HOMEPAGE_FILENAME
+};
+use const genug\Setting\MAIN_CATEGORY_ID;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -11,77 +27,153 @@ namespace genug\Page;
  */
 final class Repository implements \Iterator, \Countable
 {
-    private $_isMutable = true;
+    private bool $_isMutable = true;
 
-    private $_position = 0;
+    private readonly ArrayObject $idToFilePathMap;
+    private readonly ArrayIterator $iterator;
+    private readonly EntityCache $entityCache;
 
-    private $_entities = [];
 
-    private $_entities_fetch_cache = [];
-
-    /**
-     *
-     * @todo [b] error_log and continue
-     */
-    public function __construct(Entity ...$entities)
+    public function __construct()
     {
         if (! $this->_isMutable) {
             throw new \BadMethodCallException();
         }
         $this->_isMutable = false;
 
-        foreach ($entities as $entity) {
-            try {
-                $this->_attach($entity);
-            } catch (\Throwable $t) {
-                throw $t; // [b]
-            }
-        }
+        $this->idToFilePathMap = self::createIdToFilePathMap();
+        $this->iterator = $this->idToFilePathMap->getIterator();
+
+        $this->entityCache = EntityCache::instance();
     }
 
+    /**
+     * @todo [a] log
+     */
     public function fetch(string $id): Entity
     {
-        if (! \array_key_exists($id, $this->_entities_fetch_cache)) {
+        if (! $this->idToFilePathMap->offsetExists($id)) {
             throw new throwable_EntityNotFound();
         }
-        return $this->_entities_fetch_cache[$id];
+        try {
+            return $this->entityCache->fetchOrNull($id, Entity::class) ?? $this->createAndCacheEntity($id);
+        } catch (Throwable $t) {
+            // [a]
+            throw new throwable_EntityNotFound(previous: $t);
+        }
     }
 
     public function count(): int
     {
-        return \count($this->_entities);
+        return \count($this->idToFilePathMap);
     }
 
     public function current(): Entity
     {
-        return $this->_entities[$this->_position];
+        try {
+            return $this->fetch($this->iterator->key());
+        } catch (throwable_EntityNotFound $t) {
+            throw new RuntimeException(previous: $t);
+        }
     }
 
-    public function key(): int
+    public function key(): string
     {
-        return $this->_position;
+        return $this->iterator->key();
     }
 
     public function next(): void
     {
-        ++ $this->_position;
+        $this->iterator->next();
     }
 
     public function rewind(): void
     {
-        $this->_position = 0;
+        $this->iterator->rewind();
     }
 
     public function valid(): bool
     {
-        return isset($this->_entities[$this->_position]);
+        return $this->iterator->valid();
     }
 
-    private function _attach(Entity $entity)
+
+    protected function createAndCacheEntity(string $idString): Entity
     {
-        if (\array_key_exists($entity->id->__toString(), $this->_entities_fetch_cache)) {
-            throw new \LogicException('ID already exists.');
+        $pageFile = new \SplFileInfo($this->idToFilePathMap->offsetGet($idString));
+
+        $dir = $pageFile->getPathInfo();
+
+        $_data = new class ($pageFile->getRealPath()) extends abstract_FrontMatterFile {
+            protected function _parseFrontMatterString(string $str): array
+            {
+                return \parse_ini_string($str, false, \INI_SCANNER_TYPED);
+            }
+        };
+
+        $title = (function () use ($_data) {
+            $fm = $_data->frontMatter();
+            if (! isset($fm['title'])) {
+                throw new \Exception();
+            }
+            return $fm['title'];
+        })();
+
+        $date = (function () use ($_data) {
+            $fm = $_data->frontMatter();
+            if (! isset($fm['date'])) {
+                throw new \Exception();
+            }
+            return $fm['date'];
+        })();
+
+        $entity = new Entity(
+            new Id($idString),
+            new Category($dir->getBasename()),
+            new Title($title),
+            new Date($date),
+            new Content($_data->content())
+        );
+
+        $this->entityCache->attach($entity);
+        return $entity;
+    }
+
+    protected static function createIdToFilePathMap(): ArrayObject
+    {
+        $idToFilePathMap = new ArrayObject();
+
+        $directories = new class (new \FilesystemIterator(PAGE_DIR)) extends \FilterIterator {
+            public function accept(): bool
+            {
+                return parent::current()->isDir();
+            }
+        };
+
+        foreach ($directories as $dir) {
+            $pageFiles = new class (new \FilesystemIterator($dir->getRealPath())) extends \FilterIterator {
+                public function accept(): bool
+                {
+                    return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
+                }
+            };
+
+            foreach ($pageFiles as $pageFile) {
+                $id = (function () use ($dir, $pageFile) {
+                    $rtn = '';
+                    if ($dir->getBasename() === MAIN_CATEGORY_ID && $pageFile->getBasename() === HOMEPAGE_FILENAME) {
+                        $rtn = '/';
+                    } elseif ($dir->getBasename() === MAIN_CATEGORY_ID) {
+                        $rtn = '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
+                    } else {
+                        $rtn = '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
+                    }
+                    return $rtn;
+                })();
+
+                $idToFilePathMap->offsetSet($id, $pageFile->getRealPath());
+            }
         }
-        $this->_entities[] = $this->_entities_fetch_cache[$entity->id->__toString()] = $entity;
+        return $idToFilePathMap;
     }
 }
