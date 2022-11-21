@@ -22,8 +22,8 @@ namespace genug\Setting
         \define(__NAMESPACE__ . '\MAIN_CATEGORY_ID', 'site');
     }
 
-    if (! \defined(__NAMESPACE__ . '\HOMEPAGE_ID')) {
-        \define(__NAMESPACE__ . '\HOMEPAGE_ID', '/');
+    if (! \defined(__NAMESPACE__ . '\HOME_PAGE_ID')) {
+        \define(__NAMESPACE__ . '\HOME_PAGE_ID', '/');
     }
 
     if (! \defined(__NAMESPACE__ . '\HTTP_404_PAGE_ID')) {
@@ -89,7 +89,7 @@ namespace genug\Persistence\FileSystem\Page
 
     const FILENAME_EXTENSION = 'page';
 
-    const HOMEPAGE_FILENAME = '_home.' . namespace\FILENAME_EXTENSION;
+    const HOME_PAGE_FILENAME = '_home.' . namespace\FILENAME_EXTENSION;
 }
 
 /*

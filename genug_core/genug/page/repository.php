@@ -16,7 +16,7 @@ use RuntimeException;
 use const genug\Persistence\FileSystem\Page\ {
     DIR as PAGE_DIR,
     FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION,
-    HOMEPAGE_FILENAME
+    HOME_PAGE_FILENAME
 };
 use const genug\Setting\MAIN_CATEGORY_ID;
 
@@ -161,7 +161,7 @@ final class Repository implements \Iterator, \Countable
             foreach ($pageFiles as $pageFile) {
                 $id = (function () use ($dir, $pageFile) {
                     $rtn = '';
-                    if ($dir->getBasename() === MAIN_CATEGORY_ID && $pageFile->getBasename() === HOMEPAGE_FILENAME) {
+                    if ($dir->getBasename() === MAIN_CATEGORY_ID && $pageFile->getBasename() === HOME_PAGE_FILENAME) {
                         $rtn = '/';
                     } elseif ($dir->getBasename() === MAIN_CATEGORY_ID) {
                         $rtn = '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
