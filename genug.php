@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 use genug\Api as GenugApi;
 use genug\throwable_RequestedPageNotFound;
-use genug\Category\ {
-    Repository as CategoryRepository,
+use genug\Group\ {
+    Repository as GroupRepository,
 };
 use genug\Page\ {
     throwable_EntityNotFound as throwable_PageEntityNotFound,
@@ -48,14 +48,14 @@ use const genug\Setting\ {
                         }
                     }
                 })();
-                $categories = new CategoryRepository();
+                $groups = new GroupRepository();
                 $homePage = $pages->fetch(HOME_PAGE_ID);
-                
+
                 return new GenugApi(
                     $pages,
                     $requestedPage,
                     $homePage,
-                    $categories
+                    $groups
                 );
             })();
 

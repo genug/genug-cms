@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace genug;
 
-use genug\Category\ {
-    Repository as CategoryRepository
+use genug\Group\ {
+    Repository as GroupRepository
 };
 use genug\Page\ {
     Repository as PageRepository,
@@ -23,7 +23,7 @@ final class Api
         public readonly PageRepository $pages,
         public readonly PageEntity $requestedPage,
         public readonly PageEntity $homePage,
-        public readonly CategoryRepository $categories
+        public readonly GroupRepository $groups
     ) {
     }
 }

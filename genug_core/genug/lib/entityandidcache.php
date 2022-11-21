@@ -8,9 +8,9 @@ use genug\Page\{
     Entity as PageEntity,
     Id as PageId
 };
-use genug\Category\{
-    Entity as CategoryEntity,
-    Id as CategoryId
+use genug\Group\{
+    Entity as GroupEntity,
+    Id as GroupId
 };
 use WeakMap;
 use LogicException;
@@ -34,7 +34,7 @@ final class EntityAndIdCache
         $this->weakMap = new WeakMap();
     }
 
-    public function attach(PageEntity|CategoryEntity $entity): void
+    public function attach(PageEntity|GroupEntity $entity): void
     {
         if ((bool) $this->fetchOrNull($entity::class, (string) $entity->id)) {
             throw new LogicException('Entity is already cached.');
@@ -50,7 +50,7 @@ final class EntityAndIdCache
         }
     }
 
-    public function fetchOrNull(string $className, string $id): null|PageEntity|CategoryEntity|PageId|CategoryId
+    public function fetchOrNull(string $className, string $id): null|PageEntity|GroupEntity|PageId|GroupId
     {
         foreach ($this->weakMap as $obj => $idString) {
             if (
@@ -63,7 +63,7 @@ final class EntityAndIdCache
         return null;
     }
 
-    protected function isAnotherInstanceOfIdValueInWeakMap(PageEntity|CategoryEntity $needle): bool
+    protected function isAnotherInstanceOfIdValueInWeakMap(PageEntity|GroupEntity $needle): bool
     {
         $IdOrNull = $this->fetchOrNull($needle->id::class, (string) $needle->id);
         return ($IdOrNull !== null && $IdOrNull !== $needle->id);

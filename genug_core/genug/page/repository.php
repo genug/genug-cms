@@ -18,7 +18,7 @@ use const genug\Persistence\FileSystem\Page\ {
     FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION,
     HOME_PAGE_FILENAME
 };
-use const genug\Setting\MAIN_CATEGORY_ID;
+use const genug\Setting\MAIN_GROUP_ID;
 
 /**
  *
@@ -129,7 +129,7 @@ final class Repository implements \Iterator, \Countable
 
         $entity = new Entity(
             $this->entityAndIdCache->fetchOrNull(Id::class, $idString) ?? new Id($idString),
-            new Category($dir->getBasename()),
+            new Group($dir->getBasename()),
             new Title($title),
             new Date($date),
             new Content($_data->content())
@@ -161,9 +161,9 @@ final class Repository implements \Iterator, \Countable
             foreach ($pageFiles as $pageFile) {
                 $id = (function () use ($dir, $pageFile) {
                     $rtn = '';
-                    if ($dir->getBasename() === MAIN_CATEGORY_ID && $pageFile->getBasename() === HOME_PAGE_FILENAME) {
+                    if ($dir->getBasename() === MAIN_GROUP_ID && $pageFile->getBasename() === HOME_PAGE_FILENAME) {
                         $rtn = '/';
-                    } elseif ($dir->getBasename() === MAIN_CATEGORY_ID) {
+                    } elseif ($dir->getBasename() === MAIN_GROUP_ID) {
                         $rtn = '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
                     } else {
                         $rtn = '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);

@@ -13,7 +13,7 @@ final class Entity
 {
     public function __construct(
         public readonly Id $id,
-        public readonly Category $category,
+        public readonly Group $group,
         public readonly Title $title,
         public readonly Date $date,
         public readonly Content $content

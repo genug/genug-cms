@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace genug\Category;
+namespace genug\Group;
 
 use ArrayIterator;
 use ArrayObject;
@@ -10,9 +10,9 @@ use genug\Lib\EntityAndIdCache;
 use Throwable;
 use RuntimeException;
 
-use const genug\Persistence\FileSystem\Category\ {
-    DIR as CATEGORY_DIR,
-    FILENAME as CATEGORY_FILENAME
+use const genug\Persistence\FileSystem\Group\ {
+    DIR as GROUP_DIR,
+    FILENAME as GROUP_FILENAME
 };
 
 /**
@@ -120,7 +120,7 @@ final class Repository implements \Iterator, \Countable
     {
         $idToFilePathMap = new ArrayObject();
 
-        $directories = new class (new \FilesystemIterator(CATEGORY_DIR)) extends \FilterIterator {
+        $directories = new class (new \FilesystemIterator(GROUP_DIR)) extends \FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();
@@ -128,7 +128,7 @@ final class Repository implements \Iterator, \Countable
         };
 
         foreach ($directories as $dir) {
-            $file = new \SplFileInfo($dir->getRealPath() . '/' . CATEGORY_FILENAME);
+            $file = new \SplFileInfo($dir->getRealPath() . '/' . GROUP_FILENAME);
             if (! $file->isFile()) {
                 continue;
             }

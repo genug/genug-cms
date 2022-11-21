@@ -9,7 +9,7 @@ namespace genug\Page;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class Category
+final class Group
 {
     use \genug\Lib\ValueObject\trait_Id;
 

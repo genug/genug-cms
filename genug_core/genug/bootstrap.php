@@ -18,8 +18,8 @@ namespace genug\Setting
         \define(__NAMESPACE__ . '\CONTENT_TYPE', 'text/html; charset=UTF-8');
     }
 
-    if (! \defined(__NAMESPACE__ . '\MAIN_CATEGORY_ID')) {
-        \define(__NAMESPACE__ . '\MAIN_CATEGORY_ID', 'site');
+    if (! \defined(__NAMESPACE__ . '\MAIN_GROUP_ID')) {
+        \define(__NAMESPACE__ . '\MAIN_GROUP_ID', 'site');
     }
 
     if (! \defined(__NAMESPACE__ . '\HOME_PAGE_ID')) {
@@ -74,13 +74,13 @@ namespace genug
     \define(__NAMESPACE__ . '\CORE_DIR', \dirname(__DIR__));
 }
 
-namespace genug\Persistence\FileSystem\Category
+namespace genug\Persistence\FileSystem\Group
 {
     const DIR = \genug\Setting\CONTENT_DIR;
 
     const FILENAME_EXTENSION = 'genug';
 
-    const FILENAME = '_category.' . namespace\FILENAME_EXTENSION;
+    const FILENAME = '_group.' . namespace\FILENAME_EXTENSION;
 }
 
 namespace genug\Persistence\FileSystem\Page
