@@ -6,7 +6,7 @@ namespace genug\Category;
 
 use ArrayIterator;
 use ArrayObject;
-use genug\Lib\EntityCache;
+use genug\Lib\EntityAndIdCache;
 use Throwable;
 use RuntimeException;
 
@@ -26,7 +26,7 @@ final class Repository implements \Iterator, \Countable
 
     private readonly ArrayObject $idToFilePathMap;
     private readonly ArrayIterator $iterator;
-    private readonly EntityCache $entityCache;
+    private readonly EntityAndIdCache $entityAndIdCache;
 
     /**
      *
@@ -42,7 +42,7 @@ final class Repository implements \Iterator, \Countable
         $this->idToFilePathMap = self::createIdToFilePathMap();
         $this->iterator = $this->idToFilePathMap->getIterator();
 
-        $this->entityCache = EntityCache::instance();
+        $this->entityAndIdCache = EntityAndIdCache::instance();
     }
 
     /**
@@ -54,7 +54,7 @@ final class Repository implements \Iterator, \Countable
             throw new throwable_EntityNotFound();
         }
         try {
-            return $this->entityCache->fetchOrNull($id, Entity::class) ?? $this->createAndCacheEntity($id);
+            return $this->entityAndIdCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
         } catch (Throwable $t) {
             // [a]
             throw new throwable_EntityNotFound(previous: $t);
@@ -108,11 +108,11 @@ final class Repository implements \Iterator, \Countable
         }
 
         $entity =  new Entity(
-            new Id($idString),
+            $this->entityAndIdCache->fetchOrNull(Id::class, $idString) ?? new Id($idString),
             new Title($data['title'])
         );
 
-        $this->entityCache->attach($entity);
+        $this->entityAndIdCache->attach($entity);
         return $entity;
     }
 
