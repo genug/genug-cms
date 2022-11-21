@@ -38,7 +38,7 @@ final class Api
     public static function categories(): CategoryRepository
     {
         if (! \is_object(self::$_categories)) {
-            self::$_categories = new CategoryRepository(...CategoryGenerator::generateEntities());
+            self::$_categories = new CategoryRepository();
         }
         return self::$_categories;
     }
