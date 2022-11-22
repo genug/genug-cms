@@ -17,6 +17,7 @@ use genug\Page\ {
     EntityNotFound as PageEntityNotFound,
     Repository as PageRepository,
 };
+use genug\Setting\Setting;
 use genug\Lib\EntityAndIdCache;
 
 use const genug\Setting\ {
@@ -58,7 +59,8 @@ use const genug\Setting\ {
                     $pages,
                     $requestedPage,
                     $homePage,
-                    $groups
+                    $groups,
+                    new Setting()
                 );
             })();
 

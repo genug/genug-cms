@@ -11,6 +11,7 @@ use genug\Page\ {
     RepositoryInterface as PageRepositoryInterface,
     Entity as PageEntity
 };
+use genug\Setting\Setting;
 
 /**
  *
@@ -23,7 +24,8 @@ final class Api
         public readonly PageRepositoryInterface $pages,
         public readonly PageEntity $requestedPage,
         public readonly PageEntity $homePage,
-        public readonly GroupRepositoryInterface $groups
+        public readonly GroupRepositoryInterface $groups,
+        public readonly Setting $setting
     ) {
     }
 }
