@@ -51,13 +51,13 @@ final class Repository implements \Iterator, \Countable
     public function fetch(string $id): Entity
     {
         if (! $this->idToFilePathMap->offsetExists($id)) {
-            throw new throwable_EntityNotFound();
+            throw new EntityNotFound();
         }
         try {
             return $this->entityAndIdCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
         } catch (Throwable $t) {
             // [a]
-            throw new throwable_EntityNotFound(previous: $t);
+            throw new EntityNotFound(previous: $t);
         }
     }
 
@@ -70,7 +70,7 @@ final class Repository implements \Iterator, \Countable
     {
         try {
             return $this->fetch($this->iterator->key());
-        } catch (throwable_EntityNotFound $t) {
+        } catch (EntityNotFound $t) {
             throw new RuntimeException(previous: $t);
         }
     }

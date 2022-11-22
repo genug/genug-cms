@@ -9,12 +9,12 @@ declare(strict_types=1);
  */
 
 use genug\Api as GenugApi;
-use genug\throwable_RequestedPageNotFound;
+use genug\RequestedPageNotFound;
 use genug\Group\ {
     Repository as GroupRepository,
 };
 use genug\Page\ {
-    throwable_EntityNotFound as throwable_PageEntityNotFound,
+    EntityNotFound as PageEntityNotFound,
     Repository as PageRepository,
 };
 
@@ -40,11 +40,11 @@ use const genug\Setting\ {
                 $requestedPage = (function () use ($pages) {
                     try {
                         return $pages->fetch(REQUESTED_PAGE_ID);
-                    } catch (throwable_PageEntityNotFound $t) {
+                    } catch (PageEntityNotFound $t) {
                         try {
                             return $pages->fetch(HTTP_404_PAGE_ID);
-                        } catch (throwable_PageEntityNotFound $t) {
-                            throw new throwable_RequestedPageNotFound(previous: $t);
+                        } catch (PageEntityNotFound $t) {
+                            throw new RequestedPageNotFound(previous: $t);
                         }
                     }
                 })();
@@ -65,7 +65,7 @@ use const genug\Setting\ {
                 \http_response_code(404);
             }
             require_once VIEW_INDEX_FILE;
-        } catch (throwable_RequestedPageNotFound $t) {
+        } catch (RequestedPageNotFound $t) {
             \ob_clean();
             \http_response_code(404);
 

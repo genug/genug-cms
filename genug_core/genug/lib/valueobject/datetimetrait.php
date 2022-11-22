@@ -9,7 +9,7 @@ namespace genug\Lib\ValueObject;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-trait trait_DateTime
+trait DateTimeTrait
 {
     private $_isMutable = true;
 

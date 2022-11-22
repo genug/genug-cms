@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace genug;
+namespace genug\Page;
 
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-class throwable_Error extends \Error
+final class EntityNotFound extends \genug\Exception
 {
 }

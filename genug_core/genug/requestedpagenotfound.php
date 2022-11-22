@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace genug\Page;
+namespace genug;
 
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class throwable_EntityNotFound extends \genug\throwable_Exception
+final class RequestedPageNotFound extends Exception
 {
 }

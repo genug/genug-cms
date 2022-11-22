@@ -11,5 +11,5 @@ namespace genug\Page;
  */
 final class Content
 {
-    use \genug\Lib\ValueObject\trait_TrimmedString;
+    use \genug\Lib\ValueObject\TrimmedStringTrait;
 }

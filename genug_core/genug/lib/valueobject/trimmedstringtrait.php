@@ -9,26 +9,23 @@ namespace genug\Lib\ValueObject;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-trait trait_Id
+trait TrimmedStringTrait
 {
     private $_isMutable = true;
 
-    private $_id;
+    private $_trimmedString;
 
-    public function __construct(string $id)
+    public function __construct(string $untrimmedString)
     {
         if (! $this->_isMutable) {
             throw new \BadMethodCallException();
         }
-        if (! \preg_match(self::VALID_STRING_PATTERN, $id)) {
-            throw new \InvalidArgumentException();
-        }
         $this->_isMutable = false;
-        $this->_id = $id;
+        $this->_trimmedString = \trim($untrimmedString);
     }
 
     public function __toString(): string
     {
-        return $this->_id;
+        return $this->_trimmedString;
     }
 }

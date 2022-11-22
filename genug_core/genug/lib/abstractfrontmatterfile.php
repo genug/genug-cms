@@ -9,7 +9,7 @@ namespace genug\Lib;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-abstract class abstract_FrontMatterFile
+abstract class AbstractFrontMatterFile
 {
     public const VALID_EOL = "\n";
 

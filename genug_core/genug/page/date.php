@@ -11,5 +11,5 @@ namespace genug\Page;
  */
 final class Date
 {
-    use \genug\Lib\ValueObject\trait_DateTime;
+    use \genug\Lib\ValueObject\DateTimeTrait;
 }
