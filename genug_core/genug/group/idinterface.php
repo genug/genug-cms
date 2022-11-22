@@ -11,4 +11,6 @@ use Stringable;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-interface IdInterface extends Stringable {}
+interface IdInterface extends Stringable
+{
+}

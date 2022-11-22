@@ -6,6 +6,7 @@ namespace genug\Group;
 
 use Iterator;
 use Countable;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
