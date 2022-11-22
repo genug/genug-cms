@@ -69,8 +69,6 @@ use const genug\Setting\ {
             \ob_clean();
             \http_response_code(404);
 
-var_dump($t);
-
             echo '404 Not Found';
         }
     } catch (\Throwable $t) {
