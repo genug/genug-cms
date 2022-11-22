@@ -17,19 +17,9 @@ use LogicException;
 
 final class EntityAndIdCache
 {
-    protected static self $instance;
-
     protected readonly WeakMap $weakMap;
 
-    public static function instance(): self
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
-    protected function __construct()
+    public function __construct()
     {
         $this->weakMap = new WeakMap();
     }

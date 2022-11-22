@@ -17,6 +17,7 @@ use genug\Page\ {
     EntityNotFound as PageEntityNotFound,
     Repository as PageRepository,
 };
+use genug\Lib\EntityAndIdCache;
 
 use const genug\Setting\ {
     HOME_PAGE_ID,
@@ -36,7 +37,9 @@ use const genug\Setting\ {
 
         try {
             $genug = (function () {
-                $pages = new PageRepository();
+                $entityAndIdCache = new EntityAndIdCache();
+
+                $pages = new PageRepository($entityAndIdCache);
                 $requestedPage = (function () use ($pages) {
                     try {
                         return $pages->fetch(REQUESTED_PAGE_ID);
@@ -48,7 +51,7 @@ use const genug\Setting\ {
                         }
                     }
                 })();
-                $groups = new GroupRepository();
+                $groups = new GroupRepository($entityAndIdCache);
                 $homePage = $pages->fetch(HOME_PAGE_ID);
 
                 return new GenugApi(

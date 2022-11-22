@@ -22,27 +22,14 @@ use const genug\Persistence\FileSystem\Group\ {
  */
 final class Repository implements RepositoryInterface
 {
-    private bool $_isMutable = true;
-
     private readonly ArrayObject $idToFilePathMap;
     private readonly ArrayIterator $iterator;
-    private readonly EntityAndIdCache $entityAndIdCache;
 
-    /**
-     *
-     * @todo [b] error_log and continue
-     */
-    public function __construct()
-    {
-        if (! $this->_isMutable) {
-            throw new \BadMethodCallException();
-        }
-        $this->_isMutable = false;
-
+    public function __construct(
+        private readonly EntityAndIdCache $entityAndIdCache
+    ) {
         $this->idToFilePathMap = self::createIdToFilePathMap();
         $this->iterator = $this->idToFilePathMap->getIterator();
-
-        $this->entityAndIdCache = EntityAndIdCache::instance();
     }
 
     /**
