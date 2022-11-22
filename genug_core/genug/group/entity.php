@@ -12,8 +12,8 @@ namespace genug\Group;
 final class Entity
 {
     public function __construct(
-        public readonly Id $id,
-        public readonly Title $title
+        public readonly IdInterface $id,
+        public readonly TitleInterface $title
     ) {
     }
 }

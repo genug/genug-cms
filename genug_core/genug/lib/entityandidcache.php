@@ -6,11 +6,11 @@ namespace genug\Lib;
 
 use genug\Page\{
     Entity as PageEntity,
-    Id as PageId
+    IdInterface as PageIdInterface
 };
 use genug\Group\{
     Entity as GroupEntity,
-    Id as GroupId
+    IdInterface as GroupIdInterface
 };
 use WeakMap;
 use LogicException;
@@ -50,7 +50,7 @@ final class EntityAndIdCache
         }
     }
 
-    public function fetchOrNull(string $className, string $id): null|PageEntity|GroupEntity|PageId|GroupId
+    public function fetchOrNull(string $className, string $id): null|PageEntity|GroupEntity|PageIdInterface|GroupIdInterface
     {
         foreach ($this->weakMap as $obj => $idString) {
             if (

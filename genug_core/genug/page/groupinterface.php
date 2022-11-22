@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace genug\Group;
+namespace genug\Page;
+
+use Stringable;
 
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class Title implements TitleInterface
+interface GroupInterface extends Stringable
 {
-    use \genug\Lib\ValueObject\TrimmedStringTrait;
 }

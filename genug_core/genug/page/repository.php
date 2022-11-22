@@ -25,7 +25,7 @@ use const genug\Setting\MAIN_GROUP_ID;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class Repository implements \Iterator, \Countable
+final class Repository implements RepositoryInterface
 {
     private bool $_isMutable = true;
 

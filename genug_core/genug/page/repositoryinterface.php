@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace genug\Page;
 
+use Iterator;
+use Countable;
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class Date implements DateInterface
+interface RepositoryInterface extends Iterator, Countable
 {
-    use \genug\Lib\ValueObject\DateTimeTrait;
+    public function fetch(string $id): Entity;
 }

@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace genug\Group;
 
+use Iterator;
+use Countable;
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class Title implements TitleInterface
+interface RepositoryInterface extends Iterator, Countable
 {
-    use \genug\Lib\ValueObject\TrimmedStringTrait;
+    public function fetch(string $id): Entity;
 }

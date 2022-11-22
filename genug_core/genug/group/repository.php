@@ -20,7 +20,7 @@ use const genug\Persistence\FileSystem\Group\ {
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class Repository implements \Iterator, \Countable
+final class Repository implements RepositoryInterface
 {
     private bool $_isMutable = true;
 

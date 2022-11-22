@@ -12,11 +12,11 @@ namespace genug\Page;
 final class Entity
 {
     public function __construct(
-        public readonly Id $id,
-        public readonly Group $group,
-        public readonly Title $title,
-        public readonly Date $date,
-        public readonly Content $content
+        public readonly IdInterface $id,
+        public readonly GroupInterface $group,
+        public readonly TitleInterface $title,
+        public readonly DateInterface $date,
+        public readonly ContentInterface $content
     ) {
     }
 }

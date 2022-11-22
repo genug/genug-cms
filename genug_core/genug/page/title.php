@@ -9,7 +9,7 @@ namespace genug\Page;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class Title
+final class Title implements TitleInterface
 {
     use \genug\Lib\ValueObject\TrimmedStringTrait;
 }

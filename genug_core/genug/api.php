@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace genug;
 
 use genug\Group\ {
-    Repository as GroupRepository
+    RepositoryInterface as GroupRepositoryInterface
 };
 use genug\Page\ {
-    Repository as PageRepository,
+    RepositoryInterface as PageRepositoryInterface,
     Entity as PageEntity
 };
 
@@ -20,10 +20,10 @@ use genug\Page\ {
 final class Api
 {
     public function __construct(
-        public readonly PageRepository $pages,
+        public readonly PageRepositoryInterface $pages,
         public readonly PageEntity $requestedPage,
         public readonly PageEntity $homePage,
-        public readonly GroupRepository $groups
+        public readonly GroupRepositoryInterface $groups
     ) {
     }
 }
