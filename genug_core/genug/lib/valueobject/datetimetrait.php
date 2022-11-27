@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace genug\Lib\ValueObject;
 
+use function trim;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -24,7 +26,7 @@ trait DateTimeTrait
         if (! $this->_isMutable) {
             throw new \BadMethodCallException();
         }
-        if ('' === $time) {
+        if ('' === trim($time)) {
             // prevents current time fallback
             // hint: use "now"
             throw new \InvalidArgumentException();
