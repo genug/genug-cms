@@ -13,4 +13,5 @@ use Stringable;
  */
 interface IdInterface extends Stringable
 {
+    public function equals(self $id): bool;
 }

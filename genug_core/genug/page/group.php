@@ -14,4 +14,9 @@ final class Group implements GroupInterface
     use \genug\Lib\ValueObject\IdTrait;
 
     public const VALID_STRING_PATTERN = '#^[a-z0-9][a-z0-9_\-]*$#';
+
+    public function equals(GroupInterface $group): bool
+    {
+        return ($group instanceof $this && (string) $group === (string) $this);
+    }
 }

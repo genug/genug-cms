@@ -6,7 +6,7 @@ namespace genug\Group;
 
 use ArrayIterator;
 use ArrayObject;
-use genug\Lib\EntityAndIdCache;
+use genug\Lib\EntityCache;
 use Throwable;
 use RuntimeException;
 
@@ -26,7 +26,7 @@ final class Repository implements RepositoryInterface
     private readonly ArrayIterator $iterator;
 
     public function __construct(
-        private readonly EntityAndIdCache $entityAndIdCache
+        private readonly EntityCache $entityCache
     ) {
         $this->idToFilePathMap = self::createIdToFilePathMap();
         $this->iterator = $this->idToFilePathMap->getIterator();
@@ -41,7 +41,7 @@ final class Repository implements RepositoryInterface
             throw new EntityNotFound();
         }
         try {
-            return $this->entityAndIdCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
+            return $this->entityCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
         } catch (Throwable $t) {
             // [a]
             throw new EntityNotFound(previous: $t);
@@ -94,12 +94,12 @@ final class Repository implements RepositoryInterface
             throw new \Exception();
         }
 
-        $entity =  new Entity(
-            $this->entityAndIdCache->fetchOrNull(Id::class, $idString) ?? new Id($idString),
+        $entity = new Entity(
+            new Id($idString),
             new Title($data['title'])
         );
 
-        $this->entityAndIdCache->attach($entity);
+        $this->entityCache->attach($entity);
         return $entity;
     }
 

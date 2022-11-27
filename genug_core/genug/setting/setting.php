@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace genug\Setting;
 
+use genug\Page\{
+    IdInterface as PageIdInterface,
+    Id as PageId
+};
+use genug\Group\{
+    IdInterface as GroupIdInterface,
+    Id as GroupId
+};
+
 use const genug\Setting\{
     MAIN_GROUP_ID,
     HOME_PAGE_ID,
@@ -18,9 +27,9 @@ use const genug\Setting\{
 class Setting
 {
     public function __construct(
-        public readonly string $homePageId = HOME_PAGE_ID,
-        public readonly string $notFoundPageId = HTTP_404_PAGE_ID,
-        public readonly string $mainGroupId = MAIN_GROUP_ID,
+        public readonly PageIdInterface $homePageId = new PageId(HOME_PAGE_ID),
+        public readonly PageIdInterface $notFoundPageId = new PageId(HTTP_404_PAGE_ID),
+        public readonly GroupIdInterface $mainGroupId = new GroupId(MAIN_GROUP_ID),
     ) {
     }
 }

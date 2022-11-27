@@ -18,9 +18,9 @@
         <h1>all pages</h1>
         <ul>
 <?php foreach ($genug->pages as $page): ?>
-    <?php if ((string) $page->id !== $genug->setting->notFoundPageId): ?>
+    <?php if (! $page->id->equals($genug->setting->notFoundPageId)): ?>
             <li>
-                <a href="<?= $page->id ?>"<?php if ($page === $genug->requestedPage) {
+                <a href="<?= $page->id ?>"<?php if ($page->equals($genug->requestedPage)) {
                     echo ' aria-current="page"';
                 } ?>><?= $page->title ?></a>
             </li>

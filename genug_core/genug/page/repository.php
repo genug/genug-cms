@@ -8,7 +8,7 @@ use ArrayIterator;
 use ArrayObject;
 use genug\Lib\ {
     AbstractFrontMatterFile,
-    EntityAndIdCache
+    EntityCache
 };
 use Throwable;
 use RuntimeException;
@@ -31,7 +31,7 @@ final class Repository implements RepositoryInterface
     private readonly ArrayIterator $iterator;
 
     public function __construct(
-        private readonly EntityAndIdCache $entityAndIdCache
+        private readonly EntityCache $entityCache
     ) {
         $this->idToFilePathMap = self::createIdToFilePathMap();
         $this->iterator = $this->idToFilePathMap->getIterator();
@@ -46,7 +46,7 @@ final class Repository implements RepositoryInterface
             throw new EntityNotFound();
         }
         try {
-            return $this->entityAndIdCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
+            return $this->entityCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
         } catch (Throwable $t) {
             // [a]
             throw new EntityNotFound(previous: $t);
@@ -118,14 +118,14 @@ final class Repository implements RepositoryInterface
         })();
 
         $entity = new Entity(
-            $this->entityAndIdCache->fetchOrNull(Id::class, $idString) ?? new Id($idString),
+            new Id($idString),
             new Group($dir->getBasename()),
             new Title($title),
             new Date($date),
             new Content($_data->content())
         );
 
-        $this->entityAndIdCache->attach($entity);
+        $this->entityCache->attach($entity);
         return $entity;
     }
 

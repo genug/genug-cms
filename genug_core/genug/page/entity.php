@@ -19,4 +19,9 @@ final class Entity
         public readonly ContentInterface $content
     ) {
     }
+
+    public function equals(self $pageEntity): bool
+    {
+        return ($pageEntity === $this);
+    }
 }

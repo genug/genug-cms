@@ -18,7 +18,7 @@ use genug\Page\ {
     Repository as PageRepository,
 };
 use genug\Setting\Setting;
-use genug\Lib\EntityAndIdCache;
+use genug\Lib\EntityCache;
 
 use const genug\Setting\ {
     HOME_PAGE_ID,
@@ -38,7 +38,7 @@ use const genug\Setting\ {
 
         try {
             $genug = (function () {
-                $entityAndIdCache = new EntityAndIdCache();
+                $entityAndIdCache = new EntityCache();
 
                 $pages = new PageRepository($entityAndIdCache);
                 $requestedPage = (function () use ($pages) {
