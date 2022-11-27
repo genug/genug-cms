@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace genug\Lib\ValueObject;
 
+use DateTime;
+use InvalidArgumentException;
+
 use function trim;
 
 /**
@@ -13,39 +16,23 @@ use function trim;
  */
 trait DateTimeTrait
 {
-    private $_isMutable = true;
+    protected readonly DateTime $dateTime;
 
-    private $_obj;
-
-    /**
-     *
-     * @todo better Exception
-     */
-    public function __construct(string $time)
+    public function __construct(string $dateTime)
     {
-        if (! $this->_isMutable) {
-            throw new \BadMethodCallException();
+        if ('' === trim($dateTime)) {
+            throw new InvalidArgumentException('`$dateTime` is empty or consists of white space. Use `\'now\'` to use the current date and time.');
         }
-        if ('' === trim($time)) {
-            // prevents current time fallback
-            // hint: use "now"
-            throw new \InvalidArgumentException();
-        }
-        try {
-            $this->_isMutable = false;
-            $this->_obj = new \DateTime($time);
-        } catch (\Throwable $e) {
-            throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
-        }
+        $this->dateTime = new DateTime($dateTime);
     }
 
     public function format(string $format): string
     {
-        return $this->_obj->format($format);
+        return $this->dateTime->format($format);
     }
 
     public function __toString(): string
     {
-        return $this->_obj->format('c');
+        return $this->dateTime->format('c');
     }
 }
