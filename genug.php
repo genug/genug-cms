@@ -36,46 +36,45 @@ use const genug\Setting\ {
 
         spl_autoload_register('\genug\autoloader');
 
-        try {
-            $genug = (function () {
-                $entityAndIdCache = new EntityCache();
+        $genug = (function () {
+            $entityAndIdCache = new EntityCache();
 
-                $pages = new PageRepository($entityAndIdCache);
-                $requestedPage = (function () use ($pages) {
+            $pages = new PageRepository($entityAndIdCache);
+            $requestedPage = (function () use ($pages) {
+                try {
+                    return $pages->fetch(REQUESTED_PAGE_ID);
+                } catch (PageEntityNotFound $t) {
                     try {
-                        return $pages->fetch(REQUESTED_PAGE_ID);
+                        return $pages->fetch(HTTP_404_PAGE_ID);
                     } catch (PageEntityNotFound $t) {
-                        try {
-                            return $pages->fetch(HTTP_404_PAGE_ID);
-                        } catch (PageEntityNotFound $t) {
-                            throw new RequestedPageNotFound(previous: $t);
-                        }
+                        throw new RequestedPageNotFound(previous: $t);
                     }
-                })();
-                $groups = new GroupRepository($entityAndIdCache);
-                $homePage = $pages->fetch(HOME_PAGE_ID);
-
-                return new GenugApi(
-                    $pages,
-                    $requestedPage,
-                    $homePage,
-                    $groups,
-                    new Setting()
-                );
+                }
             })();
+            $groups = new GroupRepository($entityAndIdCache);
+            $homePage = $pages->fetch(HOME_PAGE_ID);
 
-            \header('Content-Type: ' . CONTENT_TYPE);
-            \http_response_code(200);
-            if ($genug->requestedPage->id->__toString() === HTTP_404_PAGE_ID) {
-                \http_response_code(404);
-            }
-            require_once VIEW_INDEX_FILE;
-        } catch (RequestedPageNotFound $t) {
-            \ob_clean();
+            return new GenugApi(
+                $pages,
+                $requestedPage,
+                $homePage,
+                $groups,
+                new Setting()
+            );
+        })();
+
+        \header('Content-Type: ' . CONTENT_TYPE);
+        \http_response_code(200);
+        if ($genug->requestedPage->id->__toString() === HTTP_404_PAGE_ID) {
             \http_response_code(404);
-
-            echo '404 Not Found';
         }
+        require_once VIEW_INDEX_FILE;
+    } catch (RequestedPageNotFound $t) {
+        \ob_clean();
+        \http_response_code(404);
+
+        echo '404 Not Found';
+        throw $t;
     } catch (\Throwable $t) {
         \ob_clean();
         \http_response_code(500);
