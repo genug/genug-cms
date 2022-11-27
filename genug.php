@@ -37,9 +37,9 @@ use const genug\Setting\ {
         spl_autoload_register('\genug\autoloader');
 
         $genug = (function () {
-            $entityAndIdCache = new EntityCache();
+            $entityCache = new EntityCache();
 
-            $pages = new PageRepository($entityAndIdCache);
+            $pages = new PageRepository($entityCache);
             $requestedPage = (function () use ($pages) {
                 try {
                     return $pages->fetch(REQUESTED_PAGE_ID);
@@ -51,7 +51,7 @@ use const genug\Setting\ {
                     }
                 }
             })();
-            $groups = new GroupRepository($entityAndIdCache);
+            $groups = new GroupRepository($entityCache);
             $homePage = $pages->fetch(HOME_PAGE_ID);
 
             return new GenugApi(
