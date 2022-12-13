@@ -65,7 +65,7 @@ use const genug\Setting\ {
 
         \header('Content-Type: ' . CONTENT_TYPE);
         \http_response_code(200);
-        if ($genug->requestedPage->id->__toString() === HTTP_404_PAGE_ID) {
+        if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
             \http_response_code(404);
         }
         require_once VIEW_INDEX_FILE;
