@@ -32,9 +32,9 @@ use const genug\Setting\ {
     try {
         \ob_start();
 
-        require_once __DIR__ . '/genug_core/genug/bootstrap.php';
+        require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-        spl_autoload_register('\genug\autoloader');
+        require_once dirname(__DIR__) . '/src/Bootstrap.php';
 
         $genug = (function () {
             $entityCache = new EntityCache();

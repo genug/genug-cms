@@ -53,7 +53,7 @@ namespace genug\Setting
     // ---
 
     if (! \defined(__NAMESPACE__ . '\USER_DIR')) {
-        \define(__NAMESPACE__ . '\USER_DIR', \getcwd() . '/genug_user');
+        \define(__NAMESPACE__ . '\USER_DIR', \dirname(\getcwd()) . '/genug_user');
     }
 
     if (! \defined(__NAMESPACE__ . '\CONTENT_DIR')) {
@@ -71,7 +71,7 @@ namespace genug\Setting
 
 namespace genug
 {
-    \define(__NAMESPACE__ . '\CORE_DIR', \dirname(__DIR__));
+    \define(__NAMESPACE__ . '\CORE_DIR', __DIR__);
 }
 
 namespace genug\Persistence\FileSystem\Group
@@ -90,34 +90,4 @@ namespace genug\Persistence\FileSystem\Page
     const FILENAME_EXTENSION = 'page';
 
     const HOME_PAGE_FILENAME = '_home.' . namespace\FILENAME_EXTENSION;
-}
-
-/*
- * functions
- */
-
-namespace genug
-{
-    function autoloader($class)
-    {
-        if (\strpos($class, __NAMESPACE__ . '\\') !== 0) {
-            return;
-        }
-
-        $fileName = (function () use ($class) {
-            $relativePath = \str_replace('\\', \DIRECTORY_SEPARATOR, \strtolower($class));
-            return namespace\CORE_DIR . \DIRECTORY_SEPARATOR . $relativePath . '.php';
-        })();
-
-        $isProperFileName = (function () use ($fileName) {
-            $fileInfo = new \SplFileInfo($fileName);
-            return ($fileInfo->isFile() && $fileInfo->isReadable());
-        })();
-
-        if (! $isProperFileName) {
-            return;
-        }
-
-        include $fileName;
-    }
 }
