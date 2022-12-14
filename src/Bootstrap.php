@@ -52,6 +52,20 @@ namespace genug\Setting
 
     // ---
 
+    if (! \defined(__NAMESPACE__ . '\DEBUG_MODE')) {
+        \define(__NAMESPACE__ . '\DEBUG_MODE', filter_var(getenv('GENUG_DEBUG', true), FILTER_VALIDATE_BOOL));
+    }
+
+    // ---
+
+    if (! \defined(__NAMESPACE__ . '\LOG_DIR')) {
+        \define(__NAMESPACE__ . '\LOG_DIR', \dirname(\getcwd()) . '/log');
+    }
+
+    if (! \defined(__NAMESPACE__ . '\DEBUG_LOG_FILE')) {
+        \define(__NAMESPACE__ . '\DEBUG_LOG_FILE', namespace\LOG_DIR . '/debug.log');
+    }
+
     if (! \defined(__NAMESPACE__ . '\USER_DIR')) {
         \define(__NAMESPACE__ . '\USER_DIR', \dirname(\getcwd()) . '/genug_user');
     }

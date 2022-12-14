@@ -10,6 +10,8 @@ use genug\Lib\ {
     AbstractFrontMatterFile,
     EntityCache
 };
+use LogicException;
+use Psr\Log\LoggerInterface;
 use Throwable;
 use RuntimeException;
 
@@ -31,15 +33,13 @@ final class Repository implements RepositoryInterface
     private readonly ArrayIterator $iterator;
 
     public function __construct(
-        private readonly EntityCache $entityCache
+        private readonly EntityCache $entityCache,
+        private readonly LoggerInterface $logger
     ) {
         $this->idToFilePathMap = self::createIdToFilePathMap();
         $this->iterator = $this->idToFilePathMap->getIterator();
     }
 
-    /**
-     * @todo [a] log
-     */
     public function fetch(string $id): Entity
     {
         if (! $this->idToFilePathMap->offsetExists($id)) {
@@ -48,8 +48,15 @@ final class Repository implements RepositoryInterface
         try {
             return $this->entityCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
         } catch (Throwable $t) {
-            // [a]
-            throw new EntityNotFound(previous: $t);
+            $this->logger->alert(
+                'Fetching a page from the repository fails.',
+                [
+                    'method' => __METHOD__,
+                    'retrieved_id' => $id,
+                    'throwable' => $t,
+                ]
+            );
+            throw new EntityNotFound();
         }
     }
 
@@ -125,7 +132,18 @@ final class Repository implements RepositoryInterface
             new Content($_data->content())
         );
 
-        $this->entityCache->attach($entity);
+        try {
+            $this->entityCache->attach($entity);
+        } catch (Throwable $t) {
+            $this->logger->error(
+                'Caching of the page entity fails.',
+                [
+                    'method' => __METHOD__,
+                    'entity' => $entity,
+                    'throwable' => $t,
+                ]
+            );
+        }
         return $entity;
     }
 

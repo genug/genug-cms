@@ -19,8 +19,15 @@ use genug\Page\ {
 };
 use genug\Setting\Setting;
 use genug\Lib\EntityCache;
+use Monolog\Handler\StreamHandler;
+use Monolog\{
+    Level,
+    Logger,
+};
 
 use const genug\Setting\ {
+    DEBUG_MODE,
+    DEBUG_LOG_FILE,
     HOME_PAGE_ID,
     REQUESTED_PAGE_ID,
     HTTP_404_PAGE_ID,
@@ -36,10 +43,22 @@ use const genug\Setting\ {
 
         require_once dirname(__DIR__) . '/src/Bootstrap.php';
 
-        $genug = (function () {
+        $genugLogger = (function (): Logger {
+            $logger = new Logger('genug_user');
+            $logger->pushHandler(new StreamHandler('php://stderr', Level::Warning));
+
+            if (DEBUG_MODE) {
+                $logger->pushHandler(new StreamHandler(DEBUG_LOG_FILE, Level::Debug));
+            }
+            return $logger;
+        })();
+
+        $genug = (function () use ($genugLogger) {
+            $logger = $genugLogger->withName('genug_core');
+
             $entityCache = new EntityCache();
 
-            $pages = new PageRepository($entityCache);
+            $pages = new PageRepository($entityCache, $logger);
             $requestedPage = (function () use ($pages) {
                 try {
                     return $pages->fetch(REQUESTED_PAGE_ID);
@@ -51,7 +70,7 @@ use const genug\Setting\ {
                     }
                 }
             })();
-            $groups = new GroupRepository($entityCache);
+            $groups = new GroupRepository($entityCache, $logger);
             $homePage = $pages->fetch(HOME_PAGE_ID);
 
             return new GenugApi(
@@ -74,13 +93,19 @@ use const genug\Setting\ {
         \http_response_code(404);
 
         echo '404 Not Found';
-        throw $t;
+        $genugLogger->error(
+            'No page was found to display an "HTTP 404 Not Found" error.',
+            ['throwable' => $t]
+        );
     } catch (\Throwable $t) {
         \ob_clean();
         \http_response_code(500);
 
         echo '500 Internal Server Error';
-        throw $t;
+        $genugLogger->alert(
+            'Fatal Error.',
+            ['throwable' => $t]
+        );
     } finally {
         \ob_end_flush();
     }
