@@ -6,11 +6,11 @@ namespace genug\Page;
 
 use ArrayIterator;
 use ArrayObject;
+use genug\Environment\Environment;
 use genug\Lib\ {
     AbstractFrontMatterFile,
     EntityCache
 };
-use LogicException;
 use Psr\Log\LoggerInterface;
 use Throwable;
 use RuntimeException;
@@ -20,7 +20,6 @@ use const genug\Persistence\FileSystem\Page\ {
     FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION,
     HOME_PAGE_FILENAME
 };
-use const genug\Setting\MAIN_GROUP_ID;
 
 /**
  *
@@ -32,11 +31,15 @@ final class Repository implements RepositoryInterface
     private readonly ArrayObject $idToFilePathMap;
     private readonly ArrayIterator $iterator;
 
+    protected readonly string $mainGroupIdString;
+
     public function __construct(
         private readonly EntityCache $entityCache,
+        protected readonly Environment $environment,
         private readonly LoggerInterface $logger
     ) {
-        $this->idToFilePathMap = self::createIdToFilePathMap();
+        $this->mainGroupIdString = (string) $this->environment->mainGroupId();
+        $this->idToFilePathMap = $this->createIdToFilePathMap();
         $this->iterator = $this->idToFilePathMap->getIterator();
     }
 
@@ -147,7 +150,7 @@ final class Repository implements RepositoryInterface
         return $entity;
     }
 
-    protected static function createIdToFilePathMap(): ArrayObject
+    protected function createIdToFilePathMap(): ArrayObject
     {
         $idToFilePathMap = new ArrayObject();
 
@@ -169,9 +172,9 @@ final class Repository implements RepositoryInterface
             foreach ($pageFiles as $pageFile) {
                 $id = (function () use ($dir, $pageFile) {
                     $rtn = '';
-                    if ($dir->getBasename() === MAIN_GROUP_ID && $pageFile->getBasename() === HOME_PAGE_FILENAME) {
+                    if ($dir->getBasename() === $this->mainGroupIdString && $pageFile->getBasename() === HOME_PAGE_FILENAME) {
                         $rtn = '/';
-                    } elseif ($dir->getBasename() === MAIN_GROUP_ID) {
+                    } elseif ($dir->getBasename() === $this->mainGroupIdString) {
                         $rtn = '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
                     } else {
                         $rtn = '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);

@@ -18,18 +18,6 @@ namespace genug\Setting
         \define(__NAMESPACE__ . '\CONTENT_TYPE', 'text/html; charset=UTF-8');
     }
 
-    if (! \defined(__NAMESPACE__ . '\MAIN_GROUP_ID')) {
-        \define(__NAMESPACE__ . '\MAIN_GROUP_ID', 'site');
-    }
-
-    if (! \defined(__NAMESPACE__ . '\HOME_PAGE_ID')) {
-        \define(__NAMESPACE__ . '\HOME_PAGE_ID', '/');
-    }
-
-    if (! \defined(__NAMESPACE__ . '\HTTP_404_PAGE_ID')) {
-        \define(__NAMESPACE__ . '\HTTP_404_PAGE_ID', '/http-404');
-    }
-
     if (! \defined(__NAMESPACE__ . '\REQUESTED_PAGE_ID')) {
         \define(__NAMESPACE__ . '\REQUESTED_PAGE_ID', (function () {
             $path = \parse_url($_SERVER['REQUEST_URI'], \PHP_URL_PATH);
@@ -52,20 +40,6 @@ namespace genug\Setting
 
     // ---
 
-    if (! \defined(__NAMESPACE__ . '\DEBUG_MODE')) {
-        \define(__NAMESPACE__ . '\DEBUG_MODE', filter_var(getenv('GENUG_DEBUG', true), FILTER_VALIDATE_BOOL));
-    }
-
-    // ---
-
-    if (! \defined(__NAMESPACE__ . '\LOG_DIR')) {
-        \define(__NAMESPACE__ . '\LOG_DIR', \dirname(\getcwd()) . '/log');
-    }
-
-    if (! \defined(__NAMESPACE__ . '\DEBUG_LOG_FILE')) {
-        \define(__NAMESPACE__ . '\DEBUG_LOG_FILE', namespace\LOG_DIR . '/debug.log');
-    }
-
     if (! \defined(__NAMESPACE__ . '\USER_DIR')) {
         \define(__NAMESPACE__ . '\USER_DIR', \dirname(\getcwd()) . '/genug_user');
     }
@@ -81,11 +55,6 @@ namespace genug\Setting
     if (! \defined(__NAMESPACE__ . '\VIEW_INDEX_FILE')) {
         \define(__NAMESPACE__ . '\VIEW_INDEX_FILE', namespace\VIEW_DIR . '/index.php');
     }
-}
-
-namespace genug
-{
-    \define(__NAMESPACE__ . '\CORE_DIR', __DIR__);
 }
 
 namespace genug\Persistence\FileSystem\Group

@@ -9,6 +9,7 @@ declare(strict_types=1);
  */
 
 use genug\Api as GenugApi;
+use genug\Environment\Environment;
 use genug\RequestedPageNotFound;
 use genug\Group\ {
     Repository as GroupRepository,
@@ -19,18 +20,10 @@ use genug\Page\ {
 };
 use genug\Setting\Setting;
 use genug\Lib\EntityCache;
-use Monolog\Handler\StreamHandler;
-use Monolog\{
-    Level,
-    Logger,
-};
+use genug\Log;
 
 use const genug\Setting\ {
-    DEBUG_MODE,
-    DEBUG_LOG_FILE,
-    HOME_PAGE_ID,
     REQUESTED_PAGE_ID,
-    HTTP_404_PAGE_ID,
     CONTENT_TYPE,
     VIEW_INDEX_FILE
 };
@@ -43,42 +36,39 @@ use const genug\Setting\ {
 
         require_once dirname(__DIR__) . '/src/Bootstrap.php';
 
-        $genugLogger = (function (): Logger {
-            $logger = new Logger('genug_user');
-            $logger->pushHandler(new StreamHandler('php://stderr', Level::Warning));
-
-            if (DEBUG_MODE) {
-                $logger->pushHandler(new StreamHandler(DEBUG_LOG_FILE, Level::Debug));
-            }
-            return $logger;
-        })();
-
-        $genug = (function () use ($genugLogger) {
-            $logger = $genugLogger->withName('genug_core');
-
+        $genug = (function () {
             $entityCache = new EntityCache();
+            $environment = new Environment(Log::instance('genug_environment'));
 
-            $pages = new PageRepository($entityCache, $logger);
-            $requestedPage = (function () use ($pages) {
+            $pages = new PageRepository(
+                $entityCache,
+                $environment,
+                Log::instance('genug_page')
+            );
+            $requestedPage = (function () use ($pages, $environment) {
                 try {
                     return $pages->fetch(REQUESTED_PAGE_ID);
                 } catch (PageEntityNotFound $t) {
                     try {
-                        return $pages->fetch(HTTP_404_PAGE_ID);
+                        return $pages->fetch((string) $environment->http404PageId());
                     } catch (PageEntityNotFound $t) {
                         throw new RequestedPageNotFound(previous: $t);
                     }
                 }
             })();
-            $groups = new GroupRepository($entityCache, $logger);
-            $homePage = $pages->fetch(HOME_PAGE_ID);
+            $groups = new GroupRepository($entityCache, Log::instance('genug_group'));
+            $homePage = $pages->fetch((string) $environment->homePageId());
 
             return new GenugApi(
                 $pages,
                 $requestedPage,
                 $homePage,
                 $groups,
-                new Setting()
+                new Setting(
+                    $environment->homePageId(),
+                    $environment->http404PageId(),
+                    $environment->mainGroupId()
+                )
             );
         })();
 
@@ -87,13 +77,15 @@ use const genug\Setting\ {
         if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
             \http_response_code(404);
         }
-        require_once VIEW_INDEX_FILE;
+        (function () use ($genug) {
+            require_once VIEW_INDEX_FILE;
+        })();
     } catch (RequestedPageNotFound $t) {
         \ob_clean();
         \http_response_code(404);
 
         echo '404 Not Found';
-        $genugLogger->error(
+        Log::instance('genug_core')->error(
             'No page was found to display an "HTTP 404 Not Found" error.',
             ['throwable' => $t]
         );
@@ -102,7 +94,7 @@ use const genug\Setting\ {
         \http_response_code(500);
 
         echo '500 Internal Server Error';
-        $genugLogger->alert(
+        Log::instance('genug_core')->alert(
             'Fatal Error.',
             ['throwable' => $t]
         );
