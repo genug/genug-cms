@@ -27,13 +27,15 @@ final class Log
         return static::$instances[$name];
     }
 
-    protected function __construct(){}
+    protected function __construct()
+    {
+    }
 
     protected static function instantiateLogger(string $name): MonologLogger
     {
         $debugEnvValueString = getenv('GENUG_DEBUG', true) ?: Preset::GENUG_DEBUG->value;
         $isDebugOrNullOnFailure = filter_var($debugEnvValueString, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
-        
+
         $debugLogFilePath = getenv('GENUG_DEBUG_LOGFILE', true) ?: Preset::GENUG_DEBUG_LOGFILE->value;
 
         $logger = new MonologLogger($name);
@@ -44,7 +46,7 @@ final class Log
         $logger->pushHandler(new StreamHandler('php://stderr', $level));
 
         if ((bool) $isDebugOrNullOnFailure) {
-            $logger->pushHandler(new StreamHandler($debugLogFilePath , Level::Debug));
+            $logger->pushHandler(new StreamHandler($debugLogFilePath, Level::Debug));
         }
         return $logger;
     }
