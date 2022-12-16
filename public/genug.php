@@ -21,9 +21,9 @@ use genug\Page\ {
 use genug\Setting\Setting;
 use genug\Lib\EntityCache;
 use genug\Log;
+use genug\Request\Request;
 
 use const genug\Setting\ {
-    REQUESTED_PAGE_ID,
     CONTENT_TYPE,
     VIEW_INDEX_FILE
 };
@@ -36,18 +36,19 @@ use const genug\Setting\ {
 
         require_once dirname(__DIR__) . '/src/Bootstrap.php';
 
-        $genug = (function () {
+        $genug = (function (): GenugApi {
             $entityCache = new EntityCache();
             $environment = new Environment(Log::instance('genug_environment'));
+            $request = new Request();
 
             $pages = new PageRepository(
                 $entityCache,
                 $environment,
                 Log::instance('genug_page')
             );
-            $requestedPage = (function () use ($pages, $environment) {
+            $requestedPage = (function () use ($pages, $environment, $request) {
                 try {
-                    return $pages->fetch(REQUESTED_PAGE_ID);
+                    return $pages->fetch($request->pageId());
                 } catch (PageEntityNotFound $t) {
                     try {
                         return $pages->fetch((string) $environment->http404PageId());

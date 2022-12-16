@@ -18,26 +18,6 @@ namespace genug\Setting
         \define(__NAMESPACE__ . '\CONTENT_TYPE', 'text/html; charset=UTF-8');
     }
 
-    if (! \defined(__NAMESPACE__ . '\REQUESTED_PAGE_ID')) {
-        \define(__NAMESPACE__ . '\REQUESTED_PAGE_ID', (function () {
-            $path = \parse_url($_SERVER['REQUEST_URI'], \PHP_URL_PATH);
-            $pathBase = (function () {
-                $path_base = \dirname($_SERVER['SCRIPT_NAME']);
-                if (\strlen($path_base) === 1) {
-                    // $path_base is '\' (windows) OR '/' (linux) OR '.'
-                    $path_base = '';
-                }
-                return $path_base;
-            })();
-
-            if ($pathBase !== '') {
-                $pattern = '#^' . \preg_quote($pathBase, '#') . '#';
-                $path = \preg_replace($pattern, '', $path, 1);
-            }
-            return $path;
-        })());
-    }
-
     // ---
 
     if (! \defined(__NAMESPACE__ . '\USER_DIR')) {
