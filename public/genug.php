@@ -15,13 +15,14 @@ use genug\Group\ {
     Repository as GroupRepository,
 };
 use genug\Page\ {
-    EntityNotFound as PageEntityNotFound,
     Repository as PageRepository,
 };
 use genug\Setting\Setting;
 use genug\Lib\EntityCache;
 use genug\Log;
 use genug\Request\Request;
+use genug\Router\Router;
+use genug\Router\RouterError;
 
 use const genug\Setting\ {
     CONTENT_TYPE,
@@ -40,23 +41,24 @@ use const genug\Setting\ {
             $entityCache = new EntityCache();
             $environment = new Environment(Log::instance('genug_environment'));
             $request = new Request();
-
             $pages = new PageRepository(
                 $entityCache,
                 $environment,
                 Log::instance('genug_page')
             );
-            $requestedPage = (function () use ($pages, $environment, $request) {
-                try {
-                    return $pages->fetch($request->pageId());
-                } catch (PageEntityNotFound $t) {
-                    try {
-                        return $pages->fetch((string) $environment->http404PageId());
-                    } catch (PageEntityNotFound $t) {
-                        throw new RequestedPageNotFound(previous: $t);
-                    }
-                }
-            })();
+            $router = new Router(
+                $request,
+                $pages,
+                $environment,
+                Log::instance('genug_router')
+            );
+
+            try {
+                $requestedPage = $router->result();
+            } catch (RouterError $t) {
+                throw new RequestedPageNotFound(previous: $t);
+            }
+
             $groups = new GroupRepository($entityCache, Log::instance('genug_group'));
             $homePage = $pages->fetch((string) $environment->homePageId());
 
