@@ -2,15 +2,8 @@
 
 declare(strict_types=1);
 
-/**
- *
- * @author David Ringsdorf http://davidringsdorf.de
- * @license MIT License
- */
-
 use genug\Api as GenugApi;
 use genug\Environment\Environment;
-use genug\RequestedPageNotFound;
 use genug\Group\ {
     Repository as GroupRepository,
 };
@@ -29,72 +22,72 @@ use const genug\Setting\ {
     VIEW_INDEX_FILE
 };
 
+/**
+ *
+ * @author David Ringsdorf http://davidringsdorf.de
+ * @license MIT License
+ */
 (function () {
     try {
-        \ob_start();
+        ob_start();
 
         require_once dirname(__DIR__) . '/vendor/autoload.php';
 
         require_once dirname(__DIR__) . '/src/Bootstrap.php';
 
-        $genug = (function (): GenugApi {
-            $entityCache = new EntityCache();
-            $environment = new Environment(Log::instance('genug_environment'));
-            $request = new Request();
-            $pages = new PageRepository(
+        $environment = new Environment(Log::instance('genug_environment'));
+        $request = new Request();
+        $entityCache = new EntityCache();
+
+        $pages = new PageRepository(
+            $entityCache,
+            $environment,
+            Log::instance('genug_page')
+        );
+        $router = new Router(
+            $request,
+            $pages,
+            $environment,
+            Log::instance('genug_router')
+        );
+
+        // ---
+
+        $genug = new GenugApi(
+            pages: $pages,
+            requestedPage: $router->result(),
+            homePage: $pages->fetch((string) $environment->homePageId()),
+            groups: new GroupRepository(
                 $entityCache,
-                $environment,
-                Log::instance('genug_page')
-            );
-            $router = new Router(
-                $request,
-                $pages,
-                $environment,
-                Log::instance('genug_router')
-            );
+                Log::instance('genug_group')
+            ),
+            setting: new Setting(
+                $environment->homePageId(),
+                $environment->http404PageId(),
+                $environment->mainGroupId()
+            )
+        );
 
-            try {
-                $requestedPage = $router->result();
-            } catch (RouterError $t) {
-                throw new RequestedPageNotFound(previous: $t);
-            }
-
-            $groups = new GroupRepository($entityCache, Log::instance('genug_group'));
-            $homePage = $pages->fetch((string) $environment->homePageId());
-
-            return new GenugApi(
-                $pages,
-                $requestedPage,
-                $homePage,
-                $groups,
-                new Setting(
-                    $environment->homePageId(),
-                    $environment->http404PageId(),
-                    $environment->mainGroupId()
-                )
-            );
-        })();
-
-        \header('Content-Type: ' . CONTENT_TYPE);
-        \http_response_code(200);
-        if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
-            \http_response_code(404);
-        }
         (function () use ($genug) {
+            header('Content-Type: ' . CONTENT_TYPE);
+            http_response_code(200);
+            if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
+                http_response_code(404);
+            }
             require_once VIEW_INDEX_FILE;
         })();
-    } catch (RequestedPageNotFound $t) {
-        \ob_clean();
-        \http_response_code(404);
+    } catch (RouterError $t) {
+        ob_clean();
+        http_response_code(404);
 
         echo '404 Not Found';
         Log::instance('genug_core')->error(
             'No page was found to display an "HTTP 404 Not Found" error.',
             ['throwable' => $t]
         );
-    } catch (\Throwable $t) {
-        \ob_clean();
-        \http_response_code(500);
+    } catch (Throwable $t) {
+        ob_clean();
+        http_response_code(500);
 
         echo '500 Internal Server Error';
         Log::instance('genug_core')->alert(
@@ -102,6 +95,6 @@ use const genug\Setting\ {
             ['throwable' => $t]
         );
     } finally {
-        \ob_end_flush();
+        ob_end_flush();
     }
 })();
