@@ -10,6 +10,7 @@ use genug\Lib\EntityCache;
 use Psr\Log\LoggerInterface;
 use Throwable;
 use RuntimeException;
+use Symfony\Component\Yaml\Yaml;
 
 use const genug\Persistence\FileSystem\Group\ {
     DIR as GROUP_DIR,
@@ -95,7 +96,7 @@ final class Repository implements RepositoryInterface
             throw new \Exception($file->getFilename());
         }
 
-        $data = \parse_ini_file($file->getRealPath(), false, INI_SCANNER_TYPED);
+        $data = Yaml::parseFile($file->getRealPath());
         if (! isset($data['title'])) {
             throw new \Exception();
         }

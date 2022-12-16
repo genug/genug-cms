@@ -14,6 +14,7 @@ use genug\Lib\ {
 use Psr\Log\LoggerInterface;
 use Throwable;
 use RuntimeException;
+use Symfony\Component\Yaml\Yaml;
 
 use const genug\Persistence\FileSystem\Page\ {
     DIR as PAGE_DIR,
@@ -107,7 +108,7 @@ final class Repository implements RepositoryInterface
         $_data = new class ($pageFile->getRealPath()) extends AbstractFrontMatterFile {
             protected function _parseFrontMatterString(string $str): array
             {
-                return \parse_ini_string($str, false, \INI_SCANNER_TYPED);
+                return Yaml::parse($str);
             }
         };
 
