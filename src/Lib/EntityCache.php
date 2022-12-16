@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace genug\Lib;
 
-use genug\Page\Entity as PageEntity;
 use genug\Group\Entity as GroupEntity;
-use WeakMap;
+use genug\Page\Entity as PageEntity;
 use LogicException;
+use WeakMap;
 
 final class EntityCache
 {

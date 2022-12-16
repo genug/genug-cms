@@ -14,11 +14,9 @@ declare(strict_types=1);
 namespace genug\Router;
 
 use genug\Environment\EnvironmentInterface;
-use genug\Page\{
-    Entity as PageEntity,
-    EntityNotFound as PageEntityNotFound,
-    RepositoryInterface as PageRepositoryInterface,
-};
+use genug\Page\Entity as PageEntity;
+use genug\Page\EntityNotFound as PageEntityNotFound;
+use genug\Page\RepositoryInterface as PageRepositoryInterface;
 use genug\Request\RequestInterface;
 use Psr\Log\LoggerInterface;
 

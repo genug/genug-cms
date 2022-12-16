@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace genug\Group;
 
-use Iterator;
 use Countable;
+use Iterator;
 
 /**
  *

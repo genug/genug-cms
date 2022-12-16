@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace genug;
 
-use Psr\Log\LoggerInterface;
 use genug\Environment\Preset;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger as MonologLogger;
+use Psr\Log\LoggerInterface;
 
 /**
  *

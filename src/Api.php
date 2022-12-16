@@ -16,10 +16,8 @@ namespace genug;
 use genug\Group\ {
     RepositoryInterface as GroupRepositoryInterface
 };
-use genug\Page\ {
-    RepositoryInterface as PageRepositoryInterface,
-    Entity as PageEntity
-};
+use genug\Page\Entity as PageEntity;
+use genug\Page\RepositoryInterface as PageRepositoryInterface;
 use genug\Setting\Setting;
 
 /**

@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace genug\Lib\ValueObject;
 
+use BadMethodCallException;
+
+use function trim;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -27,10 +31,10 @@ trait TrimmedStringTrait
     public function __construct(string $untrimmedString)
     {
         if (! $this->_isMutable) {
-            throw new \BadMethodCallException();
+            throw new BadMethodCallException();
         }
         $this->_isMutable = false;
-        $this->_trimmedString = \trim($untrimmedString);
+        $this->_trimmedString = trim($untrimmedString);
     }
 
     public function __toString(): string

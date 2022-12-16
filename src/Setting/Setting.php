@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace genug\Setting;
 
-use genug\Page\IdInterface as PageIdInterface;
 use genug\Group\IdInterface as GroupIdInterface;
+use genug\Page\IdInterface as PageIdInterface;
 
 /**
  *

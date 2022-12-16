@@ -13,6 +13,11 @@ declare(strict_types=1);
 
 namespace genug\Lib\ValueObject;
 
+use BadMethodCallException;
+use InvalidArgumentException;
+
+use function preg_match;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -27,10 +32,10 @@ trait IdTrait
     public function __construct(string $id)
     {
         if (! $this->_isMutable) {
-            throw new \BadMethodCallException();
+            throw new BadMethodCallException();
         }
-        if (! \preg_match(self::VALID_STRING_PATTERN, $id)) {
-            throw new \InvalidArgumentException();
+        if (! preg_match(self::VALID_STRING_PATTERN, $id)) {
+            throw new InvalidArgumentException();
         }
         $this->_isMutable = false;
         $this->_id = $id;

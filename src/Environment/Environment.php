@@ -13,16 +13,12 @@ declare(strict_types=1);
 
 namespace genug\Environment;
 
+use genug\Group\Id as GroupId;
+use genug\Group\IdInterface as GroupIdInterface;
+use genug\Page\Id as PageId;
+use genug\Page\IdInterface as PageIdInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionEnum;
-use genug\Group\{
-    IdInterface as GroupIdInterface,
-    Id as GroupId
-};
-use genug\Page\{
-    IdInterface as PageIdInterface,
-    Id as PageId
-};
 
 use function sprintf;
 

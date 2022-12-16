@@ -13,6 +13,14 @@ declare(strict_types=1);
 
 namespace genug\Lib;
 
+use BadMethodCallException;
+use InvalidArgumentException;
+use SplFileInfo;
+
+use function is_array;
+use function preg_match;
+use function str_replace;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -38,23 +46,23 @@ abstract class AbstractFrontMatterFile
     final public function __construct(string $path)
     {
         if (! $this->_isMutable) {
-            throw new \BadMethodCallException();
+            throw new BadMethodCallException();
         }
         $this->_isMutable = false;
 
-        $file = new \SplFileInfo($path);
+        $file = new SplFileInfo($path);
         if (! $file->isFile() || ! $file->isReadable()) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         // ---
 
         $fileContent = $file->openFile()->fread($file->getSize());
-        $fileContent = \str_replace(self::INVALID_EOLS, self::VALID_EOL, $fileContent);
+        $fileContent = str_replace(self::INVALID_EOLS, self::VALID_EOL, $fileContent);
 
         $matches = [];
 
-        \preg_match('#^(?:-{3}' . self::VALID_EOL . '([\s\S]*?)' . self::VALID_EOL . '-{3}(?:' . self::VALID_EOL . '|$))?([\s\S]*)$#', $fileContent, $matches);
+        preg_match('#^(?:-{3}' . self::VALID_EOL . '([\s\S]*?)' . self::VALID_EOL . '-{3}(?:' . self::VALID_EOL . '|$))?([\s\S]*)$#', $fileContent, $matches);
 
         $this->_frontMatterString = $matches[1];
         $this->_content = $matches[2];
@@ -67,7 +75,7 @@ abstract class AbstractFrontMatterFile
 
     final public function frontMatter(): array
     {
-        if (! \is_array($this->_frontMatter)) {
+        if (! is_array($this->_frontMatter)) {
             $this->_frontMatter = $this->_parseFrontMatterString($this->_frontMatterString);
         }
         return $this->_frontMatter;

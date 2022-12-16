@@ -16,20 +16,18 @@ use genug\Environment\Environment;
 use genug\Group\ {
     Repository as GroupRepository,
 };
+use genug\Lib\EntityCache;
+use genug\Log;
 use genug\Page\ {
     Repository as PageRepository,
 };
-use genug\Setting\Setting;
-use genug\Lib\EntityCache;
-use genug\Log;
 use genug\Request\Request;
 use genug\Router\Router;
 use genug\Router\RouterError;
+use genug\Setting\Setting;
 
-use const genug\Setting\ {
-    CONTENT_TYPE,
-    VIEW_INDEX_FILE
-};
+use const genug\Setting\CONTENT_TYPE;
+use const genug\Setting\VIEW_INDEX_FILE;
 
 /**
  *

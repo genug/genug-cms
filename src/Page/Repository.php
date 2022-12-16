@@ -15,22 +15,24 @@ namespace genug\Page;
 
 use ArrayIterator;
 use ArrayObject;
+use Exception;
+use FilesystemIterator;
+use FilterIterator;
 use genug\Environment\Environment;
-use genug\Lib\ {
-    AbstractFrontMatterFile,
-    EntityCache
-};
+use genug\Lib\AbstractFrontMatterFile;
+use genug\Lib\EntityCache;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
-use Throwable;
 use RuntimeException;
+use SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
+use Throwable;
 
-use const genug\Persistence\FileSystem\Page\ {
-    DIR as PAGE_DIR,
-    FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION,
-    HOME_PAGE_FILENAME
-};
+use function count;
+
+use const genug\Persistence\FileSystem\Page\DIR as PAGE_DIR;
+use const genug\Persistence\FileSystem\Page\FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION;
+use const genug\Persistence\FileSystem\Page\HOME_PAGE_FILENAME;
 
 /**
  *
@@ -98,7 +100,7 @@ final class Repository implements RepositoryInterface
 
     public function count(): int
     {
-        return \count($this->idToFilePathMap);
+        return count($this->idToFilePathMap);
     }
 
     public function current(): Entity
@@ -130,10 +132,9 @@ final class Repository implements RepositoryInterface
         return $this->iterator->valid();
     }
 
-
     protected function createAndCacheEntity(string $idString): Entity
     {
-        $pageFile = new \SplFileInfo($this->idToFilePathMap->offsetGet($idString));
+        $pageFile = new SplFileInfo($this->idToFilePathMap->offsetGet($idString));
 
         $dir = $pageFile->getPathInfo();
 
@@ -147,7 +148,7 @@ final class Repository implements RepositoryInterface
         $title = (function () use ($_data) {
             $fm = $_data->frontMatter();
             if (! isset($fm['title'])) {
-                throw new \Exception();
+                throw new Exception();
             }
             return $fm['title'];
         })();
@@ -155,7 +156,7 @@ final class Repository implements RepositoryInterface
         $date = (function () use ($_data) {
             $fm = $_data->frontMatter();
             if (! isset($fm['date'])) {
-                throw new \Exception();
+                throw new Exception();
             }
             return $fm['date'];
         })();
@@ -187,7 +188,7 @@ final class Repository implements RepositoryInterface
     {
         $idToFilePathMap = new ArrayObject();
 
-        $directories = new class (new \FilesystemIterator(PAGE_DIR)) extends \FilterIterator {
+        $directories = new class (new FilesystemIterator(PAGE_DIR)) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();
@@ -195,7 +196,7 @@ final class Repository implements RepositoryInterface
         };
 
         foreach ($directories as $dir) {
-            $pageFiles = new class (new \FilesystemIterator($dir->getRealPath())) extends \FilterIterator {
+            $pageFiles = new class (new FilesystemIterator($dir->getRealPath())) extends FilterIterator {
                 public function accept(): bool
                 {
                     return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;

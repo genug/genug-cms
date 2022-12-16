@@ -15,17 +15,21 @@ namespace genug\Group;
 
 use ArrayIterator;
 use ArrayObject;
+use Exception;
+use FilesystemIterator;
+use FilterIterator;
 use genug\Lib\EntityCache;
-use Psr\Log\LoggerInterface;
-use Throwable;
-use RuntimeException;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
+use SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
+use Throwable;
 
-use const genug\Persistence\FileSystem\Group\ {
-    DIR as GROUP_DIR,
-    FILENAME as GROUP_FILENAME
-};
+use function count;
+
+use const genug\Persistence\FileSystem\Group\DIR as GROUP_DIR;
+use const genug\Persistence\FileSystem\Group\FILENAME as GROUP_FILENAME;
 
 /**
  *
@@ -89,7 +93,7 @@ final class Repository implements RepositoryInterface
 
     public function count(): int
     {
-        return \count($this->idToFilePathMap);
+        return count($this->idToFilePathMap);
     }
 
     public function current(): Entity
@@ -123,14 +127,14 @@ final class Repository implements RepositoryInterface
 
     protected function createAndCacheEntity(string $idString): Entity
     {
-        $file = new \SplFileInfo($this->idToFilePathMap->offsetGet($idString));
+        $file = new SplFileInfo($this->idToFilePathMap->offsetGet($idString));
         if (! $file->isFile() || ! $file->isReadable()) {
-            throw new \Exception($file->getFilename());
+            throw new Exception($file->getFilename());
         }
 
         $data = Yaml::parseFile($file->getRealPath());
         if (! isset($data['title'])) {
-            throw new \Exception();
+            throw new Exception();
         }
 
         $entity = new Entity(
@@ -157,7 +161,7 @@ final class Repository implements RepositoryInterface
     {
         $idToFilePathMap = new ArrayObject();
 
-        $directories = new class (new \FilesystemIterator(GROUP_DIR)) extends \FilterIterator {
+        $directories = new class (new FilesystemIterator(GROUP_DIR)) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();
@@ -165,7 +169,7 @@ final class Repository implements RepositoryInterface
         };
 
         foreach ($directories as $dir) {
-            $file = new \SplFileInfo($dir->getRealPath() . '/' . GROUP_FILENAME);
+            $file = new SplFileInfo($dir->getRealPath() . '/' . GROUP_FILENAME);
             if (! $file->isFile()) {
                 continue;
             }
