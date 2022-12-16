@@ -11,6 +11,7 @@ use genug\Lib\ {
     AbstractFrontMatterFile,
     EntityCache
 };
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Throwable;
 use RuntimeException;
@@ -46,11 +47,8 @@ final class Repository implements RepositoryInterface
 
     public function fetch(string $id): Entity
     {
-        if (! $this->idToFilePathMap->offsetExists($id)) {
-            throw new EntityNotFound();
-        }
         try {
-            return $this->entityCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
+            return $this->_fetch($id);
         } catch (Throwable $t) {
             $this->logger->alert(
                 'Fetching a page from the repository fails.',
@@ -62,6 +60,31 @@ final class Repository implements RepositoryInterface
             );
             throw new EntityNotFound();
         }
+    }
+
+    public function fetchOrNull(string $id): ?Entity
+    {
+        try {
+            return $this->_fetch($id);
+        } catch (Throwable $t) {
+            $this->logger->debug(
+                'NULL will be returned after fetching a page from the repository failed.',
+                [
+                    'method' => __METHOD__,
+                    'retrieved_id' => $id,
+                    'throwable' => $t,
+                ]
+            );
+            return null;
+        }
+    }
+
+    protected function _fetch(string $id): Entity
+    {
+        if (! $this->idToFilePathMap->offsetExists($id)) {
+            throw new InvalidArgumentException();
+        }
+        return $this->entityCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
     }
 
     public function count(): int
