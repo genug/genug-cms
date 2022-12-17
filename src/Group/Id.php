@@ -24,7 +24,7 @@ final class Id implements IdInterface
 
     public const VALID_STRING_PATTERN = '#^[a-z0-9][a-z0-9_\-]*$#';
 
-    public function equals(IdInterface $id): bool
+    public function equals(?IdInterface $id): bool
     {
         return ($id instanceof self && (string) $this === (string) $id);
     }

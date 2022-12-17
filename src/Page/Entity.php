@@ -29,7 +29,7 @@ final class Entity
     ) {
     }
 
-    public function equals(self $pageEntity): bool
+    public function equals(?self $pageEntity): bool
     {
         return ($pageEntity === $this);
     }

@@ -22,5 +22,5 @@ use Stringable;
  */
 interface GroupInterface extends Stringable
 {
-    public function equals(self $group): bool;
+    public function equals(?self $group): bool;
 }
