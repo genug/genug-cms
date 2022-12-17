@@ -172,7 +172,7 @@ final class Repository implements RepositoryInterface
             if (! $file->isFile()) {
                 continue;
             }
-            $id = $file->getPathInfo()->getBasename();
+            $id = $dir->getBasename();
 
             $idToFilePathMap->offsetSet($id, $file->getRealPath());
         }

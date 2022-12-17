@@ -53,7 +53,7 @@ final class EntityCache
         return $entity;
     }
 
-    protected function fetchOrNull(string $className, string $id): null|PageEntity|GroupEntity
+    protected function fetchOrNull(string $className, string $id): ?object
     {
         foreach ($this->weakMap as $obj => $idString) {
             if (

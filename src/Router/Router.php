@@ -19,6 +19,7 @@ use genug\Page\EntityNotFound as PageEntityNotFound;
 use genug\Page\RepositoryInterface as PageRepositoryInterface;
 use genug\Request\RequestInterface;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 use function sprintf;
 
@@ -47,7 +48,7 @@ final class Router implements RouterInterface
                 $this->logger->debug(sprintf('Fetch the http-404 page instead.'), ['http404page_id' => (string) $this->environment->http404PageId()]);
                 return $this->pages->fetch((string) $this->environment->http404PageId());
             }
-        } catch (PageEntityNotFound $t) {
+        } catch (Throwable $t) {
             $this->logger->error('No result.', ['throwable' => $t]);
             throw new RouterError(previous: $t);
         }

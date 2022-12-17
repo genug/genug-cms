@@ -137,6 +137,9 @@ final class Repository implements RepositoryInterface
         $pageFile = new SplFileInfo($this->idToFilePathMap->offsetGet($idString));
 
         $dir = $pageFile->getPathInfo();
+        if (null === $dir) {
+            throw new RuntimeException();
+        }
 
         $_data = new class ($pageFile->getRealPath()) extends AbstractFrontMatterFile {
             protected function _parseFrontMatterString(string $str): array
