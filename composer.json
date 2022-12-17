@@ -15,9 +15,14 @@
         "psr-4": {"genug\\": "src/"}
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.13"
+        "friendsofphp/php-cs-fixer": "^3.13",
+        "vimeo/psalm": "^5.2"
     },
     "scripts": {
-        "fix": "php-cs-fixer fix"
+        "fix": "php-cs-fixer fix",
+        "analyze": [
+            "@analyze:psalm"
+        ],
+        "analyze:psalm": "psalm --config=.psalm.dist.xml"
     }
 }

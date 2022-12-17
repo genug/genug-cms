@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<psalm 
+    errorLevel="3"
+    cacheDirectory=".psalm.cache"
+    resolveFromConfigFile="true"
+    >
+    <projectFiles>
+        <directory name="src" />
+        <directory name="public" />
+    </projectFiles>
+</psalm>
