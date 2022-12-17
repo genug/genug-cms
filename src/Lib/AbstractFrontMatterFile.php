@@ -35,13 +35,13 @@ abstract class AbstractFrontMatterFile
         "\r"
     ];
 
-    private $_isMutable = true;
+    private bool $_isMutable = true;
 
-    private $_frontMatter;
+    private ?array $_frontMatter = null;
 
-    private $_frontMatterString;
+    private string $_frontMatterString;
 
-    private $_content;
+    private string $_content;
 
     final public function __construct(string $path)
     {

@@ -148,7 +148,7 @@ final class Repository implements RepositoryInterface
             }
         };
 
-        $title = (function () use ($_data) {
+        $title = (function () use ($_data): string {
             $fm = $_data->frontMatter();
             if (! isset($fm['title'])) {
                 throw new Exception();
@@ -156,7 +156,7 @@ final class Repository implements RepositoryInterface
             return $fm['title'];
         })();
 
-        $date = (function () use ($_data) {
+        $date = (function () use ($_data): string {
             $fm = $_data->frontMatter();
             if (! isset($fm['date'])) {
                 throw new Exception();

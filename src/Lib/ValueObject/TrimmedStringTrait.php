@@ -24,9 +24,9 @@ use function trim;
  */
 trait TrimmedStringTrait
 {
-    private $_isMutable = true;
+    private bool $_isMutable = true;
 
-    private $_trimmedString;
+    private string $_trimmedString;
 
     public function __construct(string $untrimmedString)
     {

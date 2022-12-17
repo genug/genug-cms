@@ -25,9 +25,9 @@ use function preg_match;
  */
 trait IdTrait
 {
-    private $_isMutable = true;
+    private bool $_isMutable = true;
 
-    private $_id;
+    private string $_id;
 
     public function __construct(string $id)
     {
