@@ -43,7 +43,9 @@ final class Environment implements EnvironmentInterface
             $attribute = $attributes[0];
             $typedValue = $attribute->newInstance();
 
-            $this->variables[$reflectionEnumBackedCase->name] = $typedValue->from($reflectionEnumBackedCase->getValue());
+            /** @var Preset */
+            $preset = $reflectionEnumBackedCase->getValue();
+            $this->variables[$reflectionEnumBackedCase->name] = $typedValue->from($preset);
         }
     }
 

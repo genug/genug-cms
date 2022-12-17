@@ -95,7 +95,7 @@ final class Repository implements RepositoryInterface
         if (! $this->idToFilePathMap->offsetExists($id)) {
             throw new InvalidArgumentException();
         }
-        return $this->entityCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
+        return $this->entityCache->fetchPageOrNull($id) ?? $this->createAndCacheEntity($id);
     }
 
     public function count(): int
@@ -188,7 +188,7 @@ final class Repository implements RepositoryInterface
     {
         $idToFilePathMap = new ArrayObject();
 
-        $directories = new class (new FilesystemIterator(PAGE_DIR)) extends FilterIterator {
+        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator(PAGE_DIR)) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();
@@ -196,7 +196,7 @@ final class Repository implements RepositoryInterface
         };
 
         foreach ($directories as $dir) {
-            $pageFiles = new class (new FilesystemIterator($dir->getRealPath())) extends FilterIterator {
+            $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($dir->getRealPath())) extends FilterIterator {
                 public function accept(): bool
                 {
                     return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;

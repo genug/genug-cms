@@ -35,7 +35,25 @@ final class EntityCache
         $this->weakMap->offsetSet($entity, (string) $entity->id);
     }
 
-    public function fetchOrNull(string $className, string $id): null|PageEntity|GroupEntity
+    public function fetchGroupOrNull(string $id): ?GroupEntity
+    {
+        $entity = $this->fetchOrNull(GroupEntity::class, $id);
+        if (! ($entity instanceof GroupEntity)) {
+            return null;
+        }
+        return $entity;
+    }
+
+    public function fetchPageOrNull(string $id): ?PageEntity
+    {
+        $entity = $this->fetchOrNull(PageEntity::class, $id);
+        if (! ($entity instanceof PageEntity)) {
+            return null;
+        }
+        return $entity;
+    }
+
+    protected function fetchOrNull(string $className, string $id): null|PageEntity|GroupEntity
     {
         foreach ($this->weakMap as $obj => $idString) {
             if (

@@ -20,6 +20,8 @@ use Iterator;
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
+ *
+ * @extends Iterator<string, Entity>
  */
 interface RepositoryInterface extends Iterator, Countable
 {

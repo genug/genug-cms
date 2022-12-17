@@ -88,7 +88,7 @@ final class Repository implements RepositoryInterface
         if (! $this->idToFilePathMap->offsetExists($id)) {
             throw new InvalidArgumentException();
         }
-        return $this->entityCache->fetchOrNull(Entity::class, $id) ?? $this->createAndCacheEntity($id);
+        return $this->entityCache->fetchGroupOrNull($id) ?? $this->createAndCacheEntity($id);
     }
 
     public function count(): int
@@ -160,8 +160,7 @@ final class Repository implements RepositoryInterface
     protected static function createIdToFilePathMap(): ArrayObject
     {
         $idToFilePathMap = new ArrayObject();
-
-        $directories = new class (new FilesystemIterator(GROUP_DIR)) extends FilterIterator {
+        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator(GROUP_DIR)) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();
