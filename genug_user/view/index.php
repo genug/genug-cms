@@ -9,8 +9,9 @@
     <h1><?= $genug->requestedPage->title ?></h1>
     <p><time datetime="<?= $genug->requestedPage->date ?>"><?= $genug->requestedPage->date->format(DATE_RFC1123) ?></time></p>
     <ul>
-        <li>Group ID: <?= $genug->groups->fetch($genug->requestedPage->group)->id ?></li>
-        <li>Group Title: <?= $genug->groups->fetch($genug->requestedPage->group)->title ?></li>
+        <?php $currentGroup = $genug->groups->fetch($genug->requestedPage->group); ?>
+        <li>Group ID: <?= $currentGroup->id ?></li>
+        <li>Group Title: <?= $currentGroup->title ?></li>
     </ul>
     <?= $genug->requestedPage->content ?>
 

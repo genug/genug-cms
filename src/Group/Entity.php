@@ -22,7 +22,7 @@ final class Entity extends AbstractEntity
 {
     public function __construct(
         public readonly AbstractId $id,
-        public readonly TitleInterface $title
+        public readonly ?TitleInterface $title
     ) {
     }
 }

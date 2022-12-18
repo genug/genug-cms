@@ -15,7 +15,6 @@ namespace genug\Group;
 
 use ArrayIterator;
 use ArrayObject;
-use Exception;
 use FilesystemIterator;
 use FilterIterator;
 use genug\Lib\EntityCache;
@@ -28,6 +27,7 @@ use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
 use function count;
+use function sprintf;
 
 use const genug\Persistence\FileSystem\Group\DIR as GROUP_DIR;
 use const genug\Persistence\FileSystem\Group\FILENAME as GROUP_FILENAME;
@@ -135,19 +135,30 @@ final class Repository implements RepositoryInterface
 
     protected function createAndCacheEntity(string $idString): Entity
     {
-        $file = new SplFileInfo($this->idToFilePathMap->offsetGet($idString));
-        if (! $file->isFile() || ! $file->isReadable()) {
-            throw new Exception($file->getFilename());
-        }
+        $data = $this->readMetaData($idString);
 
-        $data = Yaml::parseFile($file->getRealPath());
-        if (! isset($data['title'])) {
-            throw new Exception();
-        }
+        $title = (function () use ($data, $idString): ?Title {
+            $_title = $data['title'] ?? null;
+            if (null === $_title) {
+                $this->logger->debug(sprintf('No title found for Group "%s".', $idString));
+                return null;
+            }
+            if (! is_string($_title)) {
+                $this->logger->warning(
+                    sprintf('String expected, %s received.', gettype($_title)),
+                    [
+                        'group_id' => $idString,
+                        'property' => 'title'
+                    ]
+                );
+                return null;
+            }
+            return new Title($_title);
+        })();
 
         $entity = new Entity(
             new Id($idString),
-            new Title($data['title'])
+            $title
         );
 
         try {
@@ -165,6 +176,31 @@ final class Repository implements RepositoryInterface
         return $entity;
     }
 
+    protected function readMetaData(string $id): array
+    {
+        try {
+            $dirRealPath = $this->idToFilePathMap->offsetGet($id);
+            $fileRealPath = (new SplFileInfo($dirRealPath . '/' . GROUP_FILENAME))->getRealPath();
+            if (! $fileRealPath) {
+                throw new LogicException('No metadata file found.');
+            }
+            $data = Yaml::parseFile($fileRealPath);
+            if (! is_array($data)) {
+                throw new LogicException(sprintf('Array expected, %s received.', gettype($data)));
+            }
+            return $data;
+        } catch (Throwable $t) {
+            $this->logger->notice(
+                sprintf('No metadata found for Group "%s".', $id),
+                [
+                    'group_id' => $id,
+                    'throwable' => $t,
+                ]
+            );
+            return [];
+        }
+    }
+
     protected static function createIdToFilePathMap(): ArrayObject
     {
         $idToFilePathMap = new ArrayObject();
@@ -176,13 +212,10 @@ final class Repository implements RepositoryInterface
         };
 
         foreach ($directories as $dir) {
-            $file = new SplFileInfo($dir->getRealPath() . '/' . GROUP_FILENAME);
-            if (! $file->isFile()) {
-                continue;
-            }
             $id = $dir->getBasename();
+            $path = $dir->getRealPath();
 
-            $idToFilePathMap->offsetSet($id, $file->getRealPath());
+            $idToFilePathMap->offsetSet($id, $path);
         }
 
         return $idToFilePathMap;
