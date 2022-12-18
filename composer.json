@@ -23,6 +23,6 @@
         "analyze": [
             "@analyze:psalm"
         ],
-        "analyze:psalm": "psalm --config=.psalm.dist.xml"
+        "analyze:psalm": "psalm --config=.psalm.dist.xml --no-cache"
     }
 }
