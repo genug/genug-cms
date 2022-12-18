@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace genug\Router;
 
 use genug\Environment\EnvironmentInterface;
-use genug\Page\Entity as PageEntity;
+use genug\Page\AbstractEntity as AbstractPageEntity;
 use genug\Page\EntityNotFound as PageEntityNotFound;
 use genug\Page\RepositoryInterface as PageRepositoryInterface;
 use genug\Request\RequestInterface;
@@ -38,7 +38,7 @@ final class Router implements RouterInterface
     ) {
     }
 
-    public function result(): PageEntity
+    public function result(): AbstractPageEntity
     {
         try {
             try {

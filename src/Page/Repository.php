@@ -22,6 +22,7 @@ use genug\Environment\Environment;
 use genug\Lib\AbstractFrontMatterFile;
 use genug\Lib\EntityCache;
 use InvalidArgumentException;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SplFileInfo;
@@ -56,7 +57,7 @@ final class Repository implements RepositoryInterface
         $this->iterator = $this->idToFilePathMap->getIterator();
     }
 
-    public function fetch(string $id): Entity
+    public function fetch(string $id): AbstractEntity
     {
         try {
             return $this->_fetch($id);
@@ -73,7 +74,7 @@ final class Repository implements RepositoryInterface
         }
     }
 
-    public function fetchOrNull(string $id): ?Entity
+    public function fetchOrNull(string $id): ?AbstractEntity
     {
         try {
             return $this->_fetch($id);
@@ -90,12 +91,19 @@ final class Repository implements RepositoryInterface
         }
     }
 
-    protected function _fetch(string $id): Entity
+    protected function _fetch(string $id): AbstractEntity
     {
         if (! $this->idToFilePathMap->offsetExists($id)) {
             throw new InvalidArgumentException();
         }
-        return $this->entityCache->fetchPageOrNull($id) ?? $this->createAndCacheEntity($id);
+        $cachedEntity = $this->entityCache->fetchOrNull(new Id($id));
+        if (null === $cachedEntity) {
+            return $this->createAndCacheEntity($id);
+        }
+        if ($cachedEntity::class !== Entity::class) {
+            throw new LogicException();
+        }
+        return $cachedEntity;
     }
 
     public function count(): int
@@ -103,7 +111,7 @@ final class Repository implements RepositoryInterface
         return count($this->idToFilePathMap);
     }
 
-    public function current(): Entity
+    public function current(): AbstractEntity
     {
         try {
             return $this->fetch($this->iterator->key());

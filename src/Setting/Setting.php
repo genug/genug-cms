@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace genug\Setting;
 
-use genug\Group\IdInterface as GroupIdInterface;
-use genug\Page\IdInterface as PageIdInterface;
+use genug\Group\AbstractId as AbstractGroupId;
+use genug\Page\AbstractId as AbstractPageId;
 
 /**
  *
@@ -24,9 +24,9 @@ use genug\Page\IdInterface as PageIdInterface;
 final class Setting
 {
     public function __construct(
-        public readonly PageIdInterface $homePageId,
-        public readonly PageIdInterface $notFoundPageId,
-        public readonly GroupIdInterface $mainGroupId,
+        public readonly AbstractPageId $homePageId,
+        public readonly AbstractPageId $notFoundPageId,
+        public readonly AbstractGroupId $mainGroupId,
     ) {
     }
 }

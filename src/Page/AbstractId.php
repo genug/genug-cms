@@ -20,7 +20,10 @@ use Stringable;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-interface IdInterface extends Stringable
+abstract class AbstractId implements Stringable
 {
-    public function equals(?self $id): bool;
+    final public function equals(mixed $id): bool
+    {
+        return ($this == $id && (string) $id === (string) $this);
+    }
 }

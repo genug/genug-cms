@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace genug\Router;
 
-use genug\Page\Entity as PageEntity;
+use genug\Page\AbstractEntity as AbstractPageEntity;
 
 /**
  *
@@ -22,5 +22,5 @@ use genug\Page\Entity as PageEntity;
  */
 interface RouterInterface
 {
-    public function result(): PageEntity;
+    public function result(): AbstractPageEntity;
 }

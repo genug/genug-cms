@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace genug\Environment;
 
+use genug\Group\AbstractId as AbstractGroupId;
 use genug\Group\Id as GroupId;
-use genug\Group\IdInterface as GroupIdInterface;
+use genug\Page\AbstractId as AbstractPageId;
 use genug\Page\Id as PageId;
-use genug\Page\IdInterface as PageIdInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionEnum;
 
@@ -59,25 +59,25 @@ final class Environment implements EnvironmentInterface
         return $this->variables['GENUG_DEBUG_LOGFILE'];
     }
 
-    public function mainGroupId(): GroupIdInterface
+    public function mainGroupId(): AbstractGroupId
     {
-        if (! ($this->variables['GENUG_MAINGROUP_ID'] instanceof GroupId)) {
+        if (! ($this->variables['GENUG_MAINGROUP_ID'] instanceof AbstractGroupId)) {
             $this->variables['GENUG_MAINGROUP_ID'] = new GroupId($this->variables['GENUG_MAINGROUP_ID']);
         }
         return $this->variables['GENUG_MAINGROUP_ID'];
     }
 
-    public function homePageId(): PageIdInterface
+    public function homePageId(): AbstractPageId
     {
-        if (! ($this->variables['GENUG_HOMEPAGE_ID'] instanceof PageId)) {
+        if (! ($this->variables['GENUG_HOMEPAGE_ID'] instanceof AbstractPageId)) {
             $this->variables['GENUG_HOMEPAGE_ID'] = new PageId($this->variables['GENUG_HOMEPAGE_ID']);
         }
         return $this->variables['GENUG_HOMEPAGE_ID'];
     }
 
-    public function http404PageId(): PageIdInterface
+    public function http404PageId(): AbstractPageId
     {
-        if (! ($this->variables['GENUG_HTTP404PAGE_ID'] instanceof PageId)) {
+        if (! ($this->variables['GENUG_HTTP404PAGE_ID'] instanceof AbstractPageId)) {
             $this->variables['GENUG_HTTP404PAGE_ID'] = new PageId($this->variables['GENUG_HTTP404PAGE_ID']);
         }
         return $this->variables['GENUG_HTTP404PAGE_ID'];

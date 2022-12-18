@@ -18,9 +18,12 @@ namespace genug\Group;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class Id extends AbstractId
+abstract class AbstractEntity
 {
-    use \genug\Lib\ValueObject\IdTrait;
+    public readonly AbstractId $id;
 
-    public const VALID_STRING_PATTERN = '#^[a-z0-9][a-z0-9_\-]*$#';
+    final public function equals(mixed $entity): bool
+    {
+        return ($entity === $this);
+    }
 }

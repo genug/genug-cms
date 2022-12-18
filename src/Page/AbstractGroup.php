@@ -20,7 +20,10 @@ use Stringable;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-interface GroupInterface extends Stringable
+abstract class AbstractGroup implements Stringable
 {
-    public function equals(?self $group): bool;
+    final public function equals(mixed $group): bool
+    {
+        return ($this == $group && (string) $this === (string) $group);
+    }
 }

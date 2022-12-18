@@ -13,19 +13,17 @@ declare(strict_types=1);
 
 namespace genug\Page;
 
-use Countable;
-use Iterator;
-
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
- *
- * @extends Iterator<string, Entity>
  */
-interface RepositoryInterface extends Iterator, Countable
+abstract class AbstractEntity
 {
-    public function fetch(string $id): AbstractEntity;
+    public readonly AbstractId $id;
 
-    public function fetchOrNull(string $id): ?AbstractEntity;
+    final public function equals(mixed $entity): bool
+    {
+        return ($entity === $this);
+    }
 }

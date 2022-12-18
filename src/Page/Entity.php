@@ -18,19 +18,14 @@ namespace genug\Page;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class Entity
+final class Entity extends AbstractEntity
 {
     public function __construct(
-        public readonly IdInterface $id,
-        public readonly GroupInterface $group,
+        public readonly AbstractId $id,
+        public readonly AbstractGroup $group,
         public readonly TitleInterface $title,
         public readonly DateInterface $date,
         public readonly ContentInterface $content
     ) {
-    }
-
-    public function equals(?self $pageEntity): bool
-    {
-        return ($pageEntity === $this);
     }
 }

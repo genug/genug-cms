@@ -13,54 +13,37 @@ declare(strict_types=1);
 
 namespace genug\Lib;
 
-use genug\Group\Entity as GroupEntity;
-use genug\Page\Entity as PageEntity;
+use genug\Group\AbstractEntity as AbstractGroupEntity;
+use genug\Group\AbstractId as AbstractGroupId;
+use genug\Page\AbstractEntity as AbstractPageEntity;
+use genug\Page\AbstractId as AbstractPageId;
 use LogicException;
 use WeakMap;
 
 final class EntityCache
 {
+    /** @var WeakMap<AbstractPageEntity|AbstractGroupEntity, AbstractPageId|AbstractGroupId> */
     protected readonly WeakMap $weakMap;
 
     public function __construct()
     {
+        /** @var WeakMap<AbstractPageEntity|AbstractGroupEntity, AbstractPageId|AbstractGroupId> */
         $this->weakMap = new WeakMap();
     }
 
-    public function attach(PageEntity|GroupEntity $entity): void
+    public function attach(AbstractPageEntity|AbstractGroupEntity $entity): void
     {
-        if ((bool) $this->fetchOrNull($entity::class, (string) $entity->id)) {
+        if ((bool) $this->fetchOrNull($entity->id)) {
             throw new LogicException('Entity is already cached.');
         }
-        $this->weakMap->offsetSet($entity, (string) $entity->id);
+        $this->weakMap->offsetSet($entity, $entity->id);
     }
 
-    public function fetchGroupOrNull(string $id): ?GroupEntity
+    public function fetchOrNull(AbstractPageId|AbstractGroupId $id): null|AbstractPageEntity|AbstractGroupEntity
     {
-        $entity = $this->fetchOrNull(GroupEntity::class, $id);
-        if (! ($entity instanceof GroupEntity)) {
-            return null;
-        }
-        return $entity;
-    }
-
-    public function fetchPageOrNull(string $id): ?PageEntity
-    {
-        $entity = $this->fetchOrNull(PageEntity::class, $id);
-        if (! ($entity instanceof PageEntity)) {
-            return null;
-        }
-        return $entity;
-    }
-
-    protected function fetchOrNull(string $className, string $id): ?object
-    {
-        foreach ($this->weakMap as $obj => $idString) {
-            if (
-                $idString === $id
-                && $obj::class === $className
-            ) {
-                return $obj;
+        foreach ($this->weakMap as $cObj => $cId) {
+            if ($id->equals($cId)) {
+                return $cObj;
             }
         }
         return null;

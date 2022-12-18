@@ -20,6 +20,7 @@ use FilesystemIterator;
 use FilterIterator;
 use genug\Lib\EntityCache;
 use InvalidArgumentException;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SplFileInfo;
@@ -88,7 +89,14 @@ final class Repository implements RepositoryInterface
         if (! $this->idToFilePathMap->offsetExists($id)) {
             throw new InvalidArgumentException();
         }
-        return $this->entityCache->fetchGroupOrNull($id) ?? $this->createAndCacheEntity($id);
+        $cachedEntity = $this->entityCache->fetchOrNull(new Id($id));
+        if (null === $cachedEntity) {
+            return $this->createAndCacheEntity($id);
+        }
+        if ($cachedEntity::class !== Entity::class) {
+            throw new LogicException();
+        }
+        return $cachedEntity;
     }
 
     public function count(): int
