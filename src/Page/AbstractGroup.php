@@ -22,7 +22,7 @@ use Stringable;
  */
 abstract class AbstractGroup implements Stringable
 {
-    final public function equals(mixed $group): bool
+    final public function equals(?Stringable $group): bool
     {
         return ($this == $group && (string) $this === (string) $group);
     }

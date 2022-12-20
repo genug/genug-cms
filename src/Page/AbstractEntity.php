@@ -22,7 +22,7 @@ abstract class AbstractEntity
 {
     public readonly AbstractId $id;
 
-    final public function equals(mixed $entity): bool
+    final public function equals(?object $entity): bool
     {
         return ($entity === $this);
     }
