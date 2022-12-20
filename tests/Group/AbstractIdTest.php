@@ -43,6 +43,16 @@ final class AbstractIdTest extends TestCase
         $this->assertTrue($class->implementsInterface(Stringable::class));
     }
 
+    public function testHasEqualsMethod(): void
+    {
+        $class = new ReflectionClass(AbstractId::class);
+
+        $this->assertTrue($class->hasMethod('equals'));
+    }
+
+    /**
+     * @depends testHasEqualsMethod
+     */
     public function testEqualsMethodIsFinal(): void
     {
         $method = new ReflectionMethod(AbstractId::class, 'equals');
@@ -50,6 +60,71 @@ final class AbstractIdTest extends TestCase
         $this->assertTrue($method->isFinal());
     }
 
+    /**
+     * @depends testHasEqualsMethod
+     */
+    public function testEqualsMethodHasOneParameter(): void
+    {
+        $method = new ReflectionMethod(AbstractId::class, 'equals');
+
+        $this->assertSame(1, $method->getNumberOfParameters());
+    }
+
+    /**
+     * @depends testEqualsMethodHasOneParameter
+     */
+    public function testEqualsMethodParameterNamedId(): void
+    {
+        $method = new ReflectionMethod(AbstractId::class, 'equals');
+        $parameters = $method->getParameters();
+        $parameter = array_shift($parameters);
+
+        $this->assertSame('id', $parameter->getName());
+    }
+
+    /**
+     * @depends testEqualsMethodHasOneParameter
+     */
+    public function testEqualsMethodParameterTypeIsStringable(): void
+    {
+        $method = new ReflectionMethod(AbstractId::class, 'equals');
+        $parameters = $method->getParameters();
+        $parameter = array_shift($parameters);
+        $type = $parameter->getType();
+
+        $this->assertTrue($parameter->hasType());
+        $this->assertInstanceOf(ReflectionNamedType::class, $type);
+        $this->assertSame(Stringable::class, $type->getName());
+    }
+
+    /**
+     * @depends testEqualsMethodHasOneParameter
+     */
+    public function testEqualsMethodParameterTypeAllowsNull(): void
+    {
+        $method = new ReflectionMethod(AbstractId::class, 'equals');
+        $parameters = $method->getParameters();
+        $parameter = array_shift($parameters);
+        $type = $parameter->getType();
+
+        $this->assertTrue($type?->allowsNull());
+    }
+
+    /**
+     * @depends testEqualsMethodHasOneParameter
+     */
+    public function testEqualsMethodParameterHasNoDefaultValue(): void
+    {
+        $method = new ReflectionMethod(AbstractId::class, 'equals');
+        $parameters = $method->getParameters();
+        $parameter = array_shift($parameters);
+
+        $this->assertFalse($parameter->isDefaultValueAvailable());
+    }
+
+    /**
+     * @depends testHasEqualsMethod
+     */
     public function testEqualsMethodReturnTypeIsOnlyBool(): void
     {
         $method = new ReflectionMethod(AbstractId::class, 'equals');
@@ -59,6 +134,9 @@ final class AbstractIdTest extends TestCase
         $this->assertSame('bool', $returnType->getName());
     }
 
+    /**
+     * @depends testHasEqualsMethod
+     */
     public function testEqualsMethodReturnTypeNotAllowsNull(): void
     {
         $method = new ReflectionMethod(AbstractId::class, 'equals');
@@ -68,6 +146,9 @@ final class AbstractIdTest extends TestCase
         $this->assertFalse($returnType->allowsNull());
     }
 
+    /**
+     * @depends testHasEqualsMethod
+     */
     public function testEqualIfSameInstance(): void
     {
         $obj = $this->initConcreteObject('id_123');
@@ -75,6 +156,9 @@ final class AbstractIdTest extends TestCase
         $this->assertTrue($obj->equals($obj));
     }
 
+    /**
+     * @depends testHasEqualsMethod
+     */
     public function testNotEqualIfSameInstanceButDifferentStringRepresentation(): void
     {
         $obj = $this->initConcreteObjectWithRandomStringRepresentation();
@@ -82,6 +166,9 @@ final class AbstractIdTest extends TestCase
         $this->assertFalse($obj->equals($obj));
     }
 
+    /**
+     * @depends testHasEqualsMethod
+     */
     public function testEqualIfOtherInstanceHasSameStringRepresentation(): void
     {
         $id = 'id_123';
@@ -93,6 +180,9 @@ final class AbstractIdTest extends TestCase
         $this->assertTrue($obj1->equals($obj2));
     }
 
+    /**
+     * @depends testHasEqualsMethod
+     */
     public function testNotEqualIfOtherInstanceHasDifferentStringRepresentation(): void
     {
         $obj1 = $this->initConcreteObject('id_123');
@@ -103,6 +193,9 @@ final class AbstractIdTest extends TestCase
         $this->assertFalse($obj1->equals($obj2));
     }
 
+    /**
+     * @depends testHasEqualsMethod
+     */
     public function testNotEqualIfInstanceOfAnotherConcreteClass(): void
     {
         $obj1 = $this->initConcreteObjectWithRandomStringRepresentation();
