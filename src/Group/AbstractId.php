@@ -22,7 +22,7 @@ use Stringable;
  */
 abstract class AbstractId implements Stringable
 {
-    final public function equals(mixed $id): bool
+    final public function equals(?Stringable $id): bool
     {
         return ($this == $id && (string) $id === (string) $this);
     }
