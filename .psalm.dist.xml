@@ -5,7 +5,8 @@
     resolveFromConfigFile="true"
     >
     <projectFiles>
-        <directory name="src" />
-        <directory name="public" />
+        <directory name="src"/>
+        <directory name="public"/>
+        <directory name="tests"/>
     </projectFiles>
-</psalm>
+<plugins><pluginClass xmlns="https://getpsalm.org/schema/config" class="Psalm\PhpUnitPlugin\Plugin"/></plugins></psalm>

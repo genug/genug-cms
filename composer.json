@@ -16,13 +16,19 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.13",
-        "vimeo/psalm": "^5.2"
+        "vimeo/psalm": "^5.2",
+        "phpunit/phpunit": "^9",
+        "psalm/plugin-phpunit": "^0.18.4"
     },
     "scripts": {
-        "fix": "php-cs-fixer fix",
         "analyze": [
             "@analyze:psalm"
         ],
-        "analyze:psalm": "psalm --config=.psalm.dist.xml --no-cache"
+        "fix": "php-cs-fixer fix",
+        "test": [
+            "@test:phpunit"
+        ],
+        "analyze:psalm": "psalm --config=.psalm.dist.xml --no-cache",
+        "test:phpunit": "phpunit tests --testdox"
     }
 }

@@ -95,6 +95,7 @@ return (new Config())
         Finder::create()
         ->in(__DIR__.'/src')
         ->in(__DIR__.'/public')
+        ->in(__DIR__.'/tests')
     )
     ->setCacheFile(__DIR__.'/.php-cs-fixer.cache')
 ;
