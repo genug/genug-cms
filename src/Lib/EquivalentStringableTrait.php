@@ -11,17 +11,20 @@ declare(strict_types=1);
  * License: MIT License
  */
 
-namespace genug\Group;
+namespace genug\Lib;
 
-use genug\Lib\EquivalentStringableInterface;
-use genug\Lib\EquivalentStringableTrait;
+use Stringable;
 
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-abstract class AbstractId implements EquivalentStringableInterface
+
+trait EquivalentStringableTrait
 {
-    use EquivalentStringableTrait;
+    final public function equals(?Stringable $object): bool
+    {
+        return ($this == $object && (string) $object === (string) $this);
+    }
 }
