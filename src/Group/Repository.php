@@ -67,8 +67,17 @@ final class Repository implements RepositoryInterface
         }
     }
 
-    public function fetchOrNull(string $id): ?Entity
+    public function fetchOrNull(?string $id): ?Entity
     {
+        if (null === $id) {
+            $this->logger->debug(
+                'Null was passed as the ID to be fetched.',
+                [
+                    'method' => __METHOD__
+                ]
+            );
+            return null;
+        }
         try {
             return $this->_fetch($id);
         } catch (Throwable $t) {

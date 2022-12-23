@@ -10,11 +10,9 @@
     <p><time datetime="<?= $genug->requestedPage->date ?>"><?= $genug->requestedPage->date?->format(DATE_RFC1123) ?></time></p>
     <ul>
         <li>PageGroup: <?= $genug->requestedPage->group; ?></li>
-        <?php if($genug->requestedPage->group): ?>
         <?php $currentGroup = $genug->groups->fetchOrNull($genug->requestedPage->group); ?>
         <li>Group ID: <?= $currentGroup?->id ?></li>
         <li>Group Title: <?= $currentGroup?->title ?></li>
-        <?php endif; ?>
     </ul>
     <?= $genug->requestedPage->content ?>
 

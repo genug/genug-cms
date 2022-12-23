@@ -27,5 +27,5 @@ interface RepositoryInterface extends Iterator, Countable
 {
     public function fetch(string $id): Entity;
 
-    public function fetchOrNull(string $id): ?Entity;
+    public function fetchOrNull(?string $id): ?Entity;
 }
