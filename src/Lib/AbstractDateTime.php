@@ -11,37 +11,29 @@ declare(strict_types=1);
  * License: MIT License
  */
 
-namespace genug\Lib\ValueObject;
+namespace genug\Lib;
 
-use DateTime;
+use DateTimeImmutable;
 use InvalidArgumentException;
-
-use function trim;
+use Stringable;
 
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-trait DateTimeTrait
+abstract class AbstractDateTime extends DateTimeImmutable implements Stringable
 {
-    protected readonly DateTime $dateTime;
-
     public function __construct(string $dateTime)
     {
         if ('' === trim($dateTime)) {
             throw new InvalidArgumentException('`$dateTime` is empty or consists of white space. Use `\'now\'` to use the current date and time.');
         }
-        $this->dateTime = new DateTime($dateTime);
-    }
-
-    public function format(string $format): string
-    {
-        return $this->dateTime->format($format);
+        parent::__construct($dateTime);
     }
 
     public function __toString(): string
     {
-        return $this->dateTime->format('c');
+        return $this->format('c');
     }
 }

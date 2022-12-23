@@ -24,7 +24,7 @@ final class Entity extends AbstractEntity
         public readonly AbstractId $id,
         public readonly ?AbstractGroup $group,
         public readonly ?TitleInterface $title,
-        public readonly ?DateInterface $date,
+        public readonly ?AbstractDateTime $dateTime,
         public readonly ?ContentInterface $content
     ) {
     }

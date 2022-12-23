@@ -209,7 +209,7 @@ final class Repository implements RepositoryInterface
             return new Title($fm['title']);
         })();
 
-        $date = (function () use ($_data, $idString, $logger): ?Date {
+        $dateTime = (function () use ($_data, $idString, $logger): ?DateTime {
             $fm = $_data->frontMatter();
             if (! isset($fm['date'])) {
                 $logger->debug(
@@ -217,14 +217,14 @@ final class Repository implements RepositoryInterface
                 );
                 return null;
             }
-            return new Date($fm['date']);
+            return new DateTime($fm['date']);
         })();
 
         $entity = new Entity(
             new Id($idString),
             $group,
             $title,
-            $date,
+            $dateTime,
             new Content($_data->content())
         );
 

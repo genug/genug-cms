@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace genug\Page;
 
+use genug\Lib\AbstractDateTime as LibAbstractDateTime;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-final class Date implements DateInterface
+abstract class AbstractDateTime extends LibAbstractDateTime
 {
-    use \genug\Lib\ValueObject\DateTimeTrait;
 }

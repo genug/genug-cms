@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1><?= $genug->requestedPage->title ?></h1>
-    <p><time datetime="<?= $genug->requestedPage->date ?>"><?= $genug->requestedPage->date?->format(DATE_RFC1123) ?></time></p>
+    <p><time datetime="<?= $genug->requestedPage->dateTime ?>"><?= $genug->requestedPage->dateTime?->format(DATE_RFC1123) ?></time></p>
     <ul>
         <li>PageGroup: <?= $genug->requestedPage->group; ?></li>
         <?php $currentGroup = $genug->groups->fetchOrNull($genug->requestedPage->group); ?>
