@@ -13,17 +13,15 @@ declare(strict_types=1);
 
 namespace genug\Page;
 
-use Stringable;
+use genug\Lib\EquivalentStringableInterface;
+use genug\Lib\EquivalentStringableTrait;
 
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-abstract class AbstractId implements Stringable
+abstract class AbstractId implements EquivalentStringableInterface
 {
-    final public function equals(?Stringable $id): bool
-    {
-        return ($this == $id && (string) $id === (string) $this);
-    }
+    use EquivalentStringableTrait;
 }

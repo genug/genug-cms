@@ -11,19 +11,15 @@ declare(strict_types=1);
  * License: MIT License
  */
 
-namespace genug\Group;
-
-use genug\Lib\EquivalentObjectInterface;
-use genug\Lib\EquivalentObjectTrait;
+namespace genug\Lib;
 
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-abstract class AbstractEntity implements EquivalentObjectInterface
-{
-    use EquivalentObjectTrait;
 
-    public readonly AbstractId $id;
+interface EquivalentObjectInterface
+{
+    public function equals(?object $object): bool;
 }

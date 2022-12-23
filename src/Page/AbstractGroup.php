@@ -13,17 +13,15 @@ declare(strict_types=1);
 
 namespace genug\Page;
 
-use Stringable;
+use genug\Lib\EquivalentStringableInterface;
+use genug\Lib\EquivalentStringableTrait;
 
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-abstract class AbstractGroup implements Stringable
+abstract class AbstractGroup implements EquivalentStringableInterface
 {
-    final public function equals(?Stringable $group): bool
-    {
-        return ($this == $group && (string) $this === (string) $group);
-    }
+    use EquivalentStringableTrait;
 }

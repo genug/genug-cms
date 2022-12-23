@@ -13,17 +13,17 @@ declare(strict_types=1);
 
 namespace genug\Page;
 
+use genug\Lib\EquivalentObjectInterface;
+use genug\Lib\EquivalentObjectTrait;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  */
-abstract class AbstractEntity
+abstract class AbstractEntity implements EquivalentObjectInterface
 {
-    public readonly AbstractId $id;
+    use EquivalentObjectTrait;
 
-    final public function equals(?object $entity): bool
-    {
-        return ($entity === $this);
-    }
+    public readonly AbstractId $id;
 }
