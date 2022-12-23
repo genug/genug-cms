@@ -26,6 +26,7 @@ use LogicException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SplFileInfo;
+use stdClass;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
@@ -43,7 +44,7 @@ use const genug\Persistence\FileSystem\Page\HOME_PAGE_FILENAME;
  */
 final class Repository implements RepositoryInterface
 {
-    private readonly ArrayObject $idToFilePathMap;
+    private readonly ArrayObject $idToInfoMap;
     private readonly ArrayIterator $iterator;
 
     public function __construct(
@@ -51,8 +52,8 @@ final class Repository implements RepositoryInterface
         protected readonly Environment $environment,
         private readonly LoggerInterface $logger
     ) {
-        $this->idToFilePathMap = $this->createIdToFilePathMap();
-        $this->iterator = $this->idToFilePathMap->getIterator();
+        $this->idToInfoMap = $this->createIdToInfoMap();
+        $this->iterator = $this->idToInfoMap->getIterator();
     }
 
     public function fetch(string $id): AbstractEntity
@@ -100,16 +101,16 @@ final class Repository implements RepositoryInterface
 
     public function fetchByGroup(?string $group): Generator
     {
-        foreach ($this as $page) {
-            if ((string) $page->group === (string) $group) {
-                yield $page;
+        foreach ($this->idToInfoMap as $id => $item) {
+            if ($item->group === $group) {
+                yield $this->fetch($id);
             }
         }
     }
 
     protected function _fetch(string $id): AbstractEntity
     {
-        if (! $this->idToFilePathMap->offsetExists($id)) {
+        if (! $this->idToInfoMap->offsetExists($id)) {
             throw new InvalidArgumentException();
         }
         $cachedEntity = $this->entityCache->fetchOrNull(new Id($id));
@@ -124,7 +125,7 @@ final class Repository implements RepositoryInterface
 
     public function count(): int
     {
-        return count($this->idToFilePathMap);
+        return count($this->idToInfoMap);
     }
 
     public function current(): AbstractEntity
@@ -160,7 +161,7 @@ final class Repository implements RepositoryInterface
     {
         $logger = $this->logger;
 
-        $pageFile = new SplFileInfo($this->idToFilePathMap->offsetGet($idString));
+        $pageFile = new SplFileInfo($this->idToInfoMap->offsetGet($idString)->path);
 
         $dir = $pageFile->getPathInfo();
         if (null === $dir) {
@@ -242,9 +243,9 @@ final class Repository implements RepositoryInterface
         return $entity;
     }
 
-    protected function createIdToFilePathMap(): ArrayObject
+    protected function createIdToInfoMap(): ArrayObject
     {
-        $idToFilePathMap = new ArrayObject();
+        $idToInfoMap = new ArrayObject();
 
         // pages without group
 
@@ -263,7 +264,11 @@ final class Repository implements RepositoryInterface
                 return '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
             })();
 
-            $idToFilePathMap->offsetSet($id, $pageFile->getRealPath());
+            $value = new stdClass();
+            $value->path = $pageFile->getRealPath();
+            $value->group = null;
+
+            $idToInfoMap->offsetSet($id, $value);
         }
 
         // pages with group
@@ -288,9 +293,13 @@ final class Repository implements RepositoryInterface
                     return '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
                 })();
 
-                $idToFilePathMap->offsetSet($id, $pageFile->getRealPath());
+                $value = new stdClass();
+                $value->path = $pageFile->getRealPath();
+                $value->group = $dir->getBasename();
+
+                $idToInfoMap->offsetSet($id, $value);
             }
         }
-        return $idToFilePathMap;
+        return $idToInfoMap;
     }
 }
