@@ -22,10 +22,10 @@ final class Entity extends AbstractEntity
 {
     public function __construct(
         public readonly AbstractId $id,
-        public readonly AbstractGroup $group,
-        public readonly TitleInterface $title,
-        public readonly DateInterface $date,
-        public readonly ContentInterface $content
+        public readonly ?AbstractGroup $group,
+        public readonly ?TitleInterface $title,
+        public readonly ?DateInterface $date,
+        public readonly ?ContentInterface $content
     ) {
     }
 }

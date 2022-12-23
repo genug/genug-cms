@@ -15,6 +15,7 @@ namespace genug\Lib;
 
 use BadMethodCallException;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use SplFileInfo;
 
 use function is_array;
@@ -43,7 +44,7 @@ abstract class AbstractFrontMatterFile
 
     private string $_content;
 
-    final public function __construct(string $path)
+    final public function __construct(protected readonly string $path, protected readonly LoggerInterface $logger)
     {
         if (! $this->_isMutable) {
             throw new BadMethodCallException();
@@ -57,15 +58,23 @@ abstract class AbstractFrontMatterFile
 
         // ---
 
-        $fileContent = $file->openFile()->fread($file->getSize());
-        $fileContent = str_replace(self::INVALID_EOLS, self::VALID_EOL, $fileContent);
+        $frontMatterString = '';
+        $content = '';
 
-        $matches = [];
+        if ($file->getSize() > 0) {
+            $fileContent = $file->openFile()->fread($file->getSize());
+            $fileContent = str_replace(self::INVALID_EOLS, self::VALID_EOL, $fileContent);
 
-        preg_match('#^(?:-{3}' . self::VALID_EOL . '([\s\S]*?)' . self::VALID_EOL . '-{3}(?:' . self::VALID_EOL . '|$))?([\s\S]*)$#', $fileContent, $matches);
+            $matches = [];
 
-        $this->_frontMatterString = $matches[1];
-        $this->_content = $matches[2];
+            preg_match('#^(?:-{3}' . self::VALID_EOL . '([\s\S]*?)' . self::VALID_EOL . '-{3}(?:' . self::VALID_EOL . '|$))?([\s\S]*)$#', $fileContent, $matches);
+
+            $frontMatterString = $matches[1];
+            $content = $matches[2];
+        }
+
+        $this->_frontMatterString = $frontMatterString;
+        $this->_content = $content;
     }
 
     final public function content(): string

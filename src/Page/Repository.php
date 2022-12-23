@@ -15,7 +15,6 @@ namespace genug\Page;
 
 use ArrayIterator;
 use ArrayObject;
-use Exception;
 use FilesystemIterator;
 use FilterIterator;
 use genug\Environment\Environment;
@@ -30,6 +29,7 @@ use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
 use function count;
+use function sprintf;
 
 use const genug\Persistence\FileSystem\Page\DIR as PAGE_DIR;
 use const genug\Persistence\FileSystem\Page\FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION;
@@ -142,6 +142,8 @@ final class Repository implements RepositoryInterface
 
     protected function createAndCacheEntity(string $idString): Entity
     {
+        $logger = $this->logger;
+
         $pageFile = new SplFileInfo($this->idToFilePathMap->offsetGet($idString));
 
         $dir = $pageFile->getPathInfo();
@@ -149,34 +151,56 @@ final class Repository implements RepositoryInterface
             throw new RuntimeException();
         }
 
-        $_data = new class ($pageFile->getRealPath()) extends AbstractFrontMatterFile {
+        $_data = new class ($pageFile->getRealPath(), $logger) extends AbstractFrontMatterFile {
             protected function _parseFrontMatterString(string $str): array
             {
-                return Yaml::parse($str);
+                if (empty($str)) {
+                    $this->logger->debug(
+                        'No page front matter.',
+                        ['file' => $this->path]
+                    );
+                    return [];
+                }
+
+                $data = Yaml::parse($str);
+                if (! is_array($data)) {
+                    $this->logger->warning(
+                        'Invalid page front matter.',
+                        ['file' => $this->path]
+                    );
+                    return [];
+                }
+                return $data;
             }
         };
 
-        $title = (function () use ($_data): string {
+        $title = (function () use ($_data, $idString, $logger): ?Title {
             $fm = $_data->frontMatter();
             if (! isset($fm['title'])) {
-                throw new Exception();
+                $logger->debug(
+                    sprintf('No title found for Page "%s"', $idString)
+                );
+                return null;
             }
-            return $fm['title'];
+            return new Title($fm['title']);
         })();
 
-        $date = (function () use ($_data): string {
+        $date = (function () use ($_data, $idString, $logger): ?Date {
             $fm = $_data->frontMatter();
             if (! isset($fm['date'])) {
-                throw new Exception();
+                $logger->debug(
+                    sprintf('No date found for Page "%s"', $idString)
+                );
+                return null;
             }
-            return $fm['date'];
+            return new Date($fm['date']);
         })();
 
         $entity = new Entity(
             new Id($idString),
             new Group($dir->getBasename()),
-            new Title($title),
-            new Date($date),
+            $title,
+            $date,
             new Content($_data->content())
         );
 
