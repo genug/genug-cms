@@ -26,4 +26,5 @@ abstract class AbstractEntity implements EquivalentObjectInterface
     use EquivalentObjectTrait;
 
     public readonly AbstractId $id;
+    public readonly ?AbstractGroup $group;
 }

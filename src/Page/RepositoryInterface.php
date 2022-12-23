@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace genug\Page;
 
 use Countable;
+use Generator;
 use Iterator;
 
 /**
@@ -28,4 +29,9 @@ interface RepositoryInterface extends Iterator, Countable
     public function fetch(string $id): AbstractEntity;
 
     public function fetchOrNull(?string $id): ?AbstractEntity;
+
+    /**
+     * @return Generator<int, \genug\Page\AbstractEntity, \genug\Page\AbstractEntity, void>
+     */
+    public function fetchByGroup(?string $group): Generator;
 }

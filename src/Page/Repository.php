@@ -17,6 +17,7 @@ use ArrayIterator;
 use ArrayObject;
 use FilesystemIterator;
 use FilterIterator;
+use Generator;
 use genug\Environment\Environment;
 use genug\Lib\AbstractFrontMatterFile;
 use genug\Lib\EntityCache;
@@ -94,6 +95,15 @@ final class Repository implements RepositoryInterface
                 ]
             );
             return null;
+        }
+    }
+
+    public function fetchByGroup(?string $group): Generator
+    {
+        foreach ($this as $page) {
+            if ((string) $page->group === (string) $group) {
+                yield $page;
+            }
         }
     }
 
