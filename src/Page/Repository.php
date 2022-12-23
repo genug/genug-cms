@@ -45,14 +45,11 @@ final class Repository implements RepositoryInterface
     private readonly ArrayObject $idToFilePathMap;
     private readonly ArrayIterator $iterator;
 
-    protected readonly string $mainGroupIdString;
-
     public function __construct(
         private readonly EntityCache $entityCache,
         protected readonly Environment $environment,
         private readonly LoggerInterface $logger
     ) {
-        $this->mainGroupIdString = (string) $this->environment->mainGroupId();
         $this->idToFilePathMap = $this->createIdToFilePathMap();
         $this->iterator = $this->idToFilePathMap->getIterator();
     }
@@ -151,6 +148,13 @@ final class Repository implements RepositoryInterface
             throw new RuntimeException();
         }
 
+        $group = (function () use ($dir): ?Group {
+            if ($dir->getRealPath() === PAGE_DIR) {
+                return null;
+            }
+            return new Group($dir->getBasename());
+        })();
+
         $_data = new class ($pageFile->getRealPath(), $logger) extends AbstractFrontMatterFile {
             protected function _parseFrontMatterString(string $str): array
             {
@@ -198,7 +202,7 @@ final class Repository implements RepositoryInterface
 
         $entity = new Entity(
             new Id($idString),
-            new Group($dir->getBasename()),
+            $group,
             $title,
             $date,
             new Content($_data->content())
@@ -223,6 +227,28 @@ final class Repository implements RepositoryInterface
     {
         $idToFilePathMap = new ArrayObject();
 
+        // pages without group
+
+        $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator(PAGE_DIR)) extends FilterIterator {
+            public function accept(): bool
+            {
+                return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
+            }
+        };
+
+        foreach ($pageFiles as $pageFile) {
+            $id = (function () use ($pageFile) {
+                if ($pageFile->getBasename() === HOME_PAGE_FILENAME) {
+                    return '/';
+                }
+                return '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
+            })();
+
+            $idToFilePathMap->offsetSet($id, $pageFile->getRealPath());
+        }
+
+        // pages with group
+
         $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator(PAGE_DIR)) extends FilterIterator {
             public function accept(): bool
             {
@@ -240,15 +266,7 @@ final class Repository implements RepositoryInterface
 
             foreach ($pageFiles as $pageFile) {
                 $id = (function () use ($dir, $pageFile) {
-                    $rtn = '';
-                    if ($dir->getBasename() === $this->mainGroupIdString && $pageFile->getBasename() === HOME_PAGE_FILENAME) {
-                        $rtn = '/';
-                    } elseif ($dir->getBasename() === $this->mainGroupIdString) {
-                        $rtn = '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
-                    } else {
-                        $rtn = '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
-                    }
-                    return $rtn;
+                    return '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
                 })();
 
                 $idToFilePathMap->offsetSet($id, $pageFile->getRealPath());

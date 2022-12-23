@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace genug\Environment;
 
-use genug\Group\AbstractId as AbstractGroupId;
-use genug\Group\Id as GroupId;
 use genug\Page\AbstractId as AbstractPageId;
 use genug\Page\Id as PageId;
 use Psr\Log\LoggerInterface;
@@ -57,14 +55,6 @@ final class Environment implements EnvironmentInterface
     public function debugLogFilePath(): string
     {
         return $this->variables['GENUG_DEBUG_LOGFILE'];
-    }
-
-    public function mainGroupId(): AbstractGroupId
-    {
-        if (! ($this->variables['GENUG_MAINGROUP_ID'] instanceof AbstractGroupId)) {
-            $this->variables['GENUG_MAINGROUP_ID'] = new GroupId($this->variables['GENUG_MAINGROUP_ID']);
-        }
-        return $this->variables['GENUG_MAINGROUP_ID'];
     }
 
     public function homePageId(): AbstractPageId

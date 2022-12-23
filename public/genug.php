@@ -70,8 +70,7 @@ use const genug\Setting\VIEW_INDEX_FILE;
             ),
             setting: new Setting(
                 $environment->homePageId(),
-                $environment->http404PageId(),
-                $environment->mainGroupId()
+                $environment->http404PageId()
             )
         );
 

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace genug\Setting;
 
-use genug\Group\AbstractId as AbstractGroupId;
 use genug\Page\AbstractId as AbstractPageId;
 
 /**
@@ -25,8 +24,7 @@ final class Setting
 {
     public function __construct(
         public readonly AbstractPageId $homePageId,
-        public readonly AbstractPageId $notFoundPageId,
-        public readonly AbstractGroupId $mainGroupId,
+        public readonly AbstractPageId $notFoundPageId
     ) {
     }
 }

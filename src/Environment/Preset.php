@@ -27,9 +27,6 @@ enum Preset: string
     case GENUG_DEBUG_LOGFILE = '../log/genug.debug.log';
 
     #[Value(Type::IdString)]
-    case GENUG_MAINGROUP_ID = 'site';
-
-    #[Value(Type::IdString)]
     case GENUG_HOMEPAGE_ID = '/';
 
     #[Value(Type::IdString)]

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace genug\Environment;
 
-use genug\Group\AbstractId as AbstractGroupId;
 use genug\Page\AbstractId as AbstractPageId;
 
 /**
@@ -26,8 +25,6 @@ interface EnvironmentInterface
     public function isDebug(): bool;
 
     public function debugLogFilePath(): string;
-
-    public function mainGroupId(): AbstractGroupId;
 
     public function homePageId(): AbstractPageId;
 
