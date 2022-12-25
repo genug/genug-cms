@@ -214,7 +214,7 @@ final class Repository implements RepositoryInterface
     protected function createIdToFilePathMap(): ArrayObject
     {
         $idToFilePathMap = new ArrayObject();
-        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->contentDirectory())) extends FilterIterator {
+        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory())) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();

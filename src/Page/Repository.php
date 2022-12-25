@@ -168,7 +168,7 @@ final class Repository implements RepositoryInterface
         }
 
         $group = (function () use ($dir): ?Group {
-            $contentDir = new SplFileInfo($this->environment->contentDirectory());
+            $contentDir = new SplFileInfo($this->environment->persistenceContentDirectory());
             if ($dir->getRealPath() === $contentDir->getRealPath()) {
                 return null;
             }
@@ -249,7 +249,7 @@ final class Repository implements RepositoryInterface
 
         // pages without group
 
-        $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->contentDirectory())) extends FilterIterator {
+        $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory())) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
@@ -273,7 +273,7 @@ final class Repository implements RepositoryInterface
 
         // pages with group
 
-        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->contentDirectory())) extends FilterIterator {
+        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory())) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();

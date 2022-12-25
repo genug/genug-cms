@@ -32,5 +32,5 @@ interface EnvironmentInterface
 
     public function http404PageId(): AbstractPageId;
 
-    public function contentDirectory(): string;
+    public function persistenceContentDirectory(): string;
 }
