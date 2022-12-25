@@ -30,8 +30,6 @@ use Throwable;
 use function count;
 use function sprintf;
 
-use const genug\Persistence\FileSystem\Group\FILENAME as GROUP_FILENAME;
-
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -190,7 +188,7 @@ final class Repository implements RepositoryInterface
     {
         try {
             $dirRealPath = $this->idToFilePathMap->offsetGet($id);
-            $fileRealPath = (new SplFileInfo($dirRealPath . '/' . GROUP_FILENAME))->getRealPath();
+            $fileRealPath = (new SplFileInfo($dirRealPath . '/' . $this->environment->persistenceGroupFilename()))->getRealPath();
             if (! $fileRealPath) {
                 throw new LogicException('No metadata file found.');
             }

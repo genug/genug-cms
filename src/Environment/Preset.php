@@ -37,4 +37,7 @@ enum Preset: string
 
     #[Value(Type::FilePath)]
     case GENUG_PERSISTENCE_CONTENT_DIR = './genug_user/content';
+
+    #[Value(Type::String)]
+    case GENUG_PERSISTENCE_GROUP_FILENAME = '_group.genug';
 }

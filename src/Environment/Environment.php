@@ -83,4 +83,9 @@ final class Environment implements EnvironmentInterface
     {
         return $this->baseDir.$this->variables['GENUG_PERSISTENCE_CONTENT_DIR'];
     }
+
+    public function persistenceGroupFilename(): string
+    {
+        return $this->variables['GENUG_PERSISTENCE_GROUP_FILENAME'];
+    }
 }

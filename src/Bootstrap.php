@@ -30,13 +30,6 @@ namespace genug\Setting
     }
 }
 
-namespace genug\Persistence\FileSystem\Group
-{
-    const FILENAME_EXTENSION = 'genug';
-
-    const FILENAME = '_group.' . namespace\FILENAME_EXTENSION;
-}
-
 namespace genug\Persistence\FileSystem\Page
 {
     const FILENAME_EXTENSION = 'page';
