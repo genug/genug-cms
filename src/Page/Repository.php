@@ -33,7 +33,6 @@ use Throwable;
 use function count;
 use function sprintf;
 
-use const genug\Persistence\FileSystem\Page\DIR as PAGE_DIR;
 use const genug\Persistence\FileSystem\Page\FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION;
 use const genug\Persistence\FileSystem\Page\HOME_PAGE_FILENAME;
 
@@ -169,7 +168,7 @@ final class Repository implements RepositoryInterface
         }
 
         $group = (function () use ($dir): ?Group {
-            if ($dir->getRealPath() === PAGE_DIR) {
+            if ($dir->getRealPath() === $this->environment->contentDirectory()) {
                 return null;
             }
             return new Group($dir->getBasename());
@@ -249,7 +248,7 @@ final class Repository implements RepositoryInterface
 
         // pages without group
 
-        $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator(PAGE_DIR)) extends FilterIterator {
+        $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->contentDirectory())) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
@@ -273,7 +272,7 @@ final class Repository implements RepositoryInterface
 
         // pages with group
 
-        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator(PAGE_DIR)) extends FilterIterator {
+        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->contentDirectory())) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();

@@ -30,6 +30,7 @@ final class Environment implements EnvironmentInterface
     protected array $variables = [];
 
     public function __construct(
+        protected readonly string $baseDir,
         protected readonly LoggerInterface $logger
     ) {
         foreach ((new ReflectionEnum(Preset::class))->getCases() as $reflectionEnumBackedCase) {
@@ -76,5 +77,10 @@ final class Environment implements EnvironmentInterface
             $this->variables['GENUG_HTTP404PAGE_ID'] = new PageId($this->variables['GENUG_HTTP404PAGE_ID']);
         }
         return $this->variables['GENUG_HTTP404PAGE_ID'];
+    }
+
+    public function contentDirectory(): string
+    {
+        return $this->baseDir.$this->variables['GENUG_CONTENT_DIR'];
     }
 }

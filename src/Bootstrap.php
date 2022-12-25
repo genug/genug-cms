@@ -21,10 +21,6 @@ namespace genug\Setting
         \define(__NAMESPACE__ . '\USER_DIR', \dirname(\getcwd()) . '/genug_user');
     }
 
-    if (! \defined(__NAMESPACE__ . '\CONTENT_DIR')) {
-        \define(__NAMESPACE__ . '\CONTENT_DIR', namespace\USER_DIR . '/content');
-    }
-
     if (! \defined(__NAMESPACE__ . '\VIEW_DIR')) {
         \define(__NAMESPACE__ . '\VIEW_DIR', namespace\USER_DIR . '/view');
     }
@@ -36,8 +32,6 @@ namespace genug\Setting
 
 namespace genug\Persistence\FileSystem\Group
 {
-    const DIR = \genug\Setting\CONTENT_DIR;
-
     const FILENAME_EXTENSION = 'genug';
 
     const FILENAME = '_group.' . namespace\FILENAME_EXTENSION;
@@ -45,8 +39,6 @@ namespace genug\Persistence\FileSystem\Group
 
 namespace genug\Persistence\FileSystem\Page
 {
-    const DIR = \genug\Setting\CONTENT_DIR;
-
     const FILENAME_EXTENSION = 'page';
 
     const HOME_PAGE_FILENAME = '_home.' . namespace\FILENAME_EXTENSION;

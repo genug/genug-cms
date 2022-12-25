@@ -34,4 +34,7 @@ enum Preset: string
 
     #[Value(Type::IdString)]
     case GENUG_HTTP404PAGE_ID = '/http-404';
+
+    #[Value(Type::FilePath)]
+    case GENUG_CONTENT_DIR = '/genug_user/content';
 }

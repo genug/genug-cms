@@ -17,6 +17,7 @@ use ArrayIterator;
 use ArrayObject;
 use FilesystemIterator;
 use FilterIterator;
+use genug\Environment\Environment;
 use genug\Lib\EntityCache;
 use InvalidArgumentException;
 use LogicException;
@@ -29,7 +30,6 @@ use Throwable;
 use function count;
 use function sprintf;
 
-use const genug\Persistence\FileSystem\Group\DIR as GROUP_DIR;
 use const genug\Persistence\FileSystem\Group\FILENAME as GROUP_FILENAME;
 
 /**
@@ -44,9 +44,10 @@ final class Repository implements RepositoryInterface
 
     public function __construct(
         private readonly EntityCache $entityCache,
+        protected readonly Environment $environment,
         private readonly LoggerInterface $logger
     ) {
-        $this->idToFilePathMap = self::createIdToFilePathMap();
+        $this->idToFilePathMap = $this->createIdToFilePathMap();
         $this->iterator = $this->idToFilePathMap->getIterator();
     }
 
@@ -210,10 +211,10 @@ final class Repository implements RepositoryInterface
         }
     }
 
-    protected static function createIdToFilePathMap(): ArrayObject
+    protected function createIdToFilePathMap(): ArrayObject
     {
         $idToFilePathMap = new ArrayObject();
-        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator(GROUP_DIR)) extends FilterIterator {
+        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->contentDirectory())) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();

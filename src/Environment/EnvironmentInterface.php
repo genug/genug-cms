@@ -31,4 +31,6 @@ interface EnvironmentInterface
     public function homePageId(): AbstractPageId;
 
     public function http404PageId(): AbstractPageId;
+
+    public function contentDirectory(): string;
 }

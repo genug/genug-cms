@@ -41,7 +41,10 @@ use const genug\Setting\VIEW_INDEX_FILE;
 
         require_once dirname(__DIR__) . '/src/Bootstrap.php';
 
-        $environment = new Environment(Log::instance('genug_environment'));
+        $environment = new Environment(
+            dirname(__DIR__),
+            Log::instance('genug_environment')
+        );
         $request = new Request();
         $entityCache = new EntityCache();
 
@@ -65,6 +68,7 @@ use const genug\Setting\VIEW_INDEX_FILE;
             homePage: $pages->fetch((string) $environment->homePageId()),
             groups: new GroupRepository(
                 $entityCache,
+                $environment,
                 Log::instance('genug_group')
             ),
             setting: new Setting(
