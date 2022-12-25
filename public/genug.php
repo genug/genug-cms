@@ -26,7 +26,6 @@ use genug\Router\Router;
 use genug\Router\RouterError;
 use genug\Setting\Setting;
 
-use const genug\Setting\CONTENT_TYPE;
 use const genug\Setting\VIEW_INDEX_FILE;
 
 /**
@@ -74,12 +73,12 @@ use const genug\Setting\VIEW_INDEX_FILE;
             )
         );
 
+        header('Content-Type: ' . $environment->pageContentType());
+        http_response_code(200);
+        if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
+            http_response_code(404);
+        }
         (function () use ($genug) {
-            header('Content-Type: ' . CONTENT_TYPE);
-            http_response_code(200);
-            if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
-                http_response_code(404);
-            }
             /** @psalm-suppress UnresolvableInclude */
             require_once VIEW_INDEX_FILE;
         })();

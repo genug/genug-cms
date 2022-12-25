@@ -17,12 +17,6 @@ declare(strict_types=1);
 
 namespace genug\Setting
 {
-    if (! \defined(__NAMESPACE__ . '\CONTENT_TYPE')) {
-        \define(__NAMESPACE__ . '\CONTENT_TYPE', 'text/html; charset=UTF-8');
-    }
-
-    // ---
-
     if (! \defined(__NAMESPACE__ . '\USER_DIR')) {
         \define(__NAMESPACE__ . '\USER_DIR', \dirname(\getcwd()) . '/genug_user');
     }

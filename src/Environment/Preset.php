@@ -26,6 +26,9 @@ enum Preset: string
     #[Value(Type::FilePath)]
     case GENUG_DEBUG_LOGFILE = '../log/genug.debug.log';
 
+    #[Value(Type::String)]
+    case GENUG_CONTENT_TYPE = 'text/html; charset=UTF-8';
+
     #[Value(Type::IdString)]
     case GENUG_HOMEPAGE_ID = '/';
 

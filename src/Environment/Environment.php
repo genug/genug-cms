@@ -57,6 +57,11 @@ final class Environment implements EnvironmentInterface
         return $this->variables['GENUG_DEBUG_LOGFILE'];
     }
 
+    public function pageContentType(): string
+    {
+        return $this->variables['GENUG_CONTENT_TYPE'];
+    }
+
     public function homePageId(): AbstractPageId
     {
         if (! ($this->variables['GENUG_HOMEPAGE_ID'] instanceof AbstractPageId)) {

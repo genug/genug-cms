@@ -26,6 +26,8 @@ interface EnvironmentInterface
 
     public function debugLogFilePath(): string;
 
+    public function pageContentType(): string;
+
     public function homePageId(): AbstractPageId;
 
     public function http404PageId(): AbstractPageId;
