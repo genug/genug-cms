@@ -37,4 +37,6 @@ interface EnvironmentInterface
     public function persistenceGroupFilename(): string;
 
     public function persistencePageFilenameExtesion(): string;
+
+    public function persistencePageHomePageFilename(): string;
 }

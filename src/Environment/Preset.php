@@ -43,4 +43,7 @@ enum Preset: string
 
     #[Value(Type::String)]
     case GENUG_PERSISTENCE_PAGE_FILENAMEEXTENSION = 'page';
+
+    #[Value(Type::String)]
+    case GENUG_PERSISTENCE_PAGE_HOMEPAGE_FILENAME = '_home.page';
 }

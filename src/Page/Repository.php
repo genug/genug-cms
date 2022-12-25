@@ -34,8 +34,6 @@ use Throwable;
 use function count;
 use function sprintf;
 
-use const genug\Persistence\FileSystem\Page\HOME_PAGE_FILENAME;
-
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -265,7 +263,7 @@ final class Repository implements RepositoryInterface
 
         foreach ($pageFiles as $pageFile) {
             $id = (function () use ($pageFile) {
-                if ($pageFile->getBasename() === HOME_PAGE_FILENAME) {
+                if ($pageFile->getBasename() === $this->environment->persistencePageHomePageFilename()) {
                     return '/';
                 }
                 return '/' . $pageFile->getBasename('.' . $this->environment->persistencePageFilenameExtesion());
