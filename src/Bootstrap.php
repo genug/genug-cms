@@ -32,6 +32,7 @@ namespace genug\Setting
 
 namespace genug\Persistence\FileSystem\Page
 {
+    /** @deprecated */
     const FILENAME_EXTENSION = 'page';
 
     const HOME_PAGE_FILENAME = '_home.' . namespace\FILENAME_EXTENSION;

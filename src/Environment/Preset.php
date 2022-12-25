@@ -40,4 +40,7 @@ enum Preset: string
 
     #[Value(Type::String)]
     case GENUG_PERSISTENCE_GROUP_FILENAME = '_group.genug';
+
+    #[Value(Type::String)]
+    case GENUG_PERSISTENCE_PAGE_FILENAMEEXTENSION = 'page';
 }

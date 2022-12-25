@@ -22,6 +22,7 @@ use genug\Environment\Environment;
 use genug\Lib\AbstractFrontMatterFile;
 use genug\Lib\EntityCache;
 use InvalidArgumentException;
+use Iterator;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -33,7 +34,6 @@ use Throwable;
 use function count;
 use function sprintf;
 
-use const genug\Persistence\FileSystem\Page\FILENAME_EXTENSION as PAGE_FILENAME_EXTENSION;
 use const genug\Persistence\FileSystem\Page\HOME_PAGE_FILENAME;
 
 /**
@@ -249,10 +249,17 @@ final class Repository implements RepositoryInterface
 
         // pages without group
 
-        $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory())) extends FilterIterator {
+        $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory()), $this->environment) extends FilterIterator {
+            public function __construct(
+                Iterator $iterator,
+                protected readonly Environment $environment
+            ) {
+                parent::__construct($iterator);
+            }
+
             public function accept(): bool
             {
-                return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
+                return parent::current()->isFile() && parent::current()->getExtension() === $this->environment->persistencePageFilenameExtesion();
             }
         };
 
@@ -261,7 +268,7 @@ final class Repository implements RepositoryInterface
                 if ($pageFile->getBasename() === HOME_PAGE_FILENAME) {
                     return '/';
                 }
-                return '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
+                return '/' . $pageFile->getBasename('.' . $this->environment->persistencePageFilenameExtesion());
             })();
 
             $value = new stdClass();
@@ -281,16 +288,23 @@ final class Repository implements RepositoryInterface
         };
 
         foreach ($directories as $dir) {
-            $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($dir->getRealPath())) extends FilterIterator {
+            $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($dir->getRealPath()), $this->environment) extends FilterIterator {
+                public function __construct(
+                    Iterator $iterator,
+                    protected readonly Environment $environment
+                ) {
+                    parent::__construct($iterator);
+                }
+
                 public function accept(): bool
                 {
-                    return parent::current()->isFile() && parent::current()->getExtension() === PAGE_FILENAME_EXTENSION;
+                    return parent::current()->isFile() && parent::current()->getExtension() === $this->environment->persistencePageFilenameExtesion();
                 }
             };
 
             foreach ($pageFiles as $pageFile) {
                 $id = (function () use ($dir, $pageFile) {
-                    return '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . PAGE_FILENAME_EXTENSION);
+                    return '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . $this->environment->persistencePageFilenameExtesion());
                 })();
 
                 $value = new stdClass();
