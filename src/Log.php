@@ -19,6 +19,8 @@ use Monolog\Level;
 use Monolog\Logger as MonologLogger;
 use Psr\Log\LoggerInterface;
 
+use function dirname;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -55,7 +57,7 @@ final class Log
         $logger->pushHandler(new StreamHandler('php://stderr', $level));
 
         if ((bool) $isDebugOrNullOnFailure) {
-            $logger->pushHandler(new StreamHandler($debugLogFilePath, Level::Debug));
+            $logger->pushHandler(new StreamHandler(dirname(__DIR__).'/'.$debugLogFilePath, Level::Debug));
         }
         return $logger;
     }

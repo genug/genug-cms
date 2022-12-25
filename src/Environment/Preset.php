@@ -24,7 +24,7 @@ enum Preset: string
     case GENUG_DEBUG = 'off';
 
     #[Value(Type::FilePath)]
-    case GENUG_DEBUG_LOGFILE = '../log/genug.debug.log';
+    case GENUG_DEBUG_LOGFILE = './log/genug.debug.log';
 
     #[Value(Type::String)]
     case GENUG_CONTENT_TYPE = 'text/html; charset=UTF-8';
@@ -36,5 +36,5 @@ enum Preset: string
     case GENUG_HTTP404PAGE_ID = '/http-404';
 
     #[Value(Type::FilePath)]
-    case GENUG_CONTENT_DIR = '/genug_user/content';
+    case GENUG_CONTENT_DIR = './genug_user/content';
 }

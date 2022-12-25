@@ -55,7 +55,7 @@ final class Environment implements EnvironmentInterface
 
     public function debugLogFilePath(): string
     {
-        return $this->variables['GENUG_DEBUG_LOGFILE'];
+        return $this->baseDir.$this->variables['GENUG_DEBUG_LOGFILE'];
     }
 
     public function pageContentType(): string

@@ -42,7 +42,7 @@ use const genug\Setting\VIEW_INDEX_FILE;
         require_once dirname(__DIR__) . '/src/Bootstrap.php';
 
         $environment = new Environment(
-            dirname(__DIR__),
+            dirname(__DIR__).'/',
             Log::instance('genug_environment')
         );
         $request = new Request();

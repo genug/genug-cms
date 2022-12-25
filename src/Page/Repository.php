@@ -168,7 +168,8 @@ final class Repository implements RepositoryInterface
         }
 
         $group = (function () use ($dir): ?Group {
-            if ($dir->getRealPath() === $this->environment->contentDirectory()) {
+            $contentDir = new SplFileInfo($this->environment->contentDirectory());
+            if ($dir->getRealPath() === $contentDir->getRealPath()) {
                 return null;
             }
             return new Group($dir->getBasename());
