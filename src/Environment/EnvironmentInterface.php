@@ -32,6 +32,8 @@ interface EnvironmentInterface
 
     public function http404PageId(): AbstractPageId;
 
+    public function viewFilePath(): string;
+
     public function persistenceContentDirectory(): string;
 
     public function persistenceGroupFilename(): string;

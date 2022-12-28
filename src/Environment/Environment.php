@@ -79,6 +79,11 @@ final class Environment implements EnvironmentInterface
         return $this->variables['GENUG_HTTP404PAGE_ID'];
     }
 
+    public function viewFilePath(): string
+    {
+        return $this->baseDir.$this->variables['GENUG_VIEW_FILE'];
+    }
+
     public function persistenceContentDirectory(): string
     {
         return $this->baseDir.$this->variables['GENUG_PERSISTENCE_CONTENT_DIR'];

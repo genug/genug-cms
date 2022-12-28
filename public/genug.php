@@ -26,8 +26,6 @@ use genug\Router\Router;
 use genug\Router\RouterError;
 use genug\Setting\Setting;
 
-use const genug\Setting\VIEW_INDEX_FILE;
-
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -77,14 +75,16 @@ use const genug\Setting\VIEW_INDEX_FILE;
             )
         );
 
+        $viewFilePath = $environment->viewFilePath();
+
         header('Content-Type: ' . $environment->pageContentType());
         http_response_code(200);
         if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
             http_response_code(404);
         }
-        (function () use ($genug) {
+        (function () use ($genug, $viewFilePath) {
             /** @psalm-suppress UnresolvableInclude */
-            require_once VIEW_INDEX_FILE;
+            require_once $viewFilePath;
         })();
     } catch (RouterError $t) {
         ob_clean();

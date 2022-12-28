@@ -36,6 +36,9 @@ enum Preset: string
     case GENUG_HTTP404PAGE_ID = '/http-404';
 
     #[Value(Type::FilePath)]
+    case GENUG_VIEW_FILE = './genug_user/view/index.php';
+
+    #[Value(Type::FilePath)]
     case GENUG_PERSISTENCE_CONTENT_DIR = './genug_user/content';
 
     #[Value(Type::String)]
