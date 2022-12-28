@@ -37,8 +37,6 @@ use genug\Setting\Setting;
 
         require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-        require_once dirname(__DIR__) . '/src/Bootstrap.php';
-
         $environment = new Environment(
             dirname(__DIR__).'/',
             Log::instance('genug_environment')
