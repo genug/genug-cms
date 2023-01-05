@@ -27,6 +27,7 @@ use function sprintf;
  */
 final class Environment implements EnvironmentInterface
 {
+    /** @var array<string, mixed> */
     protected array $variables = [];
 
     public function __construct(
