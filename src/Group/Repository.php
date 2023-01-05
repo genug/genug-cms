@@ -37,7 +37,9 @@ use function sprintf;
  */
 final class Repository implements RepositoryInterface
 {
+    /** @var ArrayObject<string, string> */
     private readonly ArrayObject $idToFilePathMap;
+    /** @var ArrayIterator<string, string> */
     private readonly ArrayIterator $iterator;
 
     public function __construct(
@@ -209,8 +211,12 @@ final class Repository implements RepositoryInterface
         }
     }
 
+    /**
+     * @return ArrayObject<string, string>
+     */
     protected function createIdToFilePathMap(): ArrayObject
     {
+        /** @var ArrayObject<string, string> */
         $idToFilePathMap = new ArrayObject();
         $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory())) extends FilterIterator {
             public function accept(): bool

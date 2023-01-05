@@ -35,10 +35,12 @@ final class AbstractIdTest extends TestCase
         $this->assertTrue($class->isAbstract());
     }
 
+    /** @deprecated */
     public function testImplementsStringable(): void
     {
         $class = new ReflectionClass(AbstractId::class);
 
+        /** @psalm-suppress RedundantCondition */
         $this->assertTrue($class->implementsInterface(Stringable::class));
     }
 
@@ -46,6 +48,7 @@ final class AbstractIdTest extends TestCase
     {
         $class = new ReflectionClass(AbstractId::class);
 
+        /** @psalm-suppress RedundantCondition */
         $this->assertTrue($class->implementsInterface(EquivalentStringableInterface::class));
     }
 

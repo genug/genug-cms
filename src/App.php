@@ -82,6 +82,7 @@ final class App
             if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
                 http_response_code(404);
             }
+            /** @psalm-suppress UnusedVariable */
             (function () use ($genug, $viewFilePath) {
                 /** @psalm-suppress UnresolvableInclude */
                 require_once $viewFilePath;

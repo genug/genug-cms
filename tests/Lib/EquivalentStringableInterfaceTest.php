@@ -37,6 +37,7 @@ final class EquivalentStringableInterfaceTest extends TestCase
     {
         $class = new ReflectionClass(EquivalentStringableInterface::class);
 
+        /** @psalm-suppress RedundantCondition */
         $this->assertTrue($class->implementsInterface(\Stringable::class));
     }
 

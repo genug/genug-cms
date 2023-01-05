@@ -17,6 +17,11 @@ use Attribute;
 use genug\Log;
 use Monolog\Logger;
 
+use function is_string;
+
+use const FILTER_NULL_ON_FAILURE;
+use const FILTER_VALIDATE_BOOL;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -36,7 +41,7 @@ final class Value
     /**
      * @todo validate Type::FilePath, Type::IdString
      */
-    public function from(Preset $envVar): mixed
+    public function from(Preset $envVar): string|bool
     {
         return match ($this->type) {
             Type::Bool => $this->getEnvAsBool($envVar),
@@ -49,7 +54,7 @@ final class Value
     protected function getEnv(Preset $envVar): string
     {
         $value = getenv($envVar->name, true);
-        if (false !== $value) {
+        if (is_string($value)) {
             return $value;
         }
         $this->logger->debug(sprintf('Environment varibale %s is not set.', $envVar->name));
@@ -58,7 +63,11 @@ final class Value
 
     protected function getEnvAsBool(Preset $envVar): bool
     {
-        $value = filter_var($this->getEnv($envVar), FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+        /* workaround psalm: ERROR: MixedArgument - Argument 2 of filter_var cannot be mixed, expecting int */
+        $filter = (int) FILTER_VALIDATE_BOOL;
+
+        /** @var ?bool */
+        $value = filter_var($this->getEnv($envVar), $filter, FILTER_NULL_ON_FAILURE);
         if (null === $value) {
             $this->logger->warning(sprintf('%s has an invalid value.', $envVar->name));
         }

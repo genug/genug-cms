@@ -21,6 +21,9 @@ use Psr\Log\LoggerInterface;
 
 use function dirname;
 
+use const FILTER_NULL_ON_FAILURE;
+use const FILTER_VALIDATE_BOOL;
+
 /**
  *
  * @author David Ringsdorf http://davidringsdorf.de
@@ -28,6 +31,7 @@ use function dirname;
  */
 final class Log
 {
+    /** @var array<string, LoggerInterface&MonologLogger> */
     protected static array $instances = [];
 
     public static function instance(string $name): LoggerInterface&MonologLogger
@@ -44,8 +48,12 @@ final class Log
 
     protected static function instantiateLogger(string $name): MonologLogger
     {
+        /* workaround psalm: ERROR: MixedArgument - Argument 2 of filter_var cannot be mixed, expecting int */
+        $filter = (int) FILTER_VALIDATE_BOOL;
+
         $debugEnvValueString = getenv('GENUG_DEBUG', true) ?: Preset::GENUG_DEBUG->value;
-        $isDebugOrNullOnFailure = filter_var($debugEnvValueString, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+        /** @var null|bool */
+        $isDebugOrNullOnFailure = filter_var($debugEnvValueString, $filter, FILTER_NULL_ON_FAILURE);
 
         $debugLogFilePath = getenv('GENUG_DEBUG_LOGFILE', true) ?: Preset::GENUG_DEBUG_LOGFILE->value;
 

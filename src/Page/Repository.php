@@ -27,11 +27,11 @@ use LogicException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SplFileInfo;
-use stdClass;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
 use function count;
+use function gettype;
 use function sprintf;
 
 /**
@@ -41,7 +41,9 @@ use function sprintf;
  */
 final class Repository implements RepositoryInterface
 {
+    /** @var ArrayObject<string, object{path: string, group: null|string}> */
     private readonly ArrayObject $idToInfoMap;
+    /** @var ArrayIterator<string, object{path: string, group: null|string}> */
     private readonly ArrayIterator $iterator;
 
     public function __construct(
@@ -204,6 +206,12 @@ final class Repository implements RepositoryInterface
                 );
                 return null;
             }
+            if (! is_string($fm['title'])) {
+                $logger->warning(
+                    sprintf('Invalid title for Page "%s". `string` expected, `%s` received.', $idString, gettype($fm['title']))
+                );
+                return null;
+            }
             return new Title($fm['title']);
         })();
 
@@ -212,6 +220,12 @@ final class Repository implements RepositoryInterface
             if (! isset($fm['date'])) {
                 $logger->debug(
                     sprintf('No date found for Page "%s"', $idString)
+                );
+                return null;
+            }
+            if (! is_string($fm['date'])) {
+                $logger->warning(
+                    sprintf('Invalid date for Page "%s". `string` expected, `%s` received.', $idString, gettype($fm['date']))
                 );
                 return null;
             }
@@ -241,8 +255,12 @@ final class Repository implements RepositoryInterface
         return $entity;
     }
 
+    /**
+     * @return ArrayObject<string, object{path: string, group: null|string}>
+     */
     protected function createIdToInfoMap(): ArrayObject
     {
+        /** @var ArrayObject<string, object{path: string, group: null|string}> */
         $idToInfoMap = new ArrayObject();
 
         // pages without group
@@ -262,16 +280,20 @@ final class Repository implements RepositoryInterface
         };
 
         foreach ($pageFiles as $pageFile) {
-            $id = (function () use ($pageFile) {
+            $id = (function () use ($pageFile): string {
                 if ($pageFile->getBasename() === $this->environment->persistencePageHomePageFilename()) {
                     return '/';
                 }
                 return '/' . $pageFile->getBasename('.' . $this->environment->persistencePageFilenameExtesion());
             })();
 
-            $value = new stdClass();
-            $value->path = $pageFile->getRealPath();
-            $value->group = null;
+            $value = new class ($pageFile->getRealPath(), null) {
+                public function __construct(
+                    public readonly string $path,
+                    public readonly ?string $group
+                ) {
+                }
+            };
 
             $idToInfoMap->offsetSet($id, $value);
         }
@@ -305,9 +327,13 @@ final class Repository implements RepositoryInterface
                     return '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . $this->environment->persistencePageFilenameExtesion());
                 })();
 
-                $value = new stdClass();
-                $value->path = $pageFile->getRealPath();
-                $value->group = $dir->getBasename();
+                $value = new class ($pageFile->getRealPath(), $dir->getBasename()) {
+                    public function __construct(
+                        public readonly string $path,
+                        public readonly ?string $group
+                    ) {
+                    }
+                };
 
                 $idToInfoMap->offsetSet($id, $value);
             }

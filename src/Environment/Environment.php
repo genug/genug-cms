@@ -50,23 +50,23 @@ final class Environment implements EnvironmentInterface
 
     public function isDebug(): bool
     {
-        return $this->variables['GENUG_DEBUG'];
+        return (bool) $this->variables['GENUG_DEBUG'];
     }
 
     public function debugLogFilePath(): string
     {
-        return $this->baseDir.$this->variables['GENUG_DEBUG_LOGFILE'];
+        return $this->baseDir . (string) $this->variables['GENUG_DEBUG_LOGFILE'];
     }
 
     public function pageContentType(): string
     {
-        return $this->variables['GENUG_CONTENT_TYPE'];
+        return (string) $this->variables['GENUG_CONTENT_TYPE'];
     }
 
     public function homePageId(): AbstractPageId
     {
         if (! ($this->variables['GENUG_HOMEPAGE_ID'] instanceof AbstractPageId)) {
-            $this->variables['GENUG_HOMEPAGE_ID'] = new PageId($this->variables['GENUG_HOMEPAGE_ID']);
+            $this->variables['GENUG_HOMEPAGE_ID'] = new PageId((string) $this->variables['GENUG_HOMEPAGE_ID']);
         }
         return $this->variables['GENUG_HOMEPAGE_ID'];
     }
@@ -74,33 +74,33 @@ final class Environment implements EnvironmentInterface
     public function http404PageId(): AbstractPageId
     {
         if (! ($this->variables['GENUG_HTTP404PAGE_ID'] instanceof AbstractPageId)) {
-            $this->variables['GENUG_HTTP404PAGE_ID'] = new PageId($this->variables['GENUG_HTTP404PAGE_ID']);
+            $this->variables['GENUG_HTTP404PAGE_ID'] = new PageId((string) $this->variables['GENUG_HTTP404PAGE_ID']);
         }
         return $this->variables['GENUG_HTTP404PAGE_ID'];
     }
 
     public function viewFilePath(): string
     {
-        return $this->baseDir.$this->variables['GENUG_VIEW_FILE'];
+        return $this->baseDir . (string) $this->variables['GENUG_VIEW_FILE'];
     }
 
     public function persistenceContentDirectory(): string
     {
-        return $this->baseDir.$this->variables['GENUG_PERSISTENCE_CONTENT_DIR'];
+        return $this->baseDir . (string) $this->variables['GENUG_PERSISTENCE_CONTENT_DIR'];
     }
 
     public function persistenceGroupFilename(): string
     {
-        return $this->variables['GENUG_PERSISTENCE_GROUP_FILENAME'];
+        return (string) $this->variables['GENUG_PERSISTENCE_GROUP_FILENAME'];
     }
 
     public function persistencePageFilenameExtesion(): string
     {
-        return $this->variables['GENUG_PERSISTENCE_PAGE_FILENAMEEXTENSION'];
+        return (string) $this->variables['GENUG_PERSISTENCE_PAGE_FILENAMEEXTENSION'];
     }
 
     public function persistencePageHomePageFilename(): string
     {
-        return $this->variables['GENUG_PERSISTENCE_PAGE_HOMEPAGE_FILENAME'];
+        return (string) $this->variables['GENUG_PERSISTENCE_PAGE_HOMEPAGE_FILENAME'];
     }
 }
