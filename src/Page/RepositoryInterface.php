@@ -22,7 +22,7 @@ use Iterator;
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
  *
- * @extends Iterator<string, Entity>
+ * @extends Iterator<string, AbstractEntity>
  */
 interface RepositoryInterface extends Iterator, Countable
 {

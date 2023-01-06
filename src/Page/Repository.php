@@ -55,7 +55,7 @@ final class Repository implements RepositoryInterface
         $this->iterator = $this->idToInfoMap->getIterator();
     }
 
-    public function fetch(string $id): AbstractEntity
+    public function fetch(string $id): Entity
     {
         try {
             return $this->_fetch($id);
@@ -72,7 +72,7 @@ final class Repository implements RepositoryInterface
         }
     }
 
-    public function fetchOrNull(?string $id): ?AbstractEntity
+    public function fetchOrNull(?string $id): ?Entity
     {
         if (null === $id) {
             $this->logger->debug(
@@ -107,7 +107,7 @@ final class Repository implements RepositoryInterface
         }
     }
 
-    protected function _fetch(string $id): AbstractEntity
+    protected function _fetch(string $id): Entity
     {
         if (! $this->idToInfoMap->offsetExists($id)) {
             throw new InvalidArgumentException();
@@ -127,7 +127,7 @@ final class Repository implements RepositoryInterface
         return count($this->idToInfoMap);
     }
 
-    public function current(): AbstractEntity
+    public function current(): Entity
     {
         try {
             return $this->fetch($this->iterator->key());
