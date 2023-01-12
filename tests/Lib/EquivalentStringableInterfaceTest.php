@@ -11,8 +11,14 @@ declare(strict_types=1);
  * License: MIT License
  */
 
-use genug\Lib\EquivalentStringableInterface;
+namespace genug\Lib;
+
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionType;
+use Stringable;
 
 /**
  *
@@ -38,7 +44,7 @@ final class EquivalentStringableInterfaceTest extends TestCase
         $class = new ReflectionClass(EquivalentStringableInterface::class);
 
         /** @psalm-suppress RedundantCondition */
-        $this->assertTrue($class->implementsInterface(\Stringable::class));
+        $this->assertTrue($class->implementsInterface(Stringable::class));
     }
 
     public function testHasEqualsMethod(): void

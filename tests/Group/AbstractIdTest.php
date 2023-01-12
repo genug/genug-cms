@@ -17,7 +17,6 @@ use genug\Lib\EquivalentStringableInterface;
 use genug\Lib\EquivalentStringableTrait;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Stringable;
 
 /**
  *

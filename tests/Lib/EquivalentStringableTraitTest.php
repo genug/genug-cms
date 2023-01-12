@@ -11,9 +11,14 @@ declare(strict_types=1);
  * License: MIT License
  */
 
-use genug\Lib\EquivalentStringableInterface;
-use genug\Lib\EquivalentStringableTrait;
+namespace genug\Lib;
+
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionType;
+use Stringable;
 
 /**
  *
@@ -207,7 +212,7 @@ final class EquivalentStringableTraitTest extends TestCase
 
     private function initConcreteObject(string $id): EquivalentStringableInterface
     {
-        return new class ($id) implements EquivalentStringableInterface, Stringable {
+        return new class ($id) implements EquivalentStringableInterface {
             use EquivalentStringableTrait;
 
             public function __construct(protected readonly string $id)
@@ -223,7 +228,7 @@ final class EquivalentStringableTraitTest extends TestCase
 
     private function initConcreteObjectWithRandomStringRepresentation(): EquivalentStringableInterface
     {
-        return new class () implements EquivalentStringableInterface, Stringable {
+        return new class () implements EquivalentStringableInterface {
             use EquivalentStringableTrait;
 
             public function __toString(): string
