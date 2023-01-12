@@ -195,6 +195,16 @@ final class EquivalentStringableTraitTest extends TestCase
         $this->assertFalse($obj1->equals($obj2));
     }
 
+    /**
+     * @depends testHasEqualsMethod
+     */
+    public function testNotEqualIfNull(): void
+    {
+        $obj = $this->initConcreteObject('id_123');
+
+        $this->assertFalse($obj->equals(null));
+    }
+
     private function initConcreteObject(string $id): EquivalentStringableInterface
     {
         return new class ($id) implements EquivalentStringableInterface, Stringable {
