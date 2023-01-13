@@ -1,0 +1,76 @@
+deptrac:
+  paths:
+    - ./src
+  exclude_files:
+    - '#.*test.*#'
+  layers:
+    - name: Page
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^genug\\Page\\.*'
+          must_not:
+            - type: class
+              value: '^genug\\Page\\Repository$'
+            - type: interface
+              value: '^genug\\Page\\RepositoryInterface$'
+            - type: class
+              value: '^genug\\Page\\AbstractId$'
+            - type: class
+              value: '^genug\\Page\\Id$'
+    - name: PageRepository
+      collectors:
+        - type: class
+          value: '^genug\\Page\\Repository$'
+        - type: interface
+          value: '^genug\\Page\\RepositoryInterface$'
+    - name: PageId
+      collectors:
+        - type: class
+          value: '^genug\\Page\\AbstractId$'
+        - type: class
+          value: '^genug\\Page\\Id$'
+    - name: Group
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^genug\\Group\\.*'
+          must_not:
+            - type: class
+              value: '^genug\\Group\\Repository$'
+    - name: GroupRepository
+      collectors:
+        - type: class
+          value: '^genug\\Group\\Repository$'
+    - name: EnvironmentInternals
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^genug\\Environment\\.*'
+          must_not:
+            - type: class
+              value: '^genug\\Environment\\Environment$'
+            - type: interface
+              value: '^genug\\Environment\\EnvironmentInterface$'
+    - name: Environment
+      collectors:
+        - type: class
+          value: '^genug\\Environment\\Environment$'
+        - type: interface
+          value: '^genug\\Environment\\EnvironmentInterface$'
+  ruleset:
+    Page:
+      - PageId
+    PageRepository:
+      - Page
+      - PageId
+      - Environment
+    GroupRepository:
+      - Group
+      - Environment
+    Environment:
+      - EnvironmentInternals
+      - PageId
