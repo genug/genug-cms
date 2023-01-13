@@ -1,3 +1,4 @@
 /vendor/
 /log/
 /.psalm.cache/
+.deptrac.cache

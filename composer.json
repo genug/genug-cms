@@ -18,17 +18,20 @@
         "friendsofphp/php-cs-fixer": "^3.13",
         "vimeo/psalm": "^5.2",
         "phpunit/phpunit": "^9",
-        "psalm/plugin-phpunit": "^0.18.4"
+        "psalm/plugin-phpunit": "^0.18.4",
+        "qossmic/deptrac-shim": "^1.0"
     },
     "scripts": {
         "analyze": [
-            "@analyze:psalm"
+            "@analyze:psalm",
+            "@analyze:deptrac"
         ],
         "fix": "php-cs-fixer fix",
         "test": [
             "@test:phpunit"
         ],
         "analyze:psalm": "psalm --config=.psalm.dist.xml --no-cache",
+        "analyze:deptrac": "deptrac",
         "test:phpunit": "phpunit tests --testdox"
     }
 }
