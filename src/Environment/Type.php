@@ -17,6 +17,7 @@ namespace genug\Environment;
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
+ * @internal
  */
 enum Type
 {

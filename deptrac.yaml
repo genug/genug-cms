@@ -11,14 +11,23 @@ deptrac:
             - type: classLike
               value: '^genug\\Page\\.*'
           must_not:
+            # Repository
             - type: class
               value: '^genug\\Page\\Repository$'
             - type: interface
               value: '^genug\\Page\\RepositoryInterface$'
+            # Id
             - type: class
               value: '^genug\\Page\\AbstractId$'
             - type: class
               value: '^genug\\Page\\Id$'
+            # Entity
+            - type: class
+              value: '^genug\\Page\\AbstractEntity$'
+            - type: class
+              value: '^genug\\Page\\Entity$'
+            - type: class
+              value: '^genug\\Page\\EntityNotFound$'
     - name: PageRepository
       collectors:
         - type: class
@@ -31,6 +40,14 @@ deptrac:
           value: '^genug\\Page\\AbstractId$'
         - type: class
           value: '^genug\\Page\\Id$'
+    - name: PageEntity
+      collectors:
+        - type: class
+          value: '^genug\\Page\\AbstractEntity$'
+        - type: class
+          value: '^genug\\Page\\Entity$'
+        - type: class
+          value: '^genug\\Page\\EntityNotFound$'
     - name: Group
       collectors:
         - type: bool
@@ -38,39 +55,64 @@ deptrac:
             - type: classLike
               value: '^genug\\Group\\.*'
           must_not:
+            # Repository
             - type: class
               value: '^genug\\Group\\Repository$'
+            - type: interface
+              value: '^genug\\Group\\RepositoryInterface$'
+            # Id
+            - type: class
+              value: '^genug\\Group\\AbstractId$'
+            - type: class
+              value: '^genug\\Group\\Id$'
+            # Entity
+            - type: class
+              value: '^genug\\Group\\AbstractEntity$'
+            - type: class
+              value: '^genug\\Group\\Entity$'
+            - type: class
+              value: '^genug\\Group\\EntityNotFound$'
     - name: GroupRepository
       collectors:
         - type: class
           value: '^genug\\Group\\Repository$'
-    - name: EnvironmentInternals
-      collectors:
-        - type: bool
-          must:
-            - type: classLike
-              value: '^genug\\Environment\\.*'
-          must_not:
-            - type: class
-              value: '^genug\\Environment\\Environment$'
-            - type: interface
-              value: '^genug\\Environment\\EnvironmentInterface$'
-    - name: Environment
+        - type: interface
+          value: '^genug\\Group\\RepositoryInterface$'
+    - name: GroupId
       collectors:
         - type: class
-          value: '^genug\\Environment\\Environment$'
-        - type: interface
-          value: '^genug\\Environment\\EnvironmentInterface$'
+          value: '^genug\\Group\\AbstractId$'
+        - type: class
+          value: '^genug\\Group\\Id$'
+    - name: GroupEntity
+      collectors:
+        - type: class
+          value: '^genug\\Group\\AbstractEntity$'
+        - type: class
+          value: '^genug\\Group\\Entity$'
+        - type: class
+          value: '^genug\\Group\\EntityNotFound$'
+    - name: Environment
+      collectors:
+        # affected by @internal
+        - type: classLike
+          value: '^genug\\Environment\\.*'
   ruleset:
-    Page:
-      - PageId
-    PageRepository:
+    PageEntity:
       - Page
       - PageId
+    PageRepository:
+      - PageId
+      - PageEntity
+      - Page
       - Environment
+    GroupEntity:
+      - Group
+      - GroupId
     GroupRepository:
+      - GroupId
+      - GroupEntity
       - Group
       - Environment
     Environment:
-      - EnvironmentInternals
       - PageId

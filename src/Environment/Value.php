@@ -26,6 +26,7 @@ use const FILTER_VALIDATE_BOOL;
  *
  * @author David Ringsdorf http://davidringsdorf.de
  * @license MIT License
+ * @internal
  */
 #[Attribute(Attribute::TARGET_CLASS_CONSTANT)]
 final class Value
