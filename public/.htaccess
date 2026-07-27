@@ -6,6 +6,6 @@ RewriteBase /
 
 RewriteRule ^favicon.ico$ -         [L]
 RewriteRule ^asset/       -         [L]
-RewriteRule ^             genug.php [L]
+RewriteRule ^             index.php [L]
 
 </IfModule>
