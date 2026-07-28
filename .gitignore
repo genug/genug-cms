@@ -3,3 +3,4 @@
 /.psalm.cache/
 .deptrac.cache
 genug.config.php
+phpstan.neon

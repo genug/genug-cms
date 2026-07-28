@@ -18,9 +18,14 @@
         }
     },
     "require-dev": {
-        "php-cs-fixer/shim": "^3.95"
+        "php-cs-fixer/shim": "^3.95",
+        "phpstan/phpstan": "^2.2"
     },
     "scripts": {
-        "fix": "php-cs-fixer fix"
+        "fix": "php-cs-fixer fix",
+        "analyse": [
+            "@analyse:phpstan"
+        ],
+        "analyse:phpstan": "phpstan analyse"
     }
 }
