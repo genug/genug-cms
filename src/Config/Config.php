@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of "genug".
+ *
+ * (c) David Schwarz / Ringsdorf
+ * https://davidschwarz.eu
+ *
+ * License: MIT License
+ */
+
+namespace genug\Config;
+
+use genug\App;
+
+final readonly class Config
+{
+    public function __construct(
+        public bool $debug = false,
+        public string $debugLogFilePath  = App::ROOT . '/log/genug.debug.log',
+        public string $pageContentType = 'text/html; charset=UTF-8',
+        public string $pathBase = '',
+        public string $homePageId = '/',
+        public string $http404PageId = '/http-404',
+        public string $viewFilePath = App::ROOT . '/genug_user/view/index.php',
+        public string $persistenceContentDirectory = App::ROOT . '/genug_user/content',
+        public string $persistenceGroupFilename = '_group.genug',
+        public string $persistencePageFilenameExtesion = 'page',
+        public string $persistencePageHomePageFilename = '_home.page'
+    ) {
+    }
+}
