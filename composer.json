@@ -15,5 +15,11 @@
         "psr-4": {
             "genug\\": "src/"
         }
+    },
+    "require-dev": {
+        "php-cs-fixer/shim": "^3.95"
+    },
+    "scripts": {
+        "fix": "php-cs-fixer fix"
     }
 }
