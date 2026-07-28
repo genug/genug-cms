@@ -17,6 +17,11 @@ use genug\Config\Config;
 
 use function file_exists;
 
+/**
+ *
+ * @author David J. Schwarz <https://davidschwarz.eu/>
+ * @license MIT License
+ */
 final class Container
 {
     public private(set) Config $config {

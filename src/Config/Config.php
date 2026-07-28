@@ -15,6 +15,11 @@ namespace genug\Config;
 
 use genug\App;
 
+/**
+ *
+ * @author David J. Schwarz <https://davidschwarz.eu/>
+ * @license MIT License
+ */
 final readonly class Config
 {
     public function __construct(
