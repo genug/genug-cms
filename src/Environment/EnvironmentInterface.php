@@ -19,6 +19,8 @@ use genug\Page\AbstractId as AbstractPageId;
  *
  * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
+ *
+ * @deprecated Use Config instead.
  */
 interface EnvironmentInterface
 {
