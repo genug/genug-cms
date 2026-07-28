@@ -3,7 +3,7 @@
 /*
  * This file is part of "genug".
  *
- * (c) David Schwarz / Ringsdorf
+ * (c) David J. Schwarz
  * https://davidschwarz.eu
  *
  * License: MIT License
@@ -17,7 +17,7 @@ use PhpCsFixer\{
 $fileHeaderComment = <<<'TXT'
 This file is part of "genug".
 
-(c) David Schwarz / Ringsdorf
+(c) David J. Schwarz
 https://davidschwarz.eu
 
 License: MIT License

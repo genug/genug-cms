@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of "genug".
  *
- * (c) David Schwarz / Ringsdorf
+ * (c) David J. Schwarz
  * https://davidschwarz.eu
  *
  * License: MIT License
@@ -24,7 +24,7 @@ use const PHP_URL_PATH;
 
 /**
  *
- * @author David Ringsdorf http://davidringsdorf.de
+ * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
  */
 final class Request implements RequestInterface

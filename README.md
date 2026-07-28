@@ -8,4 +8,4 @@ under development
 [MIT License](LICENSE.txt)
 
 ## author
-[David Ringsdorf](http://davidringsdorf.de)
+[David J. Schwarz](https://davidschwarz.eu/)
