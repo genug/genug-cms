@@ -22,7 +22,7 @@ use genug\Request\Request;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as Monolog;
 use Psr\Log\LoggerInterface;
-use Psr\log\LogLevel;
+use Psr\Log\LogLevel;
 
 use function file_exists;
 
