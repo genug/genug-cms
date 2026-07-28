@@ -13,9 +13,7 @@ declare(strict_types=1);
 
 namespace genug;
 
-use genug\Group\ {
-    RepositoryInterface as GroupRepositoryInterface
-};
+use genug\Group\RepositoryInterface as GroupRepositoryInterface;
 use genug\Page\AbstractEntity as AbstractPageEntity;
 use genug\Page\RepositoryInterface as PageRepositoryInterface;
 use genug\Setting\Setting;

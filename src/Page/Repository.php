@@ -29,6 +29,7 @@ use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
+use Traversable;
 
 use function count;
 use function gettype;
@@ -265,7 +266,7 @@ final class Repository implements RepositoryInterface
 
         // pages without group
 
-        $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory()), $this->environment) extends FilterIterator {
+        $pageFiles = new /** @extends FilterIterator<string, SplFileInfo, Traversable<string, SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory()), $this->environment) extends FilterIterator {
             public function __construct(
                 Iterator $iterator,
                 protected readonly Environment $environment
@@ -300,7 +301,7 @@ final class Repository implements RepositoryInterface
 
         // pages with group
 
-        $directories = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory())) extends FilterIterator {
+        $directories = new /** @extends FilterIterator<string, SplFileInfo, Traversable<string, SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory())) extends FilterIterator {
             public function accept(): bool
             {
                 return parent::current()->isDir();
@@ -308,7 +309,7 @@ final class Repository implements RepositoryInterface
         };
 
         foreach ($directories as $dir) {
-            $pageFiles = new /** @extends \FilterIterator<string, \SplFileInfo, \Traversable<string, \SplFileInfo>> */ class (new FilesystemIterator($dir->getRealPath()), $this->environment) extends FilterIterator {
+            $pageFiles = new /** @extends FilterIterator<string, SplFileInfo, Traversable<string, SplFileInfo>> */ class (new FilesystemIterator($dir->getRealPath()), $this->environment) extends FilterIterator {
                 public function __construct(
                     Iterator $iterator,
                     protected readonly Environment $environment

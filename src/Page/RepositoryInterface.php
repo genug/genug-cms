@@ -31,7 +31,7 @@ interface RepositoryInterface extends Iterator, Countable
     public function fetchOrNull(?string $id): ?AbstractEntity;
 
     /**
-     * @return Generator<int, \genug\Page\AbstractEntity, \genug\Page\AbstractEntity, void>
+     * @return Generator<int, AbstractEntity, AbstractEntity, void>
      */
     public function fetchByGroup(?string $group): Generator;
 }
