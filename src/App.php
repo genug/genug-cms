@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace genug;
 
 use genug\Container\Container;
-use genug\Environment\Environment;
 use genug\Group\Repository as GroupRepository;
 use genug\Lib\EntityCache;
 use genug\Page\Repository as PageRepository;
@@ -42,10 +41,7 @@ final class App
 
             $config = $container->config;
 
-            $environment = new Environment(
-                dirname(__DIR__).'/',
-                Log::instance('genug_environment')
-            );
+            $environment = $container->environment;
             $request = new Request($config->pathBase);
             $entityCache = new EntityCache();
 

@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace genug\Container;
 
+use Deprecated;
 use genug\Config\Config;
+use genug\Environment\EnvironmentConfigurated;
+use genug\Environment\EnvironmentInterface;
 
 use function file_exists;
 
@@ -32,6 +35,17 @@ final class Container
             }
             return new Config();
         })();
+    }
+
+    /**
+     * @deprecated Use Config instead.
+     */
+    public private(set) EnvironmentInterface $environment {
+        #[Deprecated('Use Config instead.')]
+        get => $this->environment ??= new EnvironmentConfigurated(
+            $this->config,
+            \genug\Log::instance('genug_environment')
+        );
     }
 
     public function __construct(
