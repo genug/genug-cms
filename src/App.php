@@ -17,7 +17,6 @@ use genug\Container\Container;
 use genug\Group\Repository as GroupRepository;
 use genug\Lib\EntityCache;
 use genug\Page\Repository as PageRepository;
-use genug\Request\Request;
 use genug\Router\Router;
 use genug\Router\RouterError;
 use genug\Setting\Setting;
@@ -39,10 +38,7 @@ final class App
 
             $container = new Container(appRoot: self::ROOT);
 
-            $config = $container->config;
-
             $environment = $container->environment;
-            $request = new Request($config->pathBase);
             $entityCache = new EntityCache();
 
             $pages = new PageRepository(
@@ -51,7 +47,7 @@ final class App
                 $container->logger('genug_page')
             );
             $router = new Router(
-                $request,
+                $container->request,
                 $pages,
                 $environment,
                 $container->logger('genug_router')

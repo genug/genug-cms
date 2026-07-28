@@ -18,6 +18,7 @@ use genug\Config\Config;
 use genug\Environment\EnvironmentConfigurated;
 use genug\Environment\EnvironmentInterface;
 use genug\Logger\Logger;
+use genug\Request\Request;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as Monolog;
 use Psr\Log\LoggerInterface;
@@ -51,6 +52,10 @@ final class Container
             $this->config,
             $this->logger('genug_environment')
         );
+    }
+
+    public private(set) Request $request {
+        get => $this->request ??= new Request($this->config->pathBase);
     }
 
     private array $loggerInstances = [];
