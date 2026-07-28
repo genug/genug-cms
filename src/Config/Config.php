@@ -32,7 +32,7 @@ final readonly class Config
         public string $viewFilePath = App::ROOT . '/genug_user/view/index.php',
         public string $persistenceContentDirectory = App::ROOT . '/genug_user/content',
         public string $persistenceGroupFilename = '_group.genug',
-        public string $persistencePageFilenameExtesion = 'page',
+        public string $persistencePageFilenameExtension = 'page',
         public string $persistencePageHomePageFilename = '_home.page'
     ) {
     }

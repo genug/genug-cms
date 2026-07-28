@@ -75,9 +75,9 @@ final class EnvironmentConfigurated implements EnvironmentInterface
     }
 
     // FIXME: typo
-    public function persistencePageFilenameExtesion(): string
+    public function persistencePageFilenameExtension(): string
     {
-        return $this->config->persistencePageFilenameExtesion;
+        return $this->config->persistencePageFilenameExtension;
     }
 
     public function persistencePageHomePageFilename(): string

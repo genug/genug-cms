@@ -276,7 +276,7 @@ final class Repository implements RepositoryInterface
 
             public function accept(): bool
             {
-                return parent::current()->isFile() && parent::current()->getExtension() === $this->environment->persistencePageFilenameExtesion();
+                return parent::current()->isFile() && parent::current()->getExtension() === $this->environment->persistencePageFilenameExtension();
             }
         };
 
@@ -285,7 +285,7 @@ final class Repository implements RepositoryInterface
                 if ($pageFile->getBasename() === $this->environment->persistencePageHomePageFilename()) {
                     return '/';
                 }
-                return '/' . $pageFile->getBasename('.' . $this->environment->persistencePageFilenameExtesion());
+                return '/' . $pageFile->getBasename('.' . $this->environment->persistencePageFilenameExtension());
             })();
 
             $value = new class ($pageFile->getRealPath(), null) {
@@ -319,13 +319,13 @@ final class Repository implements RepositoryInterface
 
                 public function accept(): bool
                 {
-                    return parent::current()->isFile() && parent::current()->getExtension() === $this->environment->persistencePageFilenameExtesion();
+                    return parent::current()->isFile() && parent::current()->getExtension() === $this->environment->persistencePageFilenameExtension();
                 }
             };
 
             foreach ($pageFiles as $pageFile) {
                 $id = (function () use ($dir, $pageFile) {
-                    return '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . $this->environment->persistencePageFilenameExtesion());
+                    return '/' . $dir->getBasename() . '/' . $pageFile->getBasename('.' . $this->environment->persistencePageFilenameExtension());
                 })();
 
                 $value = new class ($pageFile->getRealPath(), $dir->getBasename()) {

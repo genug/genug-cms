@@ -95,7 +95,7 @@ final class Environment implements EnvironmentInterface
         return (string) $this->variables['GENUG_PERSISTENCE_GROUP_FILENAME'];
     }
 
-    public function persistencePageFilenameExtesion(): string
+    public function persistencePageFilenameExtension(): string
     {
         return (string) $this->variables['GENUG_PERSISTENCE_PAGE_FILENAMEEXTENSION'];
     }
