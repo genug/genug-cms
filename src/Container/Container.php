@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of "genug".
+ *
+ * (c) David Schwarz / Ringsdorf
+ * https://davidschwarz.eu
+ *
+ * License: MIT License
+ */
+
+namespace genug\Container;
+
+use genug\Config\Config;
+
+use function file_exists;
+
+final class Container
+{
+    public private(set) Config $config {
+        get => $this->config ??= (function (): Config {
+            $configFile = $this->appRoot . '/genug.config.php';
+            if (file_exists($configFile)) {
+                return require_once $configFile;
+            }
+            return new Config();
+        })();
+    }
+
+    public function __construct(
+        private string $appRoot,
+    ) {
+    }
+}
