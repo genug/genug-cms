@@ -17,7 +17,7 @@ use ArrayIterator;
 use ArrayObject;
 use FilesystemIterator;
 use FilterIterator;
-use genug\Environment\Environment;
+use genug\Environment\EnvironmentInterface;
 use genug\Lib\EntityCache;
 use InvalidArgumentException;
 use LogicException;
@@ -45,7 +45,7 @@ final class Repository implements RepositoryInterface
 
     public function __construct(
         private readonly EntityCache $entityCache,
-        protected readonly Environment $environment,
+        protected readonly EnvironmentInterface $environment,
         private readonly LoggerInterface $logger
     ) {
         $this->idToFilePathMap = $this->createIdToFilePathMap();

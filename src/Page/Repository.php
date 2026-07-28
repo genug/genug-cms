@@ -18,7 +18,7 @@ use ArrayObject;
 use FilesystemIterator;
 use FilterIterator;
 use Generator;
-use genug\Environment\Environment;
+use genug\Environment\EnvironmentInterface;
 use genug\Lib\AbstractFrontMatterFile;
 use genug\Lib\EntityCache;
 use InvalidArgumentException;
@@ -49,7 +49,7 @@ final class Repository implements RepositoryInterface
 
     public function __construct(
         private readonly EntityCache $entityCache,
-        protected readonly Environment $environment,
+        protected readonly EnvironmentInterface $environment,
         private readonly LoggerInterface $logger
     ) {
         $this->idToInfoMap = $this->createIdToInfoMap();
@@ -269,7 +269,7 @@ final class Repository implements RepositoryInterface
         $pageFiles = new /** @extends FilterIterator<string, SplFileInfo, Traversable<string, SplFileInfo>> */ class (new FilesystemIterator($this->environment->persistenceContentDirectory()), $this->environment) extends FilterIterator {
             public function __construct(
                 Iterator $iterator,
-                protected readonly Environment $environment
+                protected readonly EnvironmentInterface $environment
             ) {
                 parent::__construct($iterator);
             }
@@ -312,7 +312,7 @@ final class Repository implements RepositoryInterface
             $pageFiles = new /** @extends FilterIterator<string, SplFileInfo, Traversable<string, SplFileInfo>> */ class (new FilesystemIterator($dir->getRealPath()), $this->environment) extends FilterIterator {
                 public function __construct(
                     Iterator $iterator,
-                    protected readonly Environment $environment
+                    protected readonly EnvironmentInterface $environment
                 ) {
                     parent::__construct($iterator);
                 }
