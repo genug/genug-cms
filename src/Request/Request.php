@@ -27,7 +27,7 @@ use const PHP_URL_PATH;
  * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
  */
-final class Request implements RequestInterface
+final class Request
 {
     public function __construct(
         private readonly string $pathBase = ''

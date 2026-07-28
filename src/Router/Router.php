@@ -17,7 +17,7 @@ use genug\Environment\EnvironmentInterface;
 use genug\Page\AbstractEntity as AbstractPageEntity;
 use genug\Page\EntityNotFound as PageEntityNotFound;
 use genug\Page\RepositoryInterface as PageRepositoryInterface;
-use genug\Request\RequestInterface;
+use genug\Request\Request;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -31,7 +31,7 @@ use function sprintf;
 final class Router implements RouterInterface
 {
     public function __construct(
-        protected readonly RequestInterface $request,
+        protected readonly Request $request,
         protected readonly PageRepositoryInterface $pages,
         protected readonly EnvironmentInterface $environment,
         protected readonly LoggerInterface $logger
