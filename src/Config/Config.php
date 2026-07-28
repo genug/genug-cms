@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace genug\Config;
 
 use genug\App;
+use Psr\Log\LogLevel;
 
 /**
  *
@@ -24,7 +25,8 @@ final readonly class Config
 {
     public function __construct(
         public bool $debug = false,
-        public string $debugLogFilePath  = App::ROOT . '/log/genug.debug.log',
+        public string $logLevel = LogLevel::ERROR,
+        public string $logFilePath  = 'php://stderr',
         public string $pageContentType = 'text/html; charset=UTF-8',
         public string $pathBase = '',
         public string $homePageId = '/',

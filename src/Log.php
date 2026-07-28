@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace genug;
 
+use Deprecated;
 use genug\Environment\Preset;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
@@ -34,6 +35,7 @@ final class Log
     /** @var array<string, LoggerInterface&MonologLogger> */
     protected static array $instances = [];
 
+    #[Deprecated('Use Container::logger()')]
     public static function instance(string $name): LoggerInterface&MonologLogger
     {
         if (! isset(static::$instances[$name])) {

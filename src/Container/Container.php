@@ -17,6 +17,11 @@ use Deprecated;
 use genug\Config\Config;
 use genug\Environment\EnvironmentConfigurated;
 use genug\Environment\EnvironmentInterface;
+use genug\Logger\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger as Monolog;
+use Psr\Log\LoggerInterface;
+use Psr\log\LogLevel;
 
 use function file_exists;
 
@@ -44,12 +49,28 @@ final class Container
         #[Deprecated('Use Config instead.')]
         get => $this->environment ??= new EnvironmentConfigurated(
             $this->config,
-            \genug\Log::instance('genug_environment')
+            $this->logger('genug_environment')
         );
     }
+
+    private array $loggerInstances = [];
 
     public function __construct(
         private string $appRoot,
     ) {
+    }
+
+    public function logger(string $name): LoggerInterface
+    {
+        if (isset($this->loggerInstances[$name])) {
+            return $this->loggerInstances[$name];
+        }
+
+        $level = $this->config->debug ? LogLevel::DEBUG : $this->config->logLevel;
+
+        $internalLogger = new Monolog($name);
+        $internalLogger->pushHandler(new StreamHandler($this->config->logFilePath, $level));
+
+        return $this->loggerInstances[$name] = new Logger($internalLogger);
     }
 }

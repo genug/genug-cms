@@ -41,7 +41,7 @@ final class EnvironmentConfigurated implements EnvironmentInterface
 
     public function debugLogFilePath(): string
     {
-        return $this->config->debugLogFilePath;
+        return $this->config->logFilePath;
     }
 
     public function pageContentType(): string
