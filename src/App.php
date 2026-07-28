@@ -13,14 +13,11 @@ declare(strict_types=1);
 
 namespace genug;
 
+use genug\Container\Container;
 use genug\Environment\Environment;
-use genug\Group\ {
-    Repository as GroupRepository,
-};
+use genug\Group\Repository as GroupRepository;
 use genug\Lib\EntityCache;
-use genug\Page\ {
-    Repository as PageRepository,
-};
+use genug\Page\Repository as PageRepository;
 use genug\Request\Request;
 use genug\Router\Router;
 use genug\Router\RouterError;
@@ -34,16 +31,22 @@ use Throwable;
  */
 final class App
 {
+    public const string ROOT = __DIR__ . '/..';
+
     public static function run(): never
     {
         try {
             ob_start();
 
+            $container = new Container(appRoot: self::ROOT);
+
+            $config = $container->config;
+
             $environment = new Environment(
                 dirname(__DIR__).'/',
                 Log::instance('genug_environment')
             );
-            $request = new Request();
+            $request = new Request($config->pathBase);
             $entityCache = new EntityCache();
 
             $pages = new PageRepository(
