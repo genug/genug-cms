@@ -1,5 +1,5 @@
 /vendor/
-/log/
+*.log
 /.psalm.cache/
 .deptrac.cache
 genug.config.php
