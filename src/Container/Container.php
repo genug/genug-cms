@@ -47,7 +47,7 @@ final class Container
         #[Deprecated('Use Config instead.')]
         get => $this->environment ??= new EnvironmentConfigurated(
             $this->config,
-            $this->logger('genug_environment')
+            $this->logger
         );
     }
 
@@ -55,19 +55,14 @@ final class Container
         get => $this->request ??= new Request($this->config->pathBase);
     }
 
+    public private(set) LoggerInterface $logger {
+        get => $this->logger ??= new Logger($this->config->logger);
+    }
+
     private array $loggerInstances = [];
 
     public function __construct(
         private string $appRoot,
     ) {
-    }
-
-    public function logger(string $name): LoggerInterface
-    {
-        if (isset($this->loggerInstances[$name])) {
-            return $this->loggerInstances[$name];
-        }
-
-        return $this->loggerInstances[$name] = new Logger($this->config->logger);
     }
 }

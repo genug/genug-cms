@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace genug\Config;
 
 use genug\App;
+use genug\Logger\FileLogger;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use Psr\Log\LogLevel;
 
 /**
  *
@@ -25,9 +26,7 @@ use Psr\Log\NullLogger;
 final readonly class Config
 {
     public function __construct(
-        // TODO Simple FileLogger('php://stderr') implementation
-        // TODO Remove Monolog dependency
-        public LoggerInterface $logger = new NullLogger(),
+        public LoggerInterface $logger = new FileLogger('php://stderr', LogLevel::ERROR),
         public string $pageContentType = 'text/html; charset=UTF-8',
         public string $pathBase = '',
         public string $homePageId = '/',

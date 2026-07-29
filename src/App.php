@@ -44,13 +44,13 @@ final class App
             $pages = new PageRepository(
                 $entityCache,
                 $environment,
-                $container->logger('genug_page')
+                $container->logger
             );
             $router = new Router(
                 $container->request,
                 $pages,
                 $environment,
-                $container->logger('genug_router')
+                $container->logger
             );
 
             // ---
@@ -62,7 +62,7 @@ final class App
                 groups: new GroupRepository(
                     $entityCache,
                     $environment,
-                    $container->logger('genug_group')
+                    $container->logger
                 ),
                 setting: new Setting(
                     $environment->homePageId(),
