@@ -15,7 +15,6 @@ namespace genug\Logger;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-use InvalidArgumentException;
 use Override;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
@@ -23,9 +22,10 @@ use Psr\Log\LogLevel;
 use RuntimeException;
 use Stringable;
 
-use function defined;
+use function array_search;
 use function file_put_contents;
 use function gettype;
+use function in_array;
 use function is_string;
 use function preg_match;
 use function sprintf;
@@ -43,6 +43,17 @@ final class FileLogger implements LoggerInterface
 {
     use LoggerTrait;
 
+    private const LEVELS = [
+        LogLevel::DEBUG,
+        LogLevel::INFO,
+        LogLevel::NOTICE,
+        LogLevel::WARNING,
+        LogLevel::ERROR,
+        LogLevel::ALERT,
+        LogLevel::EMERGENCY,
+        LogLevel::CRITICAL,
+    ];
+
     public function __construct(
         private string $logFile,
         private string $minLogLevel = LogLevel::ERROR
@@ -52,11 +63,9 @@ final class FileLogger implements LoggerInterface
     #[Override]
     public function log($level, string|Stringable $message, array $context = []): void
     {
-        if (! is_string($level)) {
+        if (! in_array($level, self::LEVELS, true)) {
             throw new \Psr\Log\InvalidArgumentException();
         }
-
-        defined(LogLevel::class . '::' . strtoupper($level)) ?: throw new \Psr\Log\InvalidArgumentException();
 
         if ($this->isMinLogLevelReached($level)) {
             $data = sprintf(
@@ -121,24 +130,6 @@ final class FileLogger implements LoggerInterface
 
     private function isMinLogLevelReached(string $level): bool
     {
-        $minLogLevelWeight = self::levelWeigth($this->minLogLevel);
-        $levelWeight = self::levelWeigth($level);
-
-        return ($levelWeight >= $minLogLevelWeight);
-    }
-
-    private static function levelWeigth(string $level): int
-    {
-        return match($level) {
-            LogLevel::EMERGENCY => 7,
-            LogLevel::ALERT => 6,
-            LogLevel::CRITICAL => 5,
-            LogLevel::ERROR => 4,
-            LogLevel::WARNING => 3,
-            LogLevel::NOTICE => 2,
-            LogLevel::INFO => 1,
-            LogLevel::DEBUG => 0,
-            default => throw new InvalidArgumentException()
-        };
+        return (array_search($level, self::LEVELS) >= array_search($this->minLogLevel, self::LEVELS));
     }
 }
