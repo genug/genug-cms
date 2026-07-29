@@ -31,6 +31,9 @@ return (new Config())
         'no_alias_language_construct_call' => true,
         'no_mixed_echo_print' => true,
 
+        // Array Notation
+        'no_whitespace_before_comma_in_array' => ['after_heredoc' => true],
+
         // ...
 
         // Comment
