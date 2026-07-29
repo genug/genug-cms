@@ -49,9 +49,9 @@ final class FileLogger implements LoggerInterface
         LogLevel::NOTICE,
         LogLevel::WARNING,
         LogLevel::ERROR,
+        LogLevel::CRITICAL,
         LogLevel::ALERT,
         LogLevel::EMERGENCY,
-        LogLevel::CRITICAL,
     ];
 
     public function __construct(
