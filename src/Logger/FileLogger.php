@@ -72,7 +72,7 @@ final class FileLogger implements LoggerInterface
                 '[%s] %s %s',
                 new DateTimeImmutable()->format(DateTimeInterface::ISO8601_EXPANDED),
                 strtoupper((string) $level),
-                self::interpolate((string) $message, $context)
+                strtr((string) $message, self::createReplacePairs($context))
             );
 
             $data .= "\n";
@@ -83,40 +83,25 @@ final class FileLogger implements LoggerInterface
         }
     }
 
+    private function isMinLogLevelReached(string $level): bool
+    {
+        return (array_search($level, self::LEVELS) >= array_search($this->minLogLevel, self::LEVELS));
+    }
+
     /**
-     * @param array<mixed> $context
+     * @param array<mixed,mixed> $array
+     * @return array<string,string>
      */
-    private static function interpolate(string $message, array $context = array()): string
+    private static function createReplacePairs(array $array): array
     {
         $replacePairs = [];
 
-        foreach ($context as $key => $value) {
-            if (! is_string($key)) {
+        foreach ($array as $key => $value) {
+            if (! self::isValiedPlaceholder($key)) {
                 continue;
             }
 
-            $res = preg_match('#^[\w\.]+$#', $key);
-            if (0 === $res) {
-                continue;
-            }
-            $res ?: throw new RuntimeException('preg_match failed.');
-
-            $value = match(gettype($value)) {
-                'boolean' => $value ? 'TRUE' : 'FALSE',
-                'integer',
-                'double',
-                'string' => (string) $value,
-                'object' => (function () use ($value) {
-                    if ($value instanceof DateTimeInterface) {
-                        return $value->format(DateTimeInterface::ISO8601_EXPANDED);
-                    }
-                    if ($value instanceof Stringable) {
-                        return (string) $value;
-                    }
-                    return $value::class;
-                })(),
-                default => null
-            };
+            $value = self::convertValue($value);
 
             if ($value === null) {
                 continue;
@@ -125,11 +110,43 @@ final class FileLogger implements LoggerInterface
             $replacePairs['{' . $key . '}'] = $value;
         }
 
-        return strtr($message, $replacePairs);
+        return $replacePairs;
     }
 
-    private function isMinLogLevelReached(string $level): bool
+    private static function isValiedPlaceholder(mixed $placeholder): bool
     {
-        return (array_search($level, self::LEVELS) >= array_search($this->minLogLevel, self::LEVELS));
+        if (! is_string($placeholder)) {
+            return false;
+        }
+
+        $res = preg_match('#^[\w\.]+$#', $placeholder);
+        if ($res) {
+            return true;
+        }
+
+        if (false === $res) {
+            throw new RuntimeException('preg_match failed.');
+        }
+        return false;
+    }
+
+    private static function convertValue(mixed $value): ?string
+    {
+        return match(gettype($value)) {
+            'boolean' => $value ? 'TRUE' : 'FALSE',
+            'integer',
+            'double',
+            'string' => (string) $value,
+            'object' => (function () use ($value) {
+                if ($value instanceof DateTimeInterface) {
+                    return $value->format(DateTimeInterface::ISO8601_EXPANDED);
+                }
+                if ($value instanceof Stringable) {
+                    return (string) $value;
+                }
+                return $value::class;
+            })(),
+            default => null
+        };
     }
 }
