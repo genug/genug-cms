@@ -19,10 +19,7 @@ use genug\Environment\EnvironmentConfigurated;
 use genug\Environment\EnvironmentInterface;
 use genug\Logger\Logger;
 use genug\Request\Request;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger as Monolog;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 use function file_exists;
 
@@ -71,11 +68,6 @@ final class Container
             return $this->loggerInstances[$name];
         }
 
-        $level = $this->config->debug ? LogLevel::DEBUG : $this->config->logLevel;
-
-        $internalLogger = new Monolog($name);
-        $internalLogger->pushHandler(new StreamHandler($this->config->logFilePath, $level));
-
-        return $this->loggerInstances[$name] = new Logger($internalLogger);
+        return $this->loggerInstances[$name] = new Logger($this->config->logger);
     }
 }

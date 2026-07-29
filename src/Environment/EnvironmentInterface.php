@@ -24,10 +24,6 @@ use genug\Page\AbstractId as AbstractPageId;
  */
 interface EnvironmentInterface
 {
-    public function isDebug(): bool;
-
-    public function debugLogFilePath(): string;
-
     public function pageContentType(): string;
 
     public function homePageId(): AbstractPageId;
