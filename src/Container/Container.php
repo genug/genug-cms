@@ -59,8 +59,6 @@ final class Container
         get => $this->logger ??= new Logger($this->config->logger);
     }
 
-    private array $loggerInstances = [];
-
     public function __construct(
         private string $appRoot,
     ) {
