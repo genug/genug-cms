@@ -10,7 +10,8 @@
         "php": "8.5.*",
         "monolog/monolog": "^3.10",
         "symfony/yaml": "^8.1",
-        "psr/log": "^3.0"
+        "psr/log": "^3.0",
+        "thecodingmachine/safe": "^3.4"
     },
     "autoload": {
         "psr-4": {
@@ -19,7 +20,8 @@
     },
     "require-dev": {
         "php-cs-fixer/shim": "^3.95",
-        "phpstan/phpstan": "^2.2"
+        "phpstan/phpstan": "^2.2",
+        "thecodingmachine/phpstan-safe-rule": "^1.4"
     },
     "scripts": {
         "fix": "php-cs-fixer fix",

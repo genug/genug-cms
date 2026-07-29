@@ -4,3 +4,5 @@ parameters:
 		- src
 #		- tests
 		- public/index.php
+includes:
+	- vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon
