@@ -13,21 +13,20 @@ declare(strict_types=1);
 
 namespace genug\Logger;
 
-use DateTimeImmutable;
 use DateTimeInterface;
 use Override;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 use Psr\Log\LogLevel;
-use RuntimeException;
+use Safe\DateTimeImmutable;
 use Stringable;
 
 use function array_search;
-use function file_put_contents;
 use function gettype;
 use function in_array;
 use function is_string;
-use function preg_match;
+use function Safe\file_put_contents;
+use function Safe\preg_match;
 use function sprintf;
 use function strtoupper;
 
@@ -77,9 +76,7 @@ final class FileLogger implements LoggerInterface
 
             $data .= "\n";
 
-            if (false === file_put_contents($this->logFile, $data, FILE_APPEND | LOCK_EX)) {
-                throw new RuntimeException('Cannot write to the log.');
-            }
+            file_put_contents($this->logFile, $data, FILE_APPEND | LOCK_EX);
         }
     }
 
@@ -119,15 +116,7 @@ final class FileLogger implements LoggerInterface
             return false;
         }
 
-        $res = preg_match('#^[\w\.]+$#', $placeholder);
-        if ($res) {
-            return true;
-        }
-
-        if (false === $res) {
-            throw new RuntimeException('preg_match failed.');
-        }
-        return false;
+        return (bool) preg_match('#^[\w\.]+$#', $placeholder);
     }
 
     private static function convertValue(mixed $value): ?string
