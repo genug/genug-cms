@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace genug;
 
+use Error;
+use ErrorException;
 use genug\Container\Container;
 use genug\Group\Repository as GroupRepository;
 use genug\Lib\EntityCache;
@@ -22,8 +24,8 @@ use genug\Router\RouterError;
 use genug\Setting\Setting;
 use Throwable;
 
-use function Safe\ob_clean;
-use function Safe\ob_end_flush;
+use function ob_end_clean;
+use function ob_end_flush;
 use function Safe\ob_start;
 
 /**
@@ -38,75 +40,90 @@ final class App
     public static function run(): never
     {
         try {
-            ob_start();
-
-            $container = new Container(appRoot: self::ROOT);
-
-            $environment = $container->environment;
-            $entityCache = new EntityCache();
-
-            $pages = new PageRepository(
-                $entityCache,
-                $environment,
-                $container->logger
-            );
-            $router = new Router(
-                $container->request,
-                $pages,
-                $environment,
-                $container->logger
-            );
-
             try {
-                $genug = new Api(
-                    pages: $pages,
-                    requestedPage: $router->result(),
-                    homePage: $pages->fetch((string) $environment->homePageId()),
-                    groups: new GroupRepository(
+                try {
+                    ob_start();
+
+                    $container = new Container(appRoot: self::ROOT);
+
+                    $environment = $container->environment;
+                    $entityCache = new EntityCache();
+
+                    $pages = new PageRepository(
                         $entityCache,
                         $environment,
                         $container->logger
-                    ),
-                    setting: new Setting(
-                        $environment->homePageId(),
-                        $environment->http404PageId()
-                    )
-                );
+                    );
+                    $router = new Router(
+                        $container->request,
+                        $pages,
+                        $environment,
+                        $container->logger
+                    );
 
-                $viewFilePath = $environment->viewFilePath();
+                    $genug = new Api(
+                        pages: $pages,
+                        requestedPage: $router->result(),
+                        homePage: $pages->fetch((string) $environment->homePageId()),
+                        groups: new GroupRepository(
+                            $entityCache,
+                            $environment,
+                            $container->logger
+                        ),
+                        setting: new Setting(
+                            $environment->homePageId(),
+                            $environment->http404PageId()
+                        )
+                    );
 
-                header('Content-Type: ' . $environment->pageContentType());
-                http_response_code(200);
-                if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
+                    $viewFilePath = $environment->viewFilePath();
+
+                    header('Content-Type: ' . $environment->pageContentType());
+                    http_response_code(200);
+                    if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
+                        http_response_code(404);
+                    }
+                    /** @psalm-suppress UnusedVariable */
+                    (function () use ($genug, $viewFilePath) {
+                        /** @psalm-suppress UnresolvableInclude */
+                        require_once $viewFilePath;
+                    })();
+                } catch (RouterError $routerError) {
+                    // No 404-page was found to display an "HTTP 404 Not Found" error.
+
+                    while (ob_get_level()) {
+                        ob_end_clean();
+                    }
+
+                    ob_start();
+
                     http_response_code(404);
+                    echo '404 Not Found';
                 }
-                /** @psalm-suppress UnusedVariable */
-                (function () use ($genug, $viewFilePath) {
-                    /** @psalm-suppress UnresolvableInclude */
-                    require_once $viewFilePath;
-                })();
-            } catch (RouterError $t) {
-                ob_clean();
-                http_response_code(404);
+            } catch (Throwable $throwable) {
+                try {
+                    $container ??= null;
+                    $container?->logger->critical(
+                        'Genug cms has failed.',
+                        ['exception' => $throwable]
+                    );
+                } catch (Throwable) {
+                    // genug cms is too broken to write to its own log
+                }
 
-                echo '404 Not Found';
-                $container->logger->warning(
-                    'No page was found to display an "HTTP 404 Not Found" error.',
-                    ['exception' => $t]
-                );
+                throw new ErrorException('Genug cms has failed.', previous: $throwable);
             }
-        } catch (Throwable $t) {
-            ob_clean();
-            http_response_code(500);
+        } catch (Throwable $error) {
+            while (@ob_end_clean());
+            \ob_start();
 
+            http_response_code(500);
             echo '500 Internal Server Error';
-            Log::instance('genug_core')->alert(
-                'Fatal Error.',
-                ['throwable' => $t]
-            );
+
+            throw $error;
         } finally {
-            ob_end_flush();
-            exit;
+            while (@ob_end_flush());
         }
+        exit;
     }
 }
