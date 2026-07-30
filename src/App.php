@@ -57,44 +57,44 @@ final class App
                 $container->logger
             );
 
-            // ---
+            try {
+                $genug = new Api(
+                    pages: $pages,
+                    requestedPage: $router->result(),
+                    homePage: $pages->fetch((string) $environment->homePageId()),
+                    groups: new GroupRepository(
+                        $entityCache,
+                        $environment,
+                        $container->logger
+                    ),
+                    setting: new Setting(
+                        $environment->homePageId(),
+                        $environment->http404PageId()
+                    )
+                );
 
-            $genug = new Api(
-                pages: $pages,
-                requestedPage: $router->result(),
-                homePage: $pages->fetch((string) $environment->homePageId()),
-                groups: new GroupRepository(
-                    $entityCache,
-                    $environment,
-                    $container->logger
-                ),
-                setting: new Setting(
-                    $environment->homePageId(),
-                    $environment->http404PageId()
-                )
-            );
+                $viewFilePath = $environment->viewFilePath();
 
-            $viewFilePath = $environment->viewFilePath();
-
-            header('Content-Type: ' . $environment->pageContentType());
-            http_response_code(200);
-            if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
+                header('Content-Type: ' . $environment->pageContentType());
+                http_response_code(200);
+                if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
+                    http_response_code(404);
+                }
+                /** @psalm-suppress UnusedVariable */
+                (function () use ($genug, $viewFilePath) {
+                    /** @psalm-suppress UnresolvableInclude */
+                    require_once $viewFilePath;
+                })();
+            } catch (RouterError $t) {
+                ob_clean();
                 http_response_code(404);
-            }
-            /** @psalm-suppress UnusedVariable */
-            (function () use ($genug, $viewFilePath) {
-                /** @psalm-suppress UnresolvableInclude */
-                require_once $viewFilePath;
-            })();
-        } catch (RouterError $t) {
-            ob_clean();
-            http_response_code(404);
 
-            echo '404 Not Found';
-            Log::instance('genug_core')->error(
-                'No page was found to display an "HTTP 404 Not Found" error.',
-                ['throwable' => $t]
-            );
+                echo '404 Not Found';
+                Log::instance('genug_core')->error(
+                    'No page was found to display an "HTTP 404 Not Found" error.',
+                    ['throwable' => $t]
+                );
+            }
         } catch (Throwable $t) {
             ob_clean();
             http_response_code(500);
