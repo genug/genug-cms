@@ -23,7 +23,7 @@ use Psr\Log\LogLevel;
  * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
  */
-final readonly class Config
+final class Config
 {
     public function __construct(
         public LoggerInterface $logger = new FileLogger('php://stderr', LogLevel::ERROR),

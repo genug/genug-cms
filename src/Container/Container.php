@@ -15,6 +15,7 @@ namespace genug\Container;
 
 use Deprecated;
 use genug\Config\Config;
+use genug\Config\ConfigLoader;
 use genug\Environment\EnvironmentConfigurated;
 use genug\Environment\EnvironmentInterface;
 use genug\Logger\Logger;
@@ -32,12 +33,20 @@ final class Container
 {
     public private(set) Config $config {
         get => $this->config ??= (function (): Config {
+            $config = new Config();
+
             $configFile = $this->appRoot . '/genug.config.php';
+
             if (file_exists($configFile)) {
-                return require_once $configFile;
+                $this->configLoader->populate($config, $configFile);
             }
-            return new Config();
+
+            return $config;
         })();
+    }
+
+    private ConfigLoader $configLoader {
+        get => $this->configLoader ??= new ConfigLoader();
     }
 
     /**
