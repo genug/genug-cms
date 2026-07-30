@@ -22,6 +22,10 @@ use genug\Router\RouterError;
 use genug\Setting\Setting;
 use Throwable;
 
+use function Safe\ob_clean;
+use function Safe\ob_end_flush;
+use function Safe\ob_start;
+
 /**
  *
  * @author David J. Schwarz <https://davidschwarz.eu/>
