@@ -24,8 +24,8 @@ use genug\Router\RouterError;
 use genug\Setting\Setting;
 use Throwable;
 
-use function ob_end_clean;
 use function ob_end_flush;
+use function Safe\ob_end_clean;
 use function Safe\ob_start;
 
 /**
@@ -114,7 +114,9 @@ final class App
                 throw new ErrorException('Genug cms has failed.', previous: $throwable);
             }
         } catch (Throwable $error) {
-            while (@ob_end_clean());
+            // @phpstan-ignore theCodingMachineSafe.function
+            while (@\ob_end_clean());
+            // @phpstan-ignore theCodingMachineSafe.function
             \ob_start();
 
             http_response_code(500);
@@ -122,6 +124,7 @@ final class App
 
             throw $error;
         } finally {
+            // @phpstan-ignore theCodingMachineSafe.function
             while (@ob_end_flush());
         }
         exit;
