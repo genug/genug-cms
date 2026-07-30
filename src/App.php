@@ -90,9 +90,9 @@ final class App
                 http_response_code(404);
 
                 echo '404 Not Found';
-                Log::instance('genug_core')->error(
+                $container->logger->warning(
                     'No page was found to display an "HTTP 404 Not Found" error.',
-                    ['throwable' => $t]
+                    ['exception' => $t]
                 );
             }
         } catch (Throwable $t) {
