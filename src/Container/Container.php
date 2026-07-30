@@ -23,6 +23,7 @@ use genug\Request\Request;
 use Psr\Log\LoggerInterface;
 
 use function file_exists;
+use function getenv;
 
 /**
  *
@@ -34,8 +35,11 @@ final class Container
     public private(set) Config $config {
         get => $this->config ??= (function (): Config {
             $config = new Config();
-
-            $configFile = $this->appRoot . '/genug.config.php';
+            $configDir = getenv('GENUG_CONF_DIR') ?: $this->appRoot . '/config';
+            $configFile = $configDir . '/genug.conf.php';
+            if (! file_exists($configFile)) {
+                $configFile = $configDir . '/genug.conf.dist.php';
+            }
 
             if (file_exists($configFile)) {
                 $this->configLoader->populate($config, $configFile);

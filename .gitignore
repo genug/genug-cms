@@ -1,5 +1,5 @@
 /vendor/
 *.log
 .deptrac.cache
-genug.config.php
+genug.conf.php
 phpstan.neon
