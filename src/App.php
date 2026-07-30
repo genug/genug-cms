@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace genug;
 
-use Error;
 use ErrorException;
 use genug\Container\Container;
 use genug\Group\Repository as GroupRepository;
