@@ -32,26 +32,7 @@ use function getenv;
  */
 final class Container
 {
-    public private(set) Config $config {
-        get => $this->config ??= (function (): Config {
-            $config = new Config();
-            $configDir = getenv('GENUG_CONF_DIR') ?: $this->appRoot . '/config';
-            $configFile = $configDir . '/genug.conf.php';
-            if (! file_exists($configFile)) {
-                $configFile = $configDir . '/genug.conf.dist.php';
-            }
-
-            if (file_exists($configFile)) {
-                $this->configLoader->populate($config, $configFile);
-            }
-
-            return $config;
-        })();
-    }
-
-    private ConfigLoader $configLoader {
-        get => $this->configLoader ??= new ConfigLoader();
-    }
+    public private(set) Config $config;
 
     /**
      * @deprecated Use Config instead.
@@ -72,8 +53,26 @@ final class Container
         get => $this->logger ??= new Logger($this->config->logger);
     }
 
+    private ConfigLoader $configLoader {
+        get => $this->configLoader ??= new ConfigLoader();
+    }
+
     public function __construct(
         private string $appRoot,
     ) {
+        $this->config = (function (): Config {
+            $config = new Config();
+            $configDir = getenv('GENUG_CONF_DIR') ?: $this->appRoot . '/config';
+            $configFile = $configDir . '/genug.conf.php';
+            if (! file_exists($configFile)) {
+                $configFile = $configDir . '/genug.conf.dist.php';
+            }
+
+            if (file_exists($configFile)) {
+                $this->configLoader->populate($config, $configFile);
+            }
+
+            return $config;
+        })();
     }
 }
