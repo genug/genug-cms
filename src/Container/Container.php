@@ -19,6 +19,7 @@ use genug\Config\ConfigLoader;
 use genug\Environment\EnvironmentConfigurated;
 use genug\Environment\EnvironmentInterface;
 use genug\Logger\Logger;
+use genug\Page\PageRepository;
 use genug\Request\Request;
 use Psr\Log\LoggerInterface;
 
@@ -51,6 +52,14 @@ final class Container
 
     public private(set) LoggerInterface $logger {
         get => $this->logger ??= new Logger($this->config->logger);
+    }
+
+    public private(set) PageRepository $pages {
+        get => $this->pages ??= (function () {
+            $pages = new PageRepository($this->config);
+            $pages->setLogger($this->config->logger);
+            return $pages;
+        })();
     }
 
     private ConfigLoader $configLoader {

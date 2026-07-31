@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace genug\Lib\ValueObject;
 
-use BadMethodCallException;
+use Deprecated;
 use InvalidArgumentException;
 
-use function preg_match;
+use function is_object;
+use function sprintf;
 
 /**
  *
@@ -25,24 +26,34 @@ use function preg_match;
  */
 trait IdTrait
 {
-    private bool $_isMutable = true;
-
-    private string $_id;
-
-    public function __construct(string $id)
+    public function __construct(private string $id)
     {
-        if (! $this->_isMutable) {
-            throw new BadMethodCallException();
+        static::isValide($id) ?: throw new InvalidArgumentException(sprintf('Invalide id %s', $id));
+    }
+
+    abstract protected static function isValide(string $id): bool;
+
+    // FIXME Remove as soon as an independent validator exists
+    #[Deprecated('Use an independent validator')]
+    public static function tryFromString(string $id): ?static
+    {
+        if (! static::isValide($id)) {
+            return null;
         }
-        if (! preg_match(self::VALID_STRING_PATTERN, $id)) {
-            throw new InvalidArgumentException();
+        return new static($id);
+    }
+
+    public function equals(mixed $other): bool
+    {
+        if (! is_object($other)) {
+            return false;
         }
-        $this->_isMutable = false;
-        $this->_id = $id;
+
+        return ($this == $other);
     }
 
     public function __toString(): string
     {
-        return $this->_id;
+        return $this->id;
     }
 }
