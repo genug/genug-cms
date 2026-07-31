@@ -17,6 +17,7 @@ use ErrorException;
 use genug\Container\Container;
 use genug\Group\Repository as GroupRepository;
 use genug\Lib\EntityCache;
+use genug\Page\PageId;
 use genug\Page\Repository as PageRepository;
 use genug\Router\Router;
 use genug\Router\RouterError;
@@ -55,23 +56,23 @@ final class App
                     );
                     $router = new Router(
                         $container->request,
-                        $pages,
-                        $environment,
+                        $container->pages,
+                        $container->config,
                         $container->logger
                     );
 
                     $genug = new Api(
                         pages: $pages,
                         requestedPage: $router->result(),
-                        homePage: $pages->fetch((string) $environment->homePageId()),
+                        homePage: $container->pages->fetch(new PageId($container->config->homePageId)),
                         groups: new GroupRepository(
                             $entityCache,
                             $environment,
                             $container->logger
                         ),
                         setting: new Setting(
-                            $environment->homePageId(),
-                            $environment->http404PageId()
+                            new PageId($container->config->homePageId),
+                            new PageId($container->config->http404PageId)
                         )
                     );
 
