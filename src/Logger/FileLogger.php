@@ -20,6 +20,7 @@ use Psr\Log\LoggerTrait;
 use Psr\Log\LogLevel;
 use Safe\DateTimeImmutable;
 use Stringable;
+use Throwable;
 
 use function array_search;
 use function gettype;
@@ -68,10 +69,11 @@ final class FileLogger implements LoggerInterface
 
         if ($this->isMinLogLevelReached($level)) {
             $data = sprintf(
-                '[%s] %s %s',
+                '[%s] %s %s %s',
                 new DateTimeImmutable()->format(DateTimeInterface::ISO8601_EXPANDED),
                 strtoupper((string) $level),
-                strtr((string) $message, self::createReplacePairs($context))
+                strtr((string) $message, self::createReplacePairs($context)),
+                (($context['exception'] ?? null) instanceof Throwable) ? (string) $context['exception'] : ''
             );
 
             $data .= "\n";
