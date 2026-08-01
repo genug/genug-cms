@@ -30,6 +30,6 @@ final class PageId implements Equatable, Stringable
 
     protected static function isValide(string $id): bool
     {
-        return (bool) preg_match('#^(?:\/|(?:\/[a-z0-9][\w\-]*)+)$#', $id);
+        return (bool) preg_match('#^(?:\/|(?:\/[a-z0-9][a-z0-9_\-]*)+)$#', $id);
     }
 }
