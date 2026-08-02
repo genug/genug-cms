@@ -13,6 +13,11 @@ declare(strict_types=1);
 
 namespace genug\Lib;
 
+/**
+ *
+ * @author David J. Schwarz <https://davidschwarz.eu/>
+ * @license MIT License
+ */
 interface Equatable
 {
     public function equals(mixed $other): bool;
