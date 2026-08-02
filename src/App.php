@@ -18,7 +18,6 @@ use genug\Container\Container;
 use genug\Group\Repository as GroupRepository;
 use genug\Lib\EntityCache;
 use genug\Page\PageId;
-use genug\Page\Repository as PageRepository;
 use genug\Router\Router;
 use genug\Router\RouterError;
 use genug\Setting\Setting;
@@ -49,11 +48,6 @@ final class App
                     $environment = $container->environment;
                     $entityCache = new EntityCache();
 
-                    $pages = new PageRepository(
-                        $entityCache,
-                        $environment,
-                        $container->logger
-                    );
                     $router = new Router(
                         $container->request,
                         $container->pages,
@@ -62,7 +56,7 @@ final class App
                     );
 
                     $genug = new Api(
-                        pages: $pages,
+                        pages: $container->pages,
                         requestedPage: $router->result(),
                         homePage: $container->pages->fetch(new PageId($container->config->homePageId)),
                         groups: new GroupRepository(

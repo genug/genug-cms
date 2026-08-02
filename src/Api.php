@@ -15,7 +15,7 @@ namespace genug;
 
 use genug\Group\RepositoryInterface as GroupRepositoryInterface;
 use genug\Page\PageEntity;
-use genug\Page\RepositoryInterface as PageRepositoryInterface;
+use genug\Page\PageRepository;
 use genug\Setting\Setting;
 
 /**
@@ -26,7 +26,7 @@ use genug\Setting\Setting;
 final class Api
 {
     public function __construct(
-        public readonly PageRepositoryInterface $pages,
+        public readonly PageRepository $pages,
         public readonly PageEntity $requestedPage,
         public readonly PageEntity $homePage,
         public readonly GroupRepositoryInterface $groups,
