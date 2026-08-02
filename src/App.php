@@ -15,7 +15,6 @@ namespace genug;
 
 use ErrorException;
 use genug\Container\Container;
-use genug\Group\Repository as GroupRepository;
 use genug\Lib\EntityCache;
 use genug\Page\PageId;
 use genug\Router\Router;
@@ -59,11 +58,6 @@ final class App
                         pages: $container->pages,
                         requestedPage: $router->result(),
                         homePage: $container->pages->fetch(new PageId($container->config->homePageId)),
-                        groups: new GroupRepository(
-                            $entityCache,
-                            $environment,
-                            $container->logger
-                        ),
                         setting: new Setting(
                             new PageId($container->config->homePageId),
                             new PageId($container->config->http404PageId)

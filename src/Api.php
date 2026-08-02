@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace genug;
 
-use genug\Group\RepositoryInterface as GroupRepositoryInterface;
 use genug\Page\PageEntity;
 use genug\Page\PageRepository;
 use genug\Setting\Setting;
@@ -29,7 +28,6 @@ final class Api
         public readonly PageRepository $pages,
         public readonly PageEntity $requestedPage,
         public readonly PageEntity $homePage,
-        public readonly GroupRepositoryInterface $groups,
         public readonly Setting $setting
     ) {
     }
