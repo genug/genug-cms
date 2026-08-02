@@ -14,18 +14,23 @@ declare(strict_types=1);
 namespace genug\Lib\ValueObject;
 
 use Deprecated;
+use genug\Lib\EquatableSimpleObjectTrait;
 use InvalidArgumentException;
 
-use function is_object;
 use function sprintf;
 
 /**
  *
  * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
+ *
+ * @phpstan-require-implements \Stringable
+ * @phpstan-require-implements \genug\Lib\Equatable
  */
 trait IdTrait
 {
+    use EquatableSimpleObjectTrait;
+
     public function __construct(private string $id)
     {
         static::isValide($id) ?: throw new InvalidArgumentException(sprintf('Invalide id %s', $id));
@@ -41,15 +46,6 @@ trait IdTrait
             return null;
         }
         return new static($id);
-    }
-
-    public function equals(mixed $other): bool
-    {
-        if (! is_object($other)) {
-            return false;
-        }
-
-        return ($this == $other);
     }
 
     public function __toString(): string
