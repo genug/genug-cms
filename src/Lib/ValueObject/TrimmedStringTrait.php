@@ -13,32 +13,26 @@ declare(strict_types=1);
 
 namespace genug\Lib\ValueObject;
 
-use BadMethodCallException;
-
 use function trim;
 
 /**
  *
  * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
+ *
+ * @phpstan-require-implements \Stringable
  */
 trait TrimmedStringTrait
 {
-    private bool $_isMutable = true;
-
-    private string $_trimmedString;
+    private string $trimmedString;
 
     public function __construct(string $untrimmedString)
     {
-        if (! $this->_isMutable) {
-            throw new BadMethodCallException();
-        }
-        $this->_isMutable = false;
-        $this->_trimmedString = trim($untrimmedString);
+        $this->trimmedString = trim($untrimmedString);
     }
 
     public function __toString(): string
     {
-        return $this->_trimmedString;
+        return $this->trimmedString;
     }
 }
