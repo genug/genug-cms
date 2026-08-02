@@ -19,8 +19,9 @@ use function is_object;
  *
  * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
+ *
+ * @phpstan-require-implements \genug\Lib\Equatable
  */
-
 trait EquatableSimpleObjectTrait
 {
     final public function equals(mixed $other): bool
