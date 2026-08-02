@@ -15,7 +15,6 @@ namespace genug;
 
 use ErrorException;
 use genug\Container\Container;
-use genug\Lib\EntityCache;
 use genug\Page\PageId;
 use genug\Router\Router;
 use genug\Router\RouterError;
@@ -45,7 +44,6 @@ final class App
                     $container = new Container(appRoot: self::ROOT);
 
                     $environment = $container->environment;
-                    $entityCache = new EntityCache();
 
                     $router = new Router(
                         $container->request,
