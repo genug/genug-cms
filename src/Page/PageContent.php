@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace genug\Page;
 
-use genug\Lib\ValueObject\TrimmedStringTrait;
+use genug\Lib\ValueObject\StringTrait;
 use Stringable;
 
 /**
@@ -23,5 +23,5 @@ use Stringable;
  */
 final class PageContent implements Stringable
 {
-    use TrimmedStringTrait;
+    use StringTrait;
 }
