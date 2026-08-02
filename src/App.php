@@ -43,8 +43,6 @@ final class App
 
                     $container = new Container(appRoot: self::ROOT);
 
-                    $environment = $container->environment;
-
                     $router = new Router(
                         $container->request,
                         $container->pages,
@@ -62,9 +60,9 @@ final class App
                         )
                     );
 
-                    $viewFilePath = $environment->viewFilePath();
+                    $viewFilePath = $container->config->viewFilePath;
 
-                    header('Content-Type: ' . $environment->pageContentType());
+                    header('Content-Type: ' . $container->config->pageContentType);
                     http_response_code(200);
                     if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
                         http_response_code(404);
