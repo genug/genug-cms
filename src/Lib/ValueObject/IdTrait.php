@@ -36,7 +36,7 @@ trait IdTrait
         static::isValide($id) ?: throw new InvalidArgumentException(sprintf('Invalide id %s', $id));
     }
 
-    abstract protected static function isValide(string $id): bool;
+    abstract public static function isValide(string $id): bool;
 
     // FIXME Remove as soon as an independent validator exists
     #[Deprecated('Use an independent validator')]
