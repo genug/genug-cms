@@ -27,6 +27,9 @@ return (new Config())
     ->setRules([
         '@PSR12' => true,
 
+        // RISKY
+        'declare_strict_types' => ['strategy' => 'enforce'],
+
         // Alias
         'no_alias_language_construct_call' => true,
         'no_mixed_echo_print' => true,
