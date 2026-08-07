@@ -16,6 +16,9 @@ namespace genug\Http;
 use Exception;
 use Uri\Rfc3986\Uri;
 
+/**
+ * @phpstan-require-implements Request
+ */
 trait IsRequest
 {
     public protected(set) Method $method;

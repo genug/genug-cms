@@ -15,6 +15,9 @@ namespace genug\Http;
 
 use Stringable;
 
+/**
+ * @phpstan-require-implements Response
+ */
 trait IsResponse
 {
     public protected(set) Status $status;
