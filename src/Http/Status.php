@@ -23,4 +23,14 @@ enum Status: int
 
     case BadRequest = 400;
     case NotFound = 404;
+
+    public function description(): string
+    {
+        $text = match ($this) {
+            self::OK => 'OK',
+            default => \Safe\preg_replace('#(?:.)(?=[A-Z])#', ' ', $this->name)
+        };
+
+        return $this->value . ' ' . $text;
+    }
 }
