@@ -18,5 +18,5 @@ interface Request
     public Method $method {get;}
     public string $path {get;}
 
-    public function accepts(ContentType ...$contentType): bool;
+    public function accepts(ContentType ...$contentTypes): bool;
 }

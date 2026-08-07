@@ -32,7 +32,7 @@ trait IsRequest
         $this->path = $uri->getPath();
     }
 
-    public function accepts(ContentType ...$contentType): bool
+    public function accepts(ContentType ...$contentTypes): bool
     {
         throw new Exception('Not implemented');
     }
