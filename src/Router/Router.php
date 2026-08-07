@@ -13,50 +13,176 @@ declare(strict_types=1);
 
 namespace genug\Router;
 
+use Closure;
+use Exception;
 use genug\Config\Config;
-use genug\Page\PageEntity;
-use genug\Page\PageEntityNotFound;
-use genug\Page\PageId;
-use genug\Page\PageRepository;
-use genug\Request\Request;
-use Psr\Log\LoggerInterface;
-use Throwable;
+use genug\Http\GenericRequest;
+use genug\Http\Method;
+use genug\Http\Request;
+use genug\Http\Response;
+use genug\Http\Status;
+use genug\Http\StatusResponce;
+use LogicException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use ReflectionClass;
+use ReflectionFunction;
+use ReflectionNamedType;
+use Uri\Rfc3986\Uri;
 
-use function sprintf;
+use function array_first;
+use function mb_strlen;
+use function mb_substr;
+use function str_starts_with;
+use function strtoupper;
 
 /**
  *
  * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
  */
-final class Router
+final class Router implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+    private array $storage = [];
+
     public function __construct(
-        protected readonly Request $request,
-        protected readonly PageRepository $pages,
-        protected readonly Config $config,
-        protected readonly LoggerInterface $logger
+        private Config $config
     ) {
     }
 
-    public function result(): PageEntity
+    public function register(string $regex, Closure $closure, Method ...$methods): void
+    {
+        foreach ($methods as $method) {
+            if (isset($this->storage[$method->name][$regex])) {
+                throw new LogicException();
+            }
+
+            $this->storage[$method->name][$regex] = $closure;
+        }
+    }
+
+    public function dispatch(): Response
+    {
+        $closure = $this->tryMatch($this->createMethodFromGlobal(), $this->createUriFromGlobal());
+
+        if (! $closure) {
+            return new StatusResponce(Status::NotFound);
+        }
+
+        $request = $this->detectRequestFromClosure($closure);
+
+        return $closure($request);
+    }
+
+    private function detectRequestFromClosure(Closure $closure): Request
+    {
+        $this->isClosureValid($closure) ?: throw new LogicException();
+
+        $reflectionFunction = new ReflectionFunction($closure);
+        $reflectionParameter = array_first($reflectionFunction->getParameters());
+        $reflectionType = $reflectionParameter->getType();
+        $reflectionRequestClass = new ReflectionClass($reflectionType->getName());
+
+        // TODO Automate the creation of Requests by the container
+
+        if ($reflectionRequestClass->isInterface()) {
+            return new GenericRequest($this->createMethodFromGlobal(), $this->createUriFromGlobal());
+        }
+
+        return match ($reflectionRequestClass->getName()) {
+            GenericRequest::class => new GenericRequest($this->createMethodFromGlobal(), $this->createUriFromGlobal()),
+            default => throw new LogicException()
+        };
+    }
+
+    private function isClosureValid(Closure $closure): bool
     {
         try {
-            try {
-                // FIXME Implement an independent validator and use it here
-                $id = PageId::tryFromString($this->request->pageId());
-                if (null === $id) {
-                    throw new PageEntityNotFound();
-                }
-                return $this->pages->fetch($id);
-            } catch (PageEntityNotFound $t) {
-                $this->logger->debug(sprintf('Requested page "%s" not found.', $this->request->pageId()), ['exception' => $t]);
-                $this->logger->debug(sprintf('Fetch the http-404 page instead.'), ['http404page_id' => $this->config->http404PageId]);
-                return $this->pages->fetch(new PageId($this->config->http404PageId));
+            $reflectionFunction = new ReflectionFunction($closure);
+
+            // Parameter
+
+            if (1 !== $reflectionFunction->getNumberOfParameters()) {
+                throw new Exception();
             }
-        } catch (Throwable $t) {
-            $this->logger->error('No result.', ['exception' => $t]);
-            throw new RouterError(previous: $t);
+            $reflectionParameter = array_first($reflectionFunction->getParameters());
+            $reflectionType = $reflectionParameter->getType();
+            if (!($reflectionType instanceof ReflectionNamedType)) {
+                throw new Exception();
+            }
+
+            $reflectionClass = new ReflectionClass($reflectionType->getName());
+            if (! $reflectionClass->implementsInterface(Request::class)) {
+                throw new Exception();
+            }
+
+            // ReturnType
+
+            if (! $reflectionFunction->hasReturnType()) {
+                throw new Exception();
+            }
+
+            if ($reflectionFunction->hasTentativeReturnType()) {
+                throw new Exception();
+            }
+
+            $refectionReturnType = $reflectionFunction->getReturnType();
+
+            if ($refectionReturnType->allowsNull()) {
+                throw new Exception();
+            }
+
+            if (! ($refectionReturnType instanceof ReflectionNamedType)) {
+                throw new Exception();
+            }
+
+            $refelctionReturnClass = new ReflectionClass($refectionReturnType->getName());
+            if (! $refelctionReturnClass->implementsInterface(Response::class)) {
+                throw new Exception();
+            }
+
+            return true;
+        } catch (Exception $e) {
+            $this->logger?->debug($e->getMessage(), ['exception' => $e]);
+            return false;
         }
+    }
+
+    private function tryMatch(Method $method, Uri $uri): ?Closure
+    {
+        if (! isset($this->storage[$method->name])) {
+            return null;
+        }
+
+        $options = $this->storage[$method->name];
+
+        foreach ($options as $regex => $closure) {
+            if (\Safe\preg_match($regex, $uri->getPath())) {
+                return $closure;
+            }
+        }
+        return null;
+    }
+
+    private function createUriFromGlobal(): Uri
+    {
+        $uri = new Uri($_SERVER['REQUEST_URI']);
+        if ($this->config->pathBase) {
+            if (! str_starts_with($uri->getPath(), $this->config->pathBase)) {
+                throw new LogicException('The pathBase is configured incorrectly.');
+            }
+            $path = mb_substr($uri->getPath(), mb_strlen($this->config->pathBase));
+
+            $uri = $uri->withPath($path);
+        }
+        return $uri;
+    }
+
+    private function createMethodFromGlobal(): Method
+    {
+        $httpMethod = strtoupper($_SERVER['REQUEST_METHOD']);
+        return Method::{$httpMethod};
     }
 }
