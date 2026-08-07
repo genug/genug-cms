@@ -13,7 +13,12 @@ declare(strict_types=1);
 
 namespace genug\Http;
 
-enum ContentType: string
+use genug\Lib\Equatable;
+use genug\Lib\EquatableSimpleObjectTrait;
+
+enum ContentType: string implements Equatable
 {
+    use EquatableSimpleObjectTrait;
+
     case HTML = 'text/html';
 }
