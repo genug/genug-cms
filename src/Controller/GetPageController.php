@@ -11,6 +11,8 @@ declare(strict_types=1);
  * License: MIT License
  */
 
+namespace genug\Controller;
+
 use genug\Config\Config;
 use genug\Http\ContentType;
 use genug\Http\GenericResponce;
@@ -21,15 +23,7 @@ use genug\Http\Status;
 use genug\Http\StatusResponce;
 use genug\Page\PageId;
 use genug\Page\PageRepository;
-
-/*
- * This file is part of "genug".
- *
- * (c) David J. Schwarz
- * https://davidschwarz.eu
- *
- * License: MIT License
- */
+use LogicException;
 
 final class GetPageController
 {
@@ -54,10 +48,16 @@ final class GetPageController
             return new StatusResponce(Status::NotFound);
         }
 
-        $page = $this->pages->tryFetch(new PageId($request->path)) ?? $this->pages->fetch(new PageId($this->config->http404PageId));
+        $http404PageId = new PageId($this->config->http404PageId);
+        $status = Status::OK;
+        $page = $this->pages->tryFetch(new PageId($request->path)) ?? $this->pages->fetch($http404PageId);
+
+        if ($page->id->equals($http404PageId)) {
+            $status = Status::NotFound;
+        }
 
         return new GenericResponce(
-            Status::OK,
+            $status,
             ContentType::HTML,
             // TODO use View
             $page->content
