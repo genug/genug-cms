@@ -19,10 +19,11 @@ use genug\Config\Config;
 use IteratorAggregate;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use SplFileInfo;
+use SplObjectStorage;
 use Traversable;
 
 use function file_exists;
-use function Safe\file_get_contents;
 
 /**
  *
@@ -33,9 +34,19 @@ final class PageRepository implements IteratorAggregate, Countable, LoggerAwareI
 {
     use LoggerAwareTrait;
 
+    private const INDEX_FILE_NAME = 'index';
+
+    private array $pageTypeOrder = [
+        PageType::HTML,
+    ];
+
+    private SplObjectStorage $pageEntityClasses;
+
     public function __construct(
         private Config $config
     ) {
+        $this->pageEntityClasses = new SplObjectStorage();
+        $this->pageEntityClasses[PageType::HTML] = HtmlPageEntity::class;
     }
 
     public function fetch(PageId $id): PageEntity
@@ -45,20 +56,37 @@ final class PageRepository implements IteratorAggregate, Countable, LoggerAwareI
 
     public function tryFetch(PageId $id): ?PageEntity
     {
-        $fileName = $id . '.' . $this->config->persistencePageFilenameExtension;
-        if ((string) $id === $this->config->homePageId) {
-            $fileName = '/' . $this->config->persistencePageHomePageFilename;
+        $filePathWidthoutExtension = (string) $id;
+        if ($id->equals(new PageId($this->config->homePageId))) {
+            $filePathWidthoutExtension = '/' . self::INDEX_FILE_NAME;
         }
 
-        $path = $this->config->persistenceContentDirectory . $fileName;
+        $filePathWidthoutExtension = $this->config->persistenceContentDirectory . $filePathWidthoutExtension;
 
-        if (! file_exists($path)) {
+        $pageType = (function () use ($filePathWidthoutExtension): ?PageType {
+            foreach ($this->pageTypeOrder as $pageType) {
+                $file = $filePathWidthoutExtension . '.' . $pageType->value;
+
+                if (file_exists($file)) {
+                    return $pageType;
+                }
+            }
+            return null;
+        })();
+
+        if (!$pageType) {
             return null;
         }
-        return new PageEntity(
-            $id,
-            new PageContent(file_get_contents($path)),
-        );
+
+        $fileInfo = new SplFileInfo($filePathWidthoutExtension . '.' . $pageType->value);
+
+        $pageEntity = new $this->pageEntityClasses[$pageType]($id, $fileInfo, $this->config);
+
+        if ($this->logger) {
+            $pageEntity->setLogger($this->logger);
+        }
+
+        return $pageEntity;
     }
 
     public function getIterator(): Traversable
