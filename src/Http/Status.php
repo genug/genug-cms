@@ -33,4 +33,29 @@ enum Status: int
 
         return $this->value . ' ' . $text;
     }
+
+    public function isInformational(): bool
+    {
+        return $this->value < 200;
+    }
+
+    public function isSuccessful(): bool
+    {
+        return $this->value >= 200 && $this->value < 300;
+    }
+
+    public function isRedirectionMessage(): bool
+    {
+        return $this->value >= 300 && $this->value < 400;
+    }
+
+    public function isClientError(): bool
+    {
+        return $this->value >= 400 && $this->value < 500;
+    }
+
+    public function isServerError(): bool
+    {
+        return $this->value >= 500 && $this->value < 600;
+    }
 }
