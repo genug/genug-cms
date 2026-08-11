@@ -15,14 +15,26 @@ namespace genug\Http;
 
 enum Status: int
 {
+    // Informational
+
+    case Continue = 100;
+
     // successful
 
     case OK = 200;
+
+    // Redirection messages
+
+    case MultipleChoices = 300;
 
     // client error
 
     case BadRequest = 400;
     case NotFound = 404;
+
+    // Server error
+
+    case InternalServerError = 500;
 
     public function description(): string
     {
