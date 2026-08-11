@@ -22,4 +22,9 @@ interface Response
     public ContentType $contentType {get;}
 
     public string|Stringable $body {get;}
+
+    /**
+     * MUST return a new instance
+     */
+    public function withStatus(Status $status): static;
 }

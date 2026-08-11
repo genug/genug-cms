@@ -35,4 +35,11 @@ trait IsResponse
         $this->contentType = $contentType;
         $this->body = $body;
     }
+
+    public function withStatus(Status $status): static
+    {
+        $clone = clone $this;
+        $clone->status = $status;
+        return $clone;
+    }
 }
