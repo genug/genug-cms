@@ -33,6 +33,7 @@ use Uri\Rfc3986\Uri;
 use function array_first;
 use function mb_strlen;
 use function mb_substr;
+use function sprintf;
 use function str_starts_with;
 use function strtoupper;
 
@@ -65,8 +66,18 @@ final class Router implements LoggerAwareInterface
 
     public function dispatch(): Response
     {
+        $method = $this->createMethodFromGlobal();
+
+        if (
+            Method::HEAD !== $method
+            && Method::GET !== $method
+        ) {
+            $this->logger?->debug(sprintf('Support for the HTTP %s method has not been implemented.', $method->name));
+            throw new HttpException(Status::MethodNotAllowed);
+        }
+
         $closure = $this->tryMatch(
-            $this->createMethodFromGlobal(),
+            $method,
             $this->createUriFromGlobal()
         ) ?? throw new HttpException(Status::NotFound);
 
@@ -181,7 +192,12 @@ final class Router implements LoggerAwareInterface
 
     private function createMethodFromGlobal(): Method
     {
-        $httpMethod = strtoupper($_SERVER['REQUEST_METHOD']);
-        return Method::{$httpMethod};
+        $dirtyHttpMethod = strtoupper($_SERVER['REQUEST_METHOD']);
+        foreach (Method::cases() as $case) {
+            if ($case->name === $dirtyHttpMethod) {
+                return $case;
+            }
+        }
+        throw new HttpException(Status::MethodNotAllowed);
     }
 }
