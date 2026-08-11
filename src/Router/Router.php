@@ -17,11 +17,11 @@ use Closure;
 use Exception;
 use genug\Config\Config;
 use genug\Http\GenericRequest;
+use genug\Http\HttpException;
 use genug\Http\Method;
 use genug\Http\Request;
 use genug\Http\Response;
 use genug\Http\Status;
-use genug\Http\StatusResponce;
 use LogicException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -65,11 +65,10 @@ final class Router implements LoggerAwareInterface
 
     public function dispatch(): Response
     {
-        $closure = $this->tryMatch($this->createMethodFromGlobal(), $this->createUriFromGlobal());
-
-        if (! $closure) {
-            return new StatusResponce(Status::NotFound);
-        }
+        $closure = $this->tryMatch(
+            $this->createMethodFromGlobal(),
+            $this->createUriFromGlobal()
+        ) ?? throw new HttpException(Status::NotFound);
 
         $request = $this->detectRequestFromClosure($closure);
 
