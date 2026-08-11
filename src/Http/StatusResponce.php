@@ -31,4 +31,11 @@ final class StatusResponce implements Response
         $this->contentType = $contentType;
         $this->body = $status->description();
     }
+
+    public function withStatus(Status $status): static
+    {
+        $clone = clone $this;
+        $clone->status = $status;
+        return $clone;
+    }
 }
