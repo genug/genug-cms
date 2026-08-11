@@ -13,8 +13,13 @@ declare(strict_types=1);
 
 namespace genug\Http;
 
-enum Method
+use genug\Lib\Equatable;
+use genug\Lib\EquatableSimpleObjectTrait;
+
+enum Method implements Equatable
 {
+    use EquatableSimpleObjectTrait;
+
     case GET;
     case HEAD;
     case POST;
