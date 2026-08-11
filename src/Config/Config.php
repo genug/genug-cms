@@ -34,7 +34,6 @@ final class Config
         public string $viewFilePath = App::ROOT . '/genug_user/view/index.php',
         public string $persistenceContentDirectory = App::ROOT . '/genug_user/content',
         public string $persistencePageFilenameExtension = 'page',
-        public string $persistencePageHomePageFilename = '_home.page'
     ) {
     }
 }
