@@ -68,6 +68,7 @@ enum Status: int
 
     public function isServerError(): bool
     {
+        // @phpstan-ignore smaller.alwaysTrue
         return $this->value >= 500 && $this->value < 600;
     }
 }
