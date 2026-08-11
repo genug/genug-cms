@@ -31,6 +31,7 @@ use ReflectionNamedType;
 use Uri\Rfc3986\Uri;
 
 use function array_first;
+use function in_array;
 use function mb_strlen;
 use function mb_substr;
 use function sprintf;
@@ -55,6 +56,10 @@ final class Router implements LoggerAwareInterface
 
     public function register(string $regex, Closure $closure, Method ...$methods): void
     {
+        if (! in_array(Method::HEAD, $methods) && in_array(Method::GET, $methods)) {
+            $methods[] = Method::HEAD;
+        }
+
         foreach ($methods as $method) {
             if (isset($this->storage[$method->name][$regex])) {
                 throw new LogicException();

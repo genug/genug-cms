@@ -19,7 +19,6 @@ use genug\Http\Method;
 use genug\Http\Request;
 use genug\Http\Response;
 use genug\Http\Status;
-use LogicException;
 
 use function Safe\file_get_contents;
 
@@ -32,14 +31,9 @@ final class HtmlPageEntity extends PageEntity
 {
     public function get(Request $request): Response
     {
-        if ($request->method !== Method::GET) {
-            throw new LogicException();
+        if ($request->method->equals(Method::HEAD)) {
+            return new GenericResponce(Status::OK, ContentType::HTML, '');
         }
-
-        // FIXME Implement $request->accepts
-        // if (! $request->accepts(ContentType::HTML)) {
-        //     return new StatusResponce(Status::BadRequest);
-        // }
 
         // TODO use View
         $content = file_get_contents($this->sourceFile->getRealPath());

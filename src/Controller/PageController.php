@@ -49,9 +49,15 @@ final class PageController implements LoggerAwareInterface
         $page = $this->pages->tryFetch($pageId) ?? $this->pages->fetch($http404PageId);
 
         // TODO Allow other methods
-        if (!$request->method->equals(Method::GET)) {
+        if (
+            ! $request->method->equals(Method::HEAD)
+            && !$request->method->equals(Method::GET)
+        ) {
             throw new HttpException(Status::BadRequest);
         }
+
+        // TODO Implement $request->accepts
+
         $responce = $page->get($request);
 
         if ($page->id->equals($http404PageId)) {
