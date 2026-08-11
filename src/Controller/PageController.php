@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of "genug".
+ *
+ * (c) David J. Schwarz
+ * https://davidschwarz.eu
+ *
+ * License: MIT License
+ */
+
+namespace genug\Controller;
+
+use genug\Config\Config;
+use genug\Http\HttpException;
+use genug\Http\Method;
+use genug\Http\Request;
+use genug\Http\Response;
+use genug\Http\Status;
+use genug\Page\PageId;
+use genug\Page\PageRepository;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+
+final class PageController implements LoggerAwareInterface
+{
+    use LoggerAwareTrait;
+
+    public function __construct(
+        private Config $config,
+        private PageRepository $pages
+    ) {
+    }
+
+    public function __invoke(Request $request): Response
+    {
+        $path = $request->path;
+
+        if (! PageId::isValide($path)) {
+            $this->logger?->debug('Request path is a invalid page id.');
+            $path = $this->config->http404PageId;
+        }
+
+        $pageId = new PageId($path);
+        $http404PageId = new PageId($this->config->http404PageId);
+
+        $page = $this->pages->tryFetch($pageId) ?? $this->pages->fetch($http404PageId);
+
+        // TODO Allow other methods
+        if (!$request->method->equals(Method::GET)) {
+            throw new HttpException(Status::BadRequest);
+        }
+        $responce = $page->get($request);
+
+        if ($page->id->equals($http404PageId)) {
+            return $responce->withStatus(Status::NotFound);
+        }
+        return $responce;
+    }
+}
