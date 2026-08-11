@@ -31,6 +31,7 @@ enum Status: int
 
     case BadRequest = 400;
     case NotFound = 404;
+    case MethodNotAllowed = 405;
 
     // Server error
 
