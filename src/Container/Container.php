@@ -17,7 +17,7 @@ use genug\Config\Config;
 use genug\Config\ConfigLoader;
 use genug\Logger\Logger;
 use genug\Page\PageRepository;
-use genug\Request\Request;
+use genug\Router\Router;
 use Psr\Log\LoggerInterface;
 
 use function file_exists;
@@ -32,8 +32,12 @@ final class Container
 {
     public private(set) Config $config;
 
-    public private(set) Request $request {
-        get => $this->request ??= new Request($this->config->pathBase);
+    public private(set) Router $router {
+        get => $this->router ?? (function (): Router {
+            $r = new Router($this->config);
+            $r->setLogger($this->logger);
+            return $r;
+        })();
     }
 
     public private(set) LoggerInterface $logger {
