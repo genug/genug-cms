@@ -13,14 +13,13 @@ declare(strict_types=1);
 
 namespace genug\Page;
 
+use Dom\HTMLDocument;
 use genug\Http\ContentType;
 use genug\Http\GenericResponce;
 use genug\Http\Method;
 use genug\Http\Request;
 use genug\Http\Response;
 use genug\Http\Status;
-
-use function Safe\file_get_contents;
 
 /**
  *
@@ -35,13 +34,28 @@ final class HtmlPageEntity extends PageEntity
             return new GenericResponce(Status::OK, ContentType::HTML, '');
         }
 
-        // TODO use View
-        $content = file_get_contents($this->sourceFile->getRealPath());
+        $dom = HTMLDocument::createFromFile($this->sourceFile->getRealPath());
+
+        if (! $dom->doctype) {
+            $doctype = $dom->implementation->createDocumentType('html', '', '');
+            $doctype = $dom->importNode($doctype);
+            $dom->insertBefore($doctype, $dom->firstChild);
+        }
+
+        if ($this->config->websiteTitle) {
+            $title = $this->config->websiteTitle;
+
+            if ($dom->title) {
+                $title = "{$dom->title} {$this->config->titleDelimiter} {$title}";
+            }
+
+            $dom->title = $title;
+        }
 
         return new GenericResponce(
             Status::OK,
             ContentType::HTML,
-            $content
+            $dom->saveHtml()
         );
     }
 }
