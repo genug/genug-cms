@@ -15,8 +15,13 @@ namespace genug\Http;
 
 interface Request
 {
-    public Method $method {get;}
-    public string $path {get;}
+    public protected(set) Method $method {get; set;}
+    public protected(set) string $path {get; set;}
 
     public function accepts(ContentType ...$contentTypes): bool;
+
+    /**
+     * MUST return a new instance
+     */
+    public function withMethod(Method $method): static;
 }

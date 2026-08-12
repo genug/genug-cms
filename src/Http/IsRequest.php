@@ -36,4 +36,11 @@ trait IsRequest
     {
         throw new Exception('Not implemented');
     }
+
+    public function withMethod(Method $method): static
+    {
+        $request = clone $this;
+        $request->method = $method;
+        return $request;
+    }
 }
