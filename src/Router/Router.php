@@ -22,6 +22,7 @@ use genug\Http\Method;
 use genug\Http\Request;
 use genug\Http\Response;
 use genug\Http\Status;
+use genug\Http\StatusResponce;
 use LogicException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -71,24 +72,29 @@ final class Router implements LoggerAwareInterface
 
     public function dispatch(): Response
     {
-        $method = $this->createMethodFromGlobal();
+        try {
+            $method = $this->createMethodFromGlobal();
 
-        if (
-            Method::HEAD !== $method
-            && Method::GET !== $method
-        ) {
-            $this->logger?->debug(sprintf('Support for the HTTP %s method has not been implemented.', $method->name));
-            throw new HttpException(Status::MethodNotAllowed);
+            if (
+                Method::HEAD !== $method
+                && Method::GET !== $method
+            ) {
+                $this->logger?->debug(sprintf('Support for the HTTP %s method has not been implemented.', $method->name));
+                throw new HttpException(Status::MethodNotAllowed);
+            }
+
+            $closure = $this->tryMatch(
+                $method,
+                $this->createUriFromGlobal()
+            ) ?? throw new HttpException(Status::NotFound);
+
+            $request = $this->detectRequestFromClosure($closure);
+
+            return $closure($request);
+        } catch (HttpException $httpException) {
+            // TODO set content type
+            return new StatusResponce($httpException->status);
         }
-
-        $closure = $this->tryMatch(
-            $method,
-            $this->createUriFromGlobal()
-        ) ?? throw new HttpException(Status::NotFound);
-
-        $request = $this->detectRequestFromClosure($closure);
-
-        return $closure($request);
     }
 
     private function detectRequestFromClosure(Closure $closure): Request
