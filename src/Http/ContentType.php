@@ -21,4 +21,5 @@ enum ContentType: string implements Equatable
     use EquatableSimpleObjectTrait;
 
     case HTML = 'text/html';
+    case Text = 'text/plain';
 }
