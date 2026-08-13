@@ -61,7 +61,9 @@ final class PageController implements LoggerAwareInterface
         $pageId = new PageId($path);
         $http404PageId = new PageId($this->config->http404PageId);
 
-        $page = $this->pages->tryFetch($pageId) ?? $this->pages->fetch($http404PageId);
+        $page = $this->pages->tryFetch($pageId)
+            ?? $this->pages->tryFetch($http404PageId)
+            ?? throw new HttpException(Status::NotFound);
 
         $responce = $page->get($request);
 
