@@ -26,6 +26,19 @@ use function Safe\php_sapi_name;
  */
 return static function (Config $config) {
     /*
+     * The site title.
+     * Is appended to the page title.
+     * Can be left blank.
+     */
+    $config->siteTitle = 'SITE TITLE';
+
+    /*
+     * The separator between the site title and the page title.
+     * Displayed only if both titles are available.
+     */
+    $config->titleDelimiter = '|';
+
+    /*
      * Retrieve all log messages during development
      *
      * During development, PHP's built-in web server can be used via the CLI.
