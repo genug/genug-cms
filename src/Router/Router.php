@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace genug\Router;
 
 use genug\Controller\PageController;
-use genug\Http\HttpException;
+use genug\Http\HttpResponceException;
 use genug\Http\Request;
 use genug\Http\Response;
 use genug\Http\Status;
@@ -40,13 +40,13 @@ final class Router
             $controller = match(true) {
                 PageId::isValide($this->request->path) => $this->pageController,
                 // TODO fileController
-                default => throw new HttpException(Status::NotFound)
+                default => throw new HttpResponceException(Status::NotFound)
             };
 
             return $controller->handle($this->request);
-        } catch (HttpException $httpException) {
+        } catch (HttpResponceException $HttpResponceException) {
             // TODO set content type
-            return new StatusResponce($httpException->status);
+            return new StatusResponce($HttpResponceException->status);
         }
     }
 }

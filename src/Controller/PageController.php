@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace genug\Controller;
 
 use genug\Config\Config;
-use genug\Http\HttpException;
+use genug\Http\HttpResponceException;
 use genug\Http\Method;
 use genug\Http\Request;
 use genug\Http\Response;
@@ -45,7 +45,7 @@ final class PageController implements Controller
             && !$request->method->equals(Method::GET)
         ) {
             $this->logger?->debug(sprintf('Not implemented: %s cannot handle method %s.', $this::class, $request->method->name));
-            throw new HttpException(Status::MethodNotAllowed);
+            throw new HttpResponceException(Status::MethodNotAllowed);
         }
 
         // TODO Implement $request->accepts
@@ -67,7 +67,7 @@ final class PageController implements Controller
 
         $page = $this->pages->tryFetch($pageId)
             ?? $this->pages->tryFetch($http404PageId)
-            ?? throw new HttpException(Status::NotFound);
+            ?? throw new HttpResponceException(Status::NotFound);
 
         $responce = match(true) {
             $request->method->equals(Method::GET) => $page->get(new GetPageRequest()),

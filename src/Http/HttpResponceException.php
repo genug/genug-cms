@@ -16,7 +16,7 @@ namespace genug\Http;
 use Exception;
 use InvalidArgumentException;
 
-class HttpException extends Exception
+class HttpResponceException extends Exception
 {
     final public protected(set) Status $status;
 

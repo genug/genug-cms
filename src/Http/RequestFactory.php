@@ -50,7 +50,7 @@ final class RequestFactory implements LoggerAwareInterface
                 return $case;
             }
         }
-        throw new HttpException(Status::MethodNotAllowed);
+        throw new HttpResponceException(Status::MethodNotAllowed);
     }
 
     private function createUriFromGlobal(): Uri
