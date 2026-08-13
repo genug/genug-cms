@@ -36,18 +36,6 @@ final class PageController implements LoggerAwareInterface
 
     public function __invoke(Request $request): Response
     {
-        $path = $request->path;
-
-        if (! PageId::isValide($path)) {
-            $this->logger?->debug('Request path is a invalid page id.');
-            $path = $this->config->http404PageId;
-        }
-
-        $pageId = new PageId($path);
-        $http404PageId = new PageId($this->config->http404PageId);
-
-        $page = $this->pages->tryFetch($pageId) ?? $this->pages->fetch($http404PageId);
-
         // TODO Allow other methods
         if (
             ! $request->method->equals(Method::HEAD)
@@ -62,6 +50,18 @@ final class PageController implements LoggerAwareInterface
         if ($request->method->equals(Method::HEAD)) {
             $request = $request->withMethod(Method::GET);
         }
+
+        $path = $request->path;
+
+        if (! PageId::isValide($path)) {
+            $this->logger?->debug('Request path is a invalid page id.');
+            $path = $this->config->http404PageId;
+        }
+
+        $pageId = new PageId($path);
+        $http404PageId = new PageId($this->config->http404PageId);
+
+        $page = $this->pages->tryFetch($pageId) ?? $this->pages->fetch($http404PageId);
 
         $responce = $page->get($request);
 
