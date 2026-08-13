@@ -49,10 +49,15 @@ final class PhpPageEntity implements PageEntity
             ob_start();
             $page = (function (): HTMLDocument|PageEntity {
                 // A separate context for the page code.
-                $c = new class ($this->file) {
-                    // TODO Pages without this page
-                    public function __construct(private SplFileInfo $file)
-                    {
+                $c = new class ($this->file, $this->id, new PageId($this->config->homePageId)) {
+                    public function __construct(
+                        private SplFileInfo $file,
+                        // @phpstan-ignore property.onlyWritten
+                        private PageId $id,
+                        // @phpstan-ignore property.onlyWritten
+                        private PageId $homeId,
+                        // TODO Pages without this page
+                    ) {
                     }
 
                     public function load(): true|PageEntity
@@ -120,6 +125,7 @@ final class PhpPageEntity implements PageEntity
 
             $this->addDocType($page);
             $this->modifyTitle($page);
+            // TODO `<a href="{id}">...</a>` -> rewrite set pathBase before id
 
             return $responce->withBody($page->saveHtml());
         } finally {
