@@ -15,17 +15,18 @@ namespace genug\Page;
 
 use Dom\HTMLDocument;
 use genug\Http\ContentType;
-use genug\Http\GenericResponce;
+use genug\Http\IsResponse;
 use genug\Http\Response;
 use genug\Http\Status;
 use LogicException;
 use Override;
+use SplFileInfo;
 
 use function http_response_code;
-use function is_int;
+use function is_object;
+use function ob_get_contents;
 use function ob_get_level;
 use function Safe\ob_end_clean;
-use function Safe\ob_get_clean;
 use function Safe\ob_start;
 use function sprintf;
 
@@ -43,70 +44,84 @@ final class PhpPageEntity implements PageEntity
     {
         try {
             $prevObLevel = ob_get_level();
+            $prevHeaders = \headers_list();
+            $prevResponceCode = http_response_code();
             ob_start();
             $page = (function (): HTMLDocument|PageEntity {
-                $prevLevel = ob_get_level();
-                $prevHeaders = \headers_list();
-                $prevResponceCode = http_response_code();
+                // A separate context for the page code.
+                $c = new class ($this->file) {
+                    // TODO Pages without this page
+                    public function __construct(private SplFileInfo $file)
+                    {
+                    }
 
-                $r = require $this->file->getRealPath();
+                    public function load(): true|PageEntity
+                    {
+                        $r = require $this->file->getRealPath();
 
-                if ($prevLevel !== ob_get_level()) {
-                    throw new LogicException(sprintf('The page has at least one open output buffer. Page file: %s', $this->file->getRealPath()));
+                        if ($r === 1) {
+                            return true;
+                        }
+
+                        if ($r instanceof PageEntity) {
+                            return $r;
+                        }
+
+                        throw new LogicException("Invalid File: {$this->file->getRealPath()}.");
+                    }
+                };
+
+                $r = $c->load();
+
+                if (is_object($r)) {
+                    return $r;
                 }
-                if ($prevHeaders !== headers_list()) {
-                    throw new LogicException(sprintf('Setting HTTP headers is not allowed in pages. Page file: %s', $this->file->getRealPath()));
+
+                $content = ob_get_contents();
+                if (false === $content) {
+                    throw new LogicException(sprintf('Missing output puffer. Page file: %s', $this->file->getRealPath()));
                 }
-
-                if ($prevResponceCode !== http_response_code()) {
-                    throw new LogicException(sprintf('Setting HTTP status codes is not allowed in pages. Page file: %s', $this->file->getRealPath()));
-                }
-
-                if (1 === $r) {
-                    $dom = HTMLDocument::createFromString(ob_get_clean());
-
-                    $this->addDocType($dom);
-                    $this->modifyTitle($dom);
-
-                    return $dom;
-                }
-                if (! ($r instanceof PageEntity)) {
-                    throw new LogicException("Invalid File: {$this->file->getRealPath()}.");
-                }
-
-                return $r;
+                return HTMLDocument::createFromString($content);
             })();
 
-            if ($page instanceof HTMLDocument) {
-                $status = Status::OK;
-                if (is_int($i = http_response_code())) {
-                    $status = Status::from($i);
+            ob_end_clean();
+
+            if ($prevObLevel !== ob_get_level()) {
+                throw new LogicException(sprintf('The output buffering level is incorrect. Page file: %s', $this->file->getRealPath()));
+            }
+            if ($prevHeaders !== headers_list()) {
+                throw new LogicException(sprintf('Setting HTTP headers is not allowed in pages. Page file: %s', $this->file->getRealPath()));
+            }
+            if ($prevResponceCode !== http_response_code()) {
+                throw new LogicException(sprintf('Setting HTTP status codes is not allowed in pages. Page file: %s', $this->file->getRealPath()));
+            }
+
+            $responce = new class (Status::OK, ContentType::HTML, '') implements Response {
+                use IsResponse;
+            };
+
+            if (! ($page instanceof HTMLDocument)) {
+                $page->id = $this->id;
+                $page->file = $this->file;
+                $page->config = $this->config;
+                $page->pages = $this->pages;
+                if ($this->logger) {
+                    $page->setLogger($this->logger);
                 }
+                $page->init();
 
-                return new GenericResponce($status, ContentType::HTML, $page->saveHtml());
+                $responce = $page->get($dto);
+                $page = HTMLDocument::createFromString((string) $responce->body);
             }
-
-            $page->id = $this->id;
-            $page->file = $this->file;
-            $page->config = $this->config;
-            $page->pages = $this->pages;
-            if ($this->logger) {
-                $page->setLogger($this->logger);
-            }
-            $page->init();
-
-            $responce = $page->get($dto);
 
             if (! $responce->contentType->equals(ContentType::HTML)) {
                 throw new LogicException(sprintf('A page must have the content type %s. Page file: %s', ContentType::HTML->value, $this->file->getRealPath()));
             }
 
-            $dom = HTMLDocument::createFromString((string) $responce->body);
+            $this->addDocType($page);
+            $this->modifyTitle($page);
 
-            $this->addDocType($dom);
-            $this->modifyTitle($dom);
-
-            return $responce->withBody($dom->saveHtml());
+            return $responce->withBody($page->saveHtml());
         } finally {
             // @phpstan-ignore nullCoalesce.variable
             while (ob_get_level() > ($prevObLevel ?? ob_get_level())) {
