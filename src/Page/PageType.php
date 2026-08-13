@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace genug\Page;
 
 use genug\Lib\Equatable;
-use genug\Lib\EquatableSimpleObjectTrait;
+use genug\Lib\IsEquatableSimply;
 
 enum PageType: string implements Equatable
 {
-    use EquatableSimpleObjectTrait;
+    use IsEquatableSimply;
 
     case HTML = 'html';
     case PHP = 'php';

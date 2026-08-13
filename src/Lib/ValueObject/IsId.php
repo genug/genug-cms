@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace genug\Lib\ValueObject;
 
 use Deprecated;
-use genug\Lib\EquatableSimpleObjectTrait;
+use genug\Lib\IsEquatableSimply;
 use InvalidArgumentException;
 
 use function sprintf;
@@ -29,7 +29,7 @@ use function sprintf;
  */
 trait IsId
 {
-    use EquatableSimpleObjectTrait;
+    use IsEquatableSimply;
 
     public function __construct(private string $id)
     {

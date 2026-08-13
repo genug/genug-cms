@@ -22,7 +22,7 @@ use function is_object;
  *
  * @phpstan-require-implements \genug\Lib\Equatable
  */
-trait EquatableSimpleObjectTrait
+trait IsEquatableSimply
 {
     final public function equals(mixed $other): bool
     {
