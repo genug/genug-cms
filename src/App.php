@@ -15,14 +15,10 @@ namespace genug;
 
 use ErrorException;
 use genug\Container\Container;
-use genug\Page\PageId;
-use genug\Router\Router;
-use genug\Router\RouterError;
-use genug\Setting\Setting;
 use Throwable;
 
+use function ob_end_clean;
 use function ob_end_flush;
-use function Safe\ob_end_clean;
 use function Safe\ob_start;
 
 /**
@@ -38,52 +34,14 @@ final class App
     {
         try {
             try {
-                try {
-                    ob_start();
+                ob_start();
+                $container = new Container(appRoot: self::ROOT);
+                $responce = $container->router->dispatch();
 
-                    $container = new Container(appRoot: self::ROOT);
-
-                    $router = new Router(
-                        $container->request,
-                        $container->pages,
-                        $container->config,
-                        $container->logger
-                    );
-
-                    $genug = new Api(
-                        pages: $container->pages,
-                        requestedPage: $router->result(),
-                        homePage: $container->pages->fetch(new PageId($container->config->homePageId)),
-                        setting: new Setting(
-                            new PageId($container->config->homePageId),
-                            new PageId($container->config->http404PageId)
-                        )
-                    );
-
-                    $viewFilePath = $container->config->viewFilePath;
-
-                    header('Content-Type: ' . $container->config->pageContentType);
-                    http_response_code(200);
-                    if ($genug->requestedPage->id->equals($genug->setting->notFoundPageId)) {
-                        http_response_code(404);
-                    }
-                    /** @psalm-suppress UnusedVariable */
-                    (function () use ($genug, $viewFilePath) {
-                        /** @psalm-suppress UnresolvableInclude */
-                        require_once $viewFilePath;
-                    })();
-                } catch (RouterError $routerError) {
-                    // No 404-page was found to display an "HTTP 404 Not Found" error.
-
-                    while (ob_get_level()) {
-                        ob_end_clean();
-                    }
-
-                    ob_start();
-
-                    http_response_code(404);
-                    echo '404 Not Found';
-                }
+                http_response_code($responce->status->value);
+                // FIXME The charset must be set dynamically
+                header('Content-Type: ' . $responce->contentType->value . '; charset=UTF-8');
+                echo $responce->body;
             } catch (Throwable $throwable) {
                 try {
                     $container ??= null;
@@ -99,7 +57,7 @@ final class App
             }
         } catch (Throwable $error) {
             // @phpstan-ignore theCodingMachineSafe.function
-            while (@\ob_end_clean());
+            while (@ob_end_clean());
             // @phpstan-ignore theCodingMachineSafe.function
             \ob_start();
 
