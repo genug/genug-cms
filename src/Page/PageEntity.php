@@ -16,7 +16,6 @@ namespace genug\Page;
 use genug\Config\Config;
 use genug\Http\Response;
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use SplFileInfo;
 
 /**
@@ -24,17 +23,17 @@ use SplFileInfo;
  * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
  */
-abstract class PageEntity implements LoggerAwareInterface
+interface PageEntity extends LoggerAwareInterface
 {
-    use LoggerAwareTrait;
+    public PageId $id {get; set;}
+    public SplFileInfo $file {get; set;}
+    public Config $config {get; set;}
+    public PageRepository $pages {get; set;}
 
-    public function __construct(
-        public readonly PageId $id,
-        protected readonly SplFileInfo $sourceFile,
-        protected readonly Config $config,
-    ) {
-    }
+    public function __construct();
+
+    public function init(): void;
 
     // TODO use Attributes and Reflection; not abstract methods
-    abstract public function get(GetPageRequest $request): Response;
+    public function get(GetPageDto $dto): Response;
 }

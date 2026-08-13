@@ -19,7 +19,7 @@ use genug\Http\Method;
 use genug\Http\Request;
 use genug\Http\Response;
 use genug\Http\Status;
-use genug\Page\GetPageRequest;
+use genug\Page\GetPageDto;
 use genug\Page\PageId;
 use genug\Page\PageRepository;
 use LogicException;
@@ -70,7 +70,7 @@ final class PageController implements Controller
             ?? throw new HttpResponceException(Status::NotFound);
 
         $responce = match(true) {
-            $request->method->equals(Method::GET) => $page->get(new GetPageRequest()),
+            $request->method->equals(Method::GET) => $page->get(new GetPageDto()),
             default => throw new LogicException()
         };
 

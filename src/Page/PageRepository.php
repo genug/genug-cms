@@ -80,11 +80,15 @@ final class PageRepository implements IteratorAggregate, Countable, LoggerAwareI
 
         $fileInfo = new SplFileInfo($filePathWidthoutExtension . '.' . $pageType->value);
 
-        $pageEntity = new $this->pageEntityClasses[$pageType]($id, $fileInfo, $this->config);
-
+        $pageEntity = new $this->pageEntityClasses[$pageType]();
+        $pageEntity->id = $id;
+        $pageEntity->file = $fileInfo;
+        $pageEntity->config = $this->config;
+        $pageEntity->pages = $this;
         if ($this->logger) {
             $pageEntity->setLogger($this->logger);
         }
+        $pageEntity->init();
 
         return $pageEntity;
     }

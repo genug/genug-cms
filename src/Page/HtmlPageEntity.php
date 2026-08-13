@@ -24,11 +24,13 @@ use genug\Http\Status;
  * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
  */
-final class HtmlPageEntity extends PageEntity
+final class HtmlPageEntity implements PageEntity
 {
-    public function get(GetPageRequest $request): Response
+    use IsPageEntity;
+
+    public function get(GetPageDto $dto): Response
     {
-        $dom = HTMLDocument::createFromFile($this->sourceFile->getRealPath());
+        $dom = HTMLDocument::createFromFile($this->file->getRealPath());
 
         if (! $dom->doctype) {
             $doctype = $dom->implementation->createDocumentType('html', '', '');

@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace genug\Page;
 
-final class GetPageRequest
+final class GetPageDto
 {
     public function __construct(
-        // TODO Uri Parameter
+        // TODO uri query param
     ) {
     }
 }
