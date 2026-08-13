@@ -21,8 +21,11 @@ use genug\Http\Response;
 use genug\Http\Status;
 use genug\Page\PageId;
 use genug\Page\PageRepository;
+use LogicException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+
+use function sprintf;
 
 final class PageController implements LoggerAwareInterface
 {
@@ -41,7 +44,8 @@ final class PageController implements LoggerAwareInterface
             ! $request->method->equals(Method::HEAD)
             && !$request->method->equals(Method::GET)
         ) {
-            throw new HttpException(Status::BadRequest);
+            $this->logger?->debug(sprintf('Not implemented: %s cannot handle method %s.', $this::class, $request->method->name));
+            throw new HttpException(Status::MethodNotAllowed);
         }
 
         // TODO Implement $request->accepts
@@ -65,7 +69,10 @@ final class PageController implements LoggerAwareInterface
             ?? $this->pages->tryFetch($http404PageId)
             ?? throw new HttpException(Status::NotFound);
 
-        $responce = $page->get($request);
+        $responce = match(true) {
+            $request->method->equals(Method::GET) => $page->get($request),
+            default => throw new LogicException()
+        };
 
         if ($page->id->equals($http404PageId)) {
             return $responce->withStatus(Status::NotFound);
