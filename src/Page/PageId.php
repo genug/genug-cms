@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace genug\Page;
 
 use genug\Lib\Equatable;
-use genug\Lib\ValueObject\IdTrait;
+use genug\Lib\ValueObject\IsId;
 use Stringable;
 
 use function Safe\preg_match;
@@ -26,7 +26,7 @@ use function Safe\preg_match;
  */
 final class PageId implements Equatable, Stringable
 {
-    use IdTrait;
+    use IsId;
 
     public static function isValide(string $id): bool
     {

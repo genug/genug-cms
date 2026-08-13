@@ -27,7 +27,7 @@ use function sprintf;
  * @phpstan-require-implements \Stringable
  * @phpstan-require-implements \genug\Lib\Equatable
  */
-trait IdTrait
+trait IsId
 {
     use EquatableSimpleObjectTrait;
 
