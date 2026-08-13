@@ -26,7 +26,7 @@ use Psr\Log\LogLevel;
 final class Config
 {
     public function __construct(
-        public string $websiteTitle = '',
+        public string $siteTitle = '',
         public string $titleDelimiter = '|',
         public LoggerInterface $logger = new FileLogger('php://stderr', LogLevel::ERROR),
         public string $pageContentType = 'text/html; charset=UTF-8',

@@ -38,8 +38,8 @@ final class HtmlPageEntity implements PageEntity
             $dom->insertBefore($doctype, $dom->firstChild);
         }
 
-        if ($this->config->websiteTitle) {
-            $title = $this->config->websiteTitle;
+        if ($this->config->siteTitle) {
+            $title = $this->config->siteTitle;
 
             if ($dom->title) {
                 $title = "{$dom->title} {$this->config->titleDelimiter} {$title}";

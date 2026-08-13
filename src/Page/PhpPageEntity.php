@@ -128,8 +128,8 @@ final class PhpPageEntity implements PageEntity
     // TODO outsource
     private function modifyTitle(HTMLDocument $dom): void
     {
-        if ($this->config->websiteTitle) {
-            $title = $this->config->websiteTitle;
+        if ($this->config->siteTitle) {
+            $title = $this->config->siteTitle;
 
             if ($dom->title) {
                 $title = "{$dom->title} {$this->config->titleDelimiter} {$title}";
