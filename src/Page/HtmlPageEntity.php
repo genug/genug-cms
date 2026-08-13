@@ -16,7 +16,6 @@ namespace genug\Page;
 use Dom\HTMLDocument;
 use genug\Http\ContentType;
 use genug\Http\GenericResponce;
-use genug\Http\Request;
 use genug\Http\Response;
 use genug\Http\Status;
 
@@ -27,7 +26,7 @@ use genug\Http\Status;
  */
 final class HtmlPageEntity extends PageEntity
 {
-    public function get(Request $request): Response
+    public function get(GetPageRequest $request): Response
     {
         $dom = HTMLDocument::createFromFile($this->sourceFile->getRealPath());
 

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace genug\Page;
 
 use genug\Config\Config;
-use genug\Http\Request;
 use genug\Http\Response;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -37,5 +36,5 @@ abstract class PageEntity implements LoggerAwareInterface
     }
 
     // TODO use Attributes and Reflection; not abstract methods
-    abstract public function get(Request $request): Response;
+    abstract public function get(GetPageRequest $request): Response;
 }
