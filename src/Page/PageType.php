@@ -21,4 +21,5 @@ enum PageType: string implements Equatable
     use EquatableSimpleObjectTrait;
 
     case HTML = 'html';
+    case PHP = 'php';
 }

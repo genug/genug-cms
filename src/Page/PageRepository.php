@@ -37,15 +37,20 @@ final class PageRepository implements IteratorAggregate, Countable, LoggerAwareI
     private const INDEX_FILE_NAME = 'index';
 
     private array $pageTypeOrder = [
+        PageType::PHP,
         PageType::HTML,
     ];
 
+    /**
+     * @var SplObjectStorage<PageType, PageEntity> $pageEntityClasses
+     */
     private SplObjectStorage $pageEntityClasses;
 
     public function __construct(
         private Config $config
     ) {
         $this->pageEntityClasses = new SplObjectStorage();
+        $this->pageEntityClasses[PageType::PHP] = PhpPageEntity::class;
         $this->pageEntityClasses[PageType::HTML] = HtmlPageEntity::class;
     }
 
