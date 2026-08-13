@@ -58,6 +58,11 @@ final class PageController implements LoggerAwareInterface
 
         // TODO Implement $request->accepts
 
+        // Ensure that HEAD requests are handled exactly the same way as GET requests.
+        if ($request->method->equals(Method::HEAD)) {
+            $request = $request->withMethod(Method::GET);
+        }
+
         $responce = $page->get($request);
 
         if ($page->id->equals($http404PageId)) {
