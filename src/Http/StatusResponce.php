@@ -13,15 +13,9 @@ declare(strict_types=1);
 
 namespace genug\Http;
 
-use Stringable;
-
 final class StatusResponce implements Response
 {
-    public private(set) Status $status;
-
-    public private(set) ContentType $contentType;
-
-    public private(set) string|Stringable $body;
+    use IsResponse;
 
     public function __construct(
         Status $status,
@@ -30,12 +24,5 @@ final class StatusResponce implements Response
         $this->status = $status;
         $this->contentType = $contentType;
         $this->body = $status->description();
-    }
-
-    public function withStatus(Status $status): static
-    {
-        $clone = clone $this;
-        $clone->status = $status;
-        return $clone;
     }
 }

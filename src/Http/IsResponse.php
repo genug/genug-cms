@@ -42,4 +42,11 @@ trait IsResponse
         $clone->status = $status;
         return $clone;
     }
+
+    public function withBody(string|Stringable $body): static
+    {
+        $clone = clone $this;
+        $clone->body = $body;
+        return $clone;
+    }
 }

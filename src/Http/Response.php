@@ -27,4 +27,9 @@ interface Response
      * MUST return a new instance
      */
     public function withStatus(Status $status): static;
+
+    /**
+     * MUST return a new instance
+     */
+    public function withBody(string|Stringable $body): static;
 }
