@@ -15,6 +15,8 @@ namespace genug\Container;
 
 use genug\Config\Config;
 use genug\Config\ConfigLoader;
+use genug\Controller\PageController;
+use genug\Http\RequestFactory;
 use genug\Logger\Logger;
 use genug\Page\PageRepository;
 use genug\Router\Router;
@@ -33,11 +35,7 @@ final class Container
     public private(set) Config $config;
 
     public private(set) Router $router {
-        get => $this->router ?? (function (): Router {
-            $r = new Router($this->config);
-            $r->setLogger($this->logger);
-            return $r;
-        })();
+        get => $this->router ??= new Router($this->requestFactory->createRequestFromGlobal(), $this->pageController);
     }
 
     public private(set) LoggerInterface $logger {
@@ -54,6 +52,14 @@ final class Container
 
     private ConfigLoader $configLoader {
         get => $this->configLoader ??= new ConfigLoader();
+    }
+
+    private RequestFactory $requestFactory {
+        get => $this->requestFactory ??= new RequestFactory($this->config);
+    }
+
+    private PageController $pageController {
+        get => $this->pageController ??= new PageController($this->config, $this->pages);
     }
 
     public function __construct(
