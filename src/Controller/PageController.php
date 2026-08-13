@@ -22,12 +22,11 @@ use genug\Http\Status;
 use genug\Page\PageId;
 use genug\Page\PageRepository;
 use LogicException;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
 use function sprintf;
 
-final class PageController implements LoggerAwareInterface
+final class PageController implements Controller
 {
     use LoggerAwareTrait;
 
@@ -37,7 +36,7 @@ final class PageController implements LoggerAwareInterface
     ) {
     }
 
-    public function __invoke(Request $request): Response
+    public function handle(Request $request): Response
     {
         // TODO Allow other methods
         if (
