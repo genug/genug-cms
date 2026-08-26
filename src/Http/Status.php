@@ -26,6 +26,7 @@ enum Status: int
     // Redirection messages
 
     case MultipleChoices = 300;
+    case PermanentRedirect = 308;
 
     // client error
 
