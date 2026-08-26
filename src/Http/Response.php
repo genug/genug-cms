@@ -19,7 +19,10 @@ interface Response
 {
     public Status $status {get;}
 
+    // TODO ContentType is a header
     public ContentType $contentType {get;}
+
+    public Header $header {get;}
 
     public string|Stringable $body {get;}
 
@@ -27,6 +30,11 @@ interface Response
      * MUST return a new instance
      */
     public function withStatus(Status $status): static;
+
+    /**
+     * MUST return a new instance
+     */
+    public function withHeader(Header $header): static;
 
     /**
      * MUST return a new instance
