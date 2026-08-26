@@ -14,9 +14,7 @@ declare(strict_types=1);
 namespace genug\Page;
 
 use genug\Config\Config;
-use genug\Http\HttpResponceException;
 use genug\Http\Response;
-use genug\Http\Status;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use SplFileInfo;
@@ -45,8 +43,5 @@ trait IsPageEntity
     {
     }
 
-    public function get(GetPageDto $dto): Response
-    {
-        throw new HttpResponceException(Status::MethodNotAllowed);
-    }
+    abstract public function get(GetPageDto $dto): Response;
 }

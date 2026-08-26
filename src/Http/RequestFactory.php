@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace genug\Http;
 
 use genug\Config\Config;
+use genug\HttpResponceException\HttpBadRequest;
 use LogicException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -50,7 +51,7 @@ final class RequestFactory implements LoggerAwareInterface
                 return $case;
             }
         }
-        throw new HttpResponceException(Status::MethodNotAllowed);
+        throw new HttpBadRequest();
     }
 
     private function createUriFromGlobal(): Uri
