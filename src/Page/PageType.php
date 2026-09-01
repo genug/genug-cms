@@ -22,4 +22,5 @@ enum PageType: string implements Equatable
 
     case HTML = 'html';
     case PHP = 'php';
+    case PHTML = 'phtml';
 }

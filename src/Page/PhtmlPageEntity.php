@@ -23,6 +23,7 @@ use Override;
 use SplFileInfo;
 
 use function http_response_code;
+use function ob_get_contents;
 use function ob_get_level;
 use function Safe\ob_end_clean;
 use function Safe\ob_start;
@@ -33,7 +34,7 @@ use function sprintf;
  * @author David J. Schwarz <https://davidschwarz.eu/>
  * @license MIT License
  */
-final class PhpPageEntity implements PageEntity
+final class PhtmlPageEntity implements PageEntity
 {
     use IsPageEntity;
 
@@ -44,8 +45,8 @@ final class PhpPageEntity implements PageEntity
             $prevObLevel = ob_get_level();
             $prevHeaders = \headers_list();
             $prevResponceCode = http_response_code();
-            ob_start();
-            $page = (function (): PageEntity {
+
+            $page = (function (): HTMLDocument {
                 // A separate context for the page code.
                 $c = new class ($this->file, $this->id, new PageId($this->config->homePageId)) {
                     public function __construct(
@@ -58,22 +59,23 @@ final class PhpPageEntity implements PageEntity
                     ) {
                     }
 
-                    public function load(): PageEntity
+                    public function load(): string
                     {
-                        $r = require $this->file->getRealPath();
-
-                        if (! ($r instanceof PageEntity)) {
-                            throw new LogicException("Invalid File: {$this->file->getRealPath()}.");
+                        try {
+                            ob_start();
+                            require $this->file->getRealPath();
+                            $content = ob_get_contents();
+                            if (false === $content) {
+                                throw new LogicException(sprintf('Missing output puffer. Page file: %s', $this->file->getRealPath()));
+                            }
+                            return $content;
+                        } finally {
+                            ob_end_clean();
                         }
-
-                        return $r;
                     }
                 };
-
-                return $c->load();
+                return HTMLDocument::createFromString($c->load());
             })();
-
-            ob_end_clean();
 
             if ($prevObLevel !== ob_get_level()) {
                 throw new LogicException(sprintf('The output buffering level is incorrect. Page file: %s', $this->file->getRealPath()));
@@ -89,27 +91,11 @@ final class PhpPageEntity implements PageEntity
                 use IsResponse;
             };
 
-            $page->id = $this->id;
-            $page->file = $this->file;
-            $page->config = $this->config;
-            $page->pages = $this->pages;
-            if ($this->logger) {
-                $page->setLogger($this->logger);
-            }
-            $page->init();
-
-            $responce = $page->get($dto);
-            if (! $responce->contentType->equals(ContentType::HTML)) {
-                throw new LogicException(sprintf('A page must have the content type %s. Page file: %s', ContentType::HTML->value, $this->file->getRealPath()));
-            }
-
-            $htmlPage = HTMLDocument::createFromString((string) $responce->body);
-
-            $this->addDocType($htmlPage);
-            $this->modifyTitle($htmlPage);
+            $this->addDocType($page);
+            $this->modifyTitle($page);
             // TODO `<a href="{id}">...</a>` -> rewrite set pathBase before id
 
-            return $responce->withBody($htmlPage->saveHtml());
+            return $responce->withBody($page->saveHtml());
         } finally {
             // @phpstan-ignore nullCoalesce.variable
             while (ob_get_level() > ($prevObLevel ?? ob_get_level())) {

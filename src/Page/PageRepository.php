@@ -38,6 +38,7 @@ final class PageRepository implements IteratorAggregate, Countable, LoggerAwareI
 
     private array $pageTypeOrder = [
         PageType::PHP,
+        PageType::PHTML,
         PageType::HTML,
     ];
 
@@ -51,6 +52,7 @@ final class PageRepository implements IteratorAggregate, Countable, LoggerAwareI
     ) {
         $this->pageEntityClasses = new SplObjectStorage();
         $this->pageEntityClasses[PageType::PHP] = PhpPageEntity::class;
+        $this->pageEntityClasses[PageType::PHTML] = PhtmlPageEntity::class;
         $this->pageEntityClasses[PageType::HTML] = HtmlPageEntity::class;
     }
 
