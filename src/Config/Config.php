@@ -25,7 +25,11 @@ use Psr\Log\LogLevel;
  */
 final class Config
 {
+    public readonly bool $https;
+
     public function __construct(
+        public string $host = '',
+        public ?int $port = null,
         public string $siteTitle = '',
         public string $titleDelimiter = '|',
         public LoggerInterface $logger = new FileLogger('php://stderr', LogLevel::ERROR),
@@ -37,5 +41,6 @@ final class Config
         public string $persistenceContentDirectory = App::ROOT . '/genug_user/content',
         public string $persistencePageFilenameExtension = 'page',
     ) {
+        $this->https = (bool) ($_SERVER['HTTPS'] ?? false);
     }
 }

@@ -39,13 +39,15 @@ return static function (Config $config) {
     $config->titleDelimiter = '|';
 
     /*
-     * Retrieve all log messages during development
-     *
      * During development, PHP's built-in web server can be used via the CLI.
-     * When this is the case, a properly configured logger is used.
+     * If this is the case, the configuration will be adjusted accordingly.
      * See also: https://www.php.net/manual/en/features.commandline.webserver.php
      */
     if (php_sapi_name() === 'cli-server') {
+        // Retrieve all log messages during development
         $config->logger = new FileLogger('php://stderr', LogLevel::DEBUG);
+
+        $config->host = \is_string($_SERVER['SERVER_NAME'] ?? null) ? $_SERVER['SERVER_NAME'] : '';
+        $config->port = \is_string($_SERVER['SERVER_PORT'] ?? null) ? \intval($_SERVER['SERVER_PORT']) : null;
     }
 };
