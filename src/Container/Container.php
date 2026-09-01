@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace genug\Container;
 
+use ErrorException;
 use genug\Config\Config;
 use genug\Config\ConfigLoader;
 use genug\Controller\PageController;
@@ -24,6 +25,7 @@ use Psr\Log\LoggerInterface;
 
 use function file_exists;
 use function getenv;
+use function trim;
 
 /**
  *
@@ -35,7 +37,7 @@ final class Container
     public private(set) Config $config;
 
     public private(set) Router $router {
-        get => $this->router ??= new Router($this->requestFactory->createRequestFromGlobal(), $this->pageController);
+        get => $this->router ??= new Router($this->requestFactory->createRequestFromGlobal(), $this->config, $this->pageController);
     }
 
     public private(set) LoggerInterface $logger {
@@ -77,7 +79,17 @@ final class Container
                 $this->configLoader->populate($config, $configFile);
             }
 
+            self::isConfigValid($config) ?: throw new ErrorException('Invalid Config');
+
             return $config;
         })();
+    }
+
+    private static function isConfigValid(Config $config): bool
+    {
+        if (! trim($config->host)) {
+            return false;
+        }
+        return true;
     }
 }
