@@ -40,7 +40,13 @@ final class App
 
                 http_response_code($responce->status->value);
                 // FIXME The charset must be set dynamically
+                // FIXME ContentType must be part of $responce->header
                 header('Content-Type: ' . $responce->contentType->value . '; charset=UTF-8');
+
+                foreach ($responce->header as $h) {
+                    header($h);
+                }
+
                 echo $responce->body;
             } catch (Throwable $throwable) {
                 try {
