@@ -36,7 +36,7 @@ final class RequestFactory implements LoggerAwareInterface
 
     public function createRequestFromGlobal(): Request
     {
-        return new GenericRequest(self::createMethodFromGlobal(), $this->createUriFromGlobal());
+        return new GenericRequest(self::createMethodFromGlobal(), $this->createPathFromGlobal());
     }
 
     private static function createMethodFromGlobal(): Method
@@ -54,7 +54,7 @@ final class RequestFactory implements LoggerAwareInterface
         throw new HttpBadRequest();
     }
 
-    private function createUriFromGlobal(): Uri
+    private function createPathFromGlobal(): string
     {
         $serverRequestUri = $_SERVER['REQUEST_URI'];
         if (! is_string($serverRequestUri)) {
@@ -69,6 +69,6 @@ final class RequestFactory implements LoggerAwareInterface
 
             $uri = $uri->withPath($path);
         }
-        return $uri;
+        return $uri->getPath();
     }
 }

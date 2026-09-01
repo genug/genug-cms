@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace genug\Http;
 
 use Exception;
-use Uri\Rfc3986\Uri;
 
 /**
  * @phpstan-require-implements Request
@@ -26,10 +25,10 @@ trait IsRequest
 
     public function __construct(
         Method $method,
-        Uri $uri,
+        string $path,
     ) {
         $this->method = $method;
-        $this->path = $uri->getPath();
+        $this->path = $path;
     }
 
     public function accepts(ContentType ...$contentTypes): bool
