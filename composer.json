@@ -8,7 +8,6 @@
     ],
     "require": {
         "php": "8.5.*",
-        "symfony/yaml": "^8.1",
         "psr/log": "^3.0",
         "thecodingmachine/safe": "^3.4"
     },
