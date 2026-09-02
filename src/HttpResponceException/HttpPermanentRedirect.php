@@ -14,11 +14,12 @@ declare(strict_types=1);
 namespace genug\HttpResponceException;
 
 use genug\Http\Status;
-use Uri\Rfc3986\Uri;
+use genug\Page\PageId;
+use Uri\WhatWg\Url;
 
 final class HttpPermanentRedirect extends HttpResponceException
 {
-    public function __construct(public readonly Uri $location)
+    public function __construct(public readonly Url|PageId $location)
     {
         $this->status = Status::PermanentRedirect;
 

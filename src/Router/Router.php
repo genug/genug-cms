@@ -15,6 +15,7 @@ namespace genug\Router;
 
 use genug\Config\Config;
 use genug\Controller\PageController;
+use genug\Controller\RemoveTrailingSlashController;
 use genug\Http\ContentType;
 use genug\Http\GenericResponce;
 use genug\Http\Header;
@@ -27,9 +28,9 @@ use genug\HttpResponceException\HttpPermanentRedirect;
 use genug\HttpResponceException\HttpResponceException;
 use genug\Page\PageId;
 use Uri\Rfc3986\Uri;
+use Uri\WhatWg\Url;
 
 use function array_unique;
-use function rtrim;
 use function str_ends_with;
 
 use const SORT_REGULAR;
@@ -56,7 +57,9 @@ final class Router
             $controller = match(true) {
                 PageId::isValide($this->request->path) => $this->pageController,
                 // TODO fileController
-                str_ends_with($this->request->path, self::TRAILING_SLASH) => throw new HttpPermanentRedirect(self::createRequestUriWithoutTrailingSlash($this->request)),
+
+                /* The trailing slash check must come after the PageId check, since `/` is a valid PageId. */
+                str_ends_with($this->request->path, self::TRAILING_SLASH) => new RemoveTrailingSlashController(),
                 default => throw new HttpNotFound()
             };
 
@@ -79,29 +82,21 @@ final class Router
         }
     }
 
-    /**
-     * @todo If Request supports more than just path, then support it here as well.
-     */
-    private function createRequestUriWithoutTrailingSlash(Request $request): Uri
-    {
-        return new Uri(rtrim($this->request->path, self::TRAILING_SLASH));
-    }
-
     private function createLocationHeader(HttpPermanentRedirect $exception): Header
     {
-        $uri = $exception->location;
+        $location = $exception->location;
 
-        if (! $uri->getHost()) {
-            $path = $this->config->pathBase;
-            $path .= $uri->getPath();
+        if ($location instanceof PageId) {
+            $uri = new Uri('')
+            ->withScheme($this->config->https ? 'https' : 'http')
+            ->withHost($this->config->host)
+            ->withPort($this->config->port)
+            ->withPath($this->config->pathBase . $location);
 
-            $uri = $uri->withHost($this->config->host)
-                ->withScheme($this->config->https ? 'https' : 'http')
-                ->withPort($this->config->port)
-                ->withPath($path);
+            $location = new Url($uri->toString());
         }
 
-        return new Header()->withLocation($uri->toString());
+        return new Header()->withLocation($location->toAsciiString());
     }
 
     private function createMethodNotAllowedHeader(HttpMethodNotAllowed $exception): Header
